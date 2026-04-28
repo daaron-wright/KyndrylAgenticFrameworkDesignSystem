@@ -1,5 +1,5 @@
 /* =============================================================
-   Storybook host — Kyndryl Agentic Framework
+   Storybook host â€” Kyndryl Agentic Framework
    ============================================================= */
 (function () {
   const STORIES = window.STORIES || [];
@@ -60,7 +60,7 @@
       groupEl.className = "sb-group";
       const head = document.createElement("button");
       head.className = "sb-group-header";
-      head.innerHTML = `<span class="sb-caret">▾</span><span>${g}</span>`;
+      head.innerHTML = `<span class="sb-caret">â–¾</span><span>${g}</span>`;
       head.addEventListener("click", () => {
         groupEl.dataset.collapsed = groupEl.dataset.collapsed === "true" ? "false" : "true";
       });
@@ -73,7 +73,7 @@
         compEl.className = "sb-component";
         const ch = document.createElement("button");
         ch.className = "sb-component-header";
-        ch.innerHTML = `<span class="sb-caret">▾</span>
+        ch.innerHTML = `<span class="sb-caret">â–¾</span>
           <svg class="sb-component-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
             <rect x="2.5" y="2.5" width="11" height="11" rx="2"/>
             <path d="M2.5 6.5h11M6.5 2.5v11"/>
@@ -128,11 +128,14 @@
         frame.src = url;
       }
       const scaler = $("sb-canvas-scaler");
-      const h = (story.height || 600);
-      scaler.style.maxWidth = "1240px";
-      scaler.style.minHeight = (h + 2) + "px";
-      $("sb-canvas").style.height = h + "px";
+      scaler.style.maxWidth = "100%";
+      scaler.style.width = "100%";
+      scaler.style.height = "100%";
+      scaler.style.minHeight = "100%";
+      $("sb-canvas").style.width = "100%";
+      $("sb-canvas").style.height = "100%";
       scaler.style.transform = `scale(${state.zoom})`;
+      scaler.style.transformOrigin = "top left";
     } else {
       $("sb-canvas-wrap").hidden = true;
       $("sb-docs").hidden = false;
@@ -157,7 +160,7 @@
   function renderDocs(story) {
     const d = story.docs || {};
     const eyebrow = d.eyebrow || (story.group || "").toUpperCase();
-    const title = `${story.component} · ${story.name}`;
+    const title = `${story.component} Â· ${story.name}`;
     const lead = d.lead || "";
     const overview = (d.overview || []).map((p) => `<p>${p}</p>`).join("");
     const when = (d.whenToUse || []).map((p) => `<li>${p}</li>`).join("");
@@ -165,8 +168,8 @@
     const dos  = (d.do   || []).map((p) => `<div class="sb-do"><strong>Do</strong>${p}</div>`).join("");
     const a11y = (d.a11y || []).map((p) => `<div class="sb-a11y-row">${p}</div>`).join("");
     const argRows = Object.entries(story.argTypes || {}).map(([k, t]) => {
-      const opts = (t.options || []).join(" · ");
-      return `<tr><td><code>${k}</code></td><td>${t.control}${opts ? " — " + opts : ""}</td><td><code>${t.default ?? ""}</code></td></tr>`;
+      const opts = (t.options || []).join(" Â· ");
+      return `<tr><td><code>${k}</code></td><td>${t.control}${opts ? " â€” " + opts : ""}</td><td><code>${t.default ?? ""}</code></td></tr>`;
     }).join("");
     return `
       <div class="sb-docs-inner">
@@ -194,7 +197,7 @@
     const controlsPane = $("sb-addon-controls");
     const argTypes = story.argTypes || {};
     if (!Object.keys(argTypes).length) {
-      controlsPane.innerHTML = '<div class="sb-empty-pane">This story has no controls. Stories with variants expose controls here — try a Primitive (e.g. SeverityPill, ConfidenceBadge).</div>';
+      controlsPane.innerHTML = '<div class="sb-empty-pane">This story has no controls. Stories with variants expose controls here â€” try a Primitive (e.g. SeverityPill, ConfidenceBadge).</div>';
     } else {
       controlsPane.innerHTML = Object.entries(argTypes).map(([k, t]) => renderControl(k, t, state.args[k])).join("");
       controlsPane.querySelectorAll("[data-control]").forEach((el) => {
@@ -218,7 +221,7 @@
       '</code></pre>';
     // A11y
     const a = (story.docs && story.docs.a11y) || [
-      "Color is paired with text or icon — no color-only signalling.",
+      "Color is paired with text or icon â€” no color-only signalling.",
       "Focus rings inherit the Spruce ring token (`--ring`)."
     ];
     $("sb-addon-a11y").innerHTML = a.map((x) => `<div class="sb-a11y-row">${x}</div>`).join("");
