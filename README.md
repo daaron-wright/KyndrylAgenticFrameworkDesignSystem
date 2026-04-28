@@ -1,4 +1,4 @@
-# Kyndryl CMDB Design System
+# Kyndryl Agentic Framework Design System
 
 A design system derived from the **Kyndryl Agentic Framework — CMDB Data Quality** Next.js workspace. It captures the tokens, composite patterns, and UX themes the app uses to surface CMDB trust posture, triage stale/orphaned CIs, drive reconciliation and correction-request workflows, and investigate business impact through a knowledge graph.
 
