@@ -1,0 +1,179 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>AI Feedback &amp; Sources Panels</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:32px;background:var(--bg-2);font-family:var(--font-sans);color:var(--fg-1);font-size:13px}
+  .wrap{max-width:1080px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .card{background:#fff;border:1px solid var(--border-1);border-radius:var(--radius-lg);padding:22px 24px}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;color:#8A4FBF;font-weight:600;margin-bottom:6px}
+  .eyebrow svg{width:12px;height:12px}
+  h2{font-family:var(--font-display);font-size:20px;font-weight:500;margin:0 0 4px}
+  .sub{font-size:12px;color:var(--fg-muted);margin-bottom:18px}
+  .kicker{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;margin:18px 0 10px}
+
+  /* Action row — copy / regenerate / sources / feedback */
+  .actions{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .ico-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 9px;border:1px solid var(--border-1);border-radius:6px;
+    background:#fff;color:var(--fg-2);font-size:11.5px;cursor:pointer;
+    transition:background 120ms;
+  }
+  .ico-btn:hover{background:var(--bg-3)}
+  .ico-btn svg{width:13px;height:13px}
+  .ico-btn.is-active{background:rgba(255,70,45,.08);color:var(--k-warm-red-60);border-color:rgba(255,70,45,.24)}
+  .ico-btn.flag.is-active{background:rgba(166,77,255,.08);color:#7A3FBF;border-color:rgba(166,77,255,.24)}
+
+  /* Sources expansion — chip rail with gradient border */
+  .sources{
+    border:1px dashed rgba(41,112,122,.4);
+    border-radius:8px;padding:10px 12px;margin-top:10px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    background:rgba(41,112,122,.03);
+    position:relative;
+  }
+  .sources .label{font-size:11px;color:var(--k-spruce-70);font-weight:600;margin-right:4px}
+  .src-chip{
+    display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--fg-1);
+    background:#fff;border:1px solid var(--border-1);border-radius:6px;padding:4px 8px;cursor:pointer;
+  }
+  .src-chip:hover{border-color:var(--k-spruce-60);background:rgba(41,112,122,.04)}
+  .src-chip .num{font-family:var(--font-mono);color:var(--k-spruce-60);font-size:10.5px;font-weight:600}
+  .src-chip .ki{width:11px;height:11px;color:var(--fg-muted)}
+  .show-more{font-size:11px;color:var(--k-spruce-60);cursor:pointer;font-weight:500;margin-left:auto}
+  .sources .close{position:absolute;top:8px;right:10px;color:var(--fg-muted);cursor:pointer;font-size:14px;line-height:1}
+
+  /* Feedback expansion — checkboxes + textarea */
+  .feedback{
+    border:1px solid rgba(166,77,255,.32);
+    border-radius:8px;padding:14px 16px 12px;margin-top:10px;
+    background:rgba(166,77,255,.04);
+    position:relative;
+  }
+  .feedback h3{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#5B2D8A;font-family:var(--font-sans)}
+  .feedback .close{position:absolute;top:10px;right:12px;color:var(--fg-muted);cursor:pointer;font-size:14px;line-height:1}
+  .feedback .opts{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+  .feedback label{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-2);cursor:pointer}
+  .feedback label input{accent-color:#7A3FBF}
+  .feedback textarea{
+    width:100%;min-height:60px;border:1px solid var(--border-1);border-radius:6px;
+    padding:8px 10px;font:inherit;font-size:12px;color:var(--fg-1);background:#fff;resize:vertical;box-sizing:border-box;
+  }
+  .feedback .row{display:flex;gap:8px;margin-top:10px}
+  .btn{padding:6px 14px;font:inherit;font-size:12px;border-radius:6px;border:1px solid var(--border-1);background:#fff;color:var(--fg-1);cursor:pointer;font-weight:500}
+  .btn.primary{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .btn.primary:hover{background:var(--k-spruce-70)}
+  .btn.ghost{background:transparent;border-color:transparent;color:var(--fg-muted)}
+
+  .specs{font-size:12px;color:var(--fg-2);line-height:1.6}
+  .specs code{font-family:var(--font-mono);font-size:10.5px;background:var(--bg-3);padding:1px 5px;border-radius:3px}
+  .specs ul{margin:6px 0 0;padding-left:18px}
+</style>
+</head><body>
+
+<div class="wrap">
+
+  <!-- COMPONENT — collapsed → expanded states -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      Feedback &amp; Sources · Component
+    </div>
+    <h2>Feedback &amp; Sources</h2>
+    <div class="sub">Sits beneath every AI response. Three states: collapsed action row, expanded sources, expanded feedback form.</div>
+
+    <div class="kicker">Collapsed (idle)</div>
+    <div class="actions">
+      <button class="ico-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+      <button class="ico-btn" aria-label="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+      <button class="ico-btn" aria-label="Thumbs up"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13h6v14H5a1 1 0 0 1-1-1V14a1 1 0 0 1 1-1Z"/><path d="M11 13l4-9a1 1 0 0 1 .9-.5 3 3 0 0 1 3 3v6h7.5a2 2 0 0 1 1.97 2.34l-1.83 11A2 2 0 0 1 24.58 27H11V13Z"/></svg></button>
+      <button class="ico-btn" aria-label="Thumbs down"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 19h-6V5h6a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1Z"/><path d="M21 19l-4 9a1 1 0 0 1-.9.5 3 3 0 0 1-3-3v-6H5.6a2 2 0 0 1-1.97-2.34l1.83-11A2 2 0 0 1 7.42 5H21V19Z"/></svg></button>
+      <button class="ico-btn">Sources used <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+    </div>
+
+    <div class="kicker">Sources expanded</div>
+    <div class="actions">
+      <button class="ico-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+      <button class="ico-btn" aria-label="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+      <button class="ico-btn">Sources used (10) <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg></button>
+    </div>
+    <div class="sources">
+      <span class="close">×</span>
+      <span class="label">Used 10</span>
+      <span class="src-chip"><span class="num">1</span> CMDB-Trust-Q3.pdf</span>
+      <span class="src-chip"><span class="num">2</span> orphan-policy-v4</span>
+      <span class="src-chip"><span class="num">3</span> ServiceNow CR-2914</span>
+      <span class="src-chip"><span class="num">4</span> payments-runbook</span>
+      <span class="show-more">Show more ↓</span>
+    </div>
+
+    <div class="kicker">Feedback expanded</div>
+    <div class="actions">
+      <button class="ico-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+      <button class="ico-btn" aria-label="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
+      <button class="ico-btn flag is-active" aria-label="Thumbs down"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 19h-6V5h6a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1Z"/><path d="M21 19l-4 9a1 1 0 0 1-.9.5 3 3 0 0 1-3-3v-6H5.6a2 2 0 0 1-1.97-2.34l1.83-11A2 2 0 0 1 7.42 5H21V19Z"/></svg></button>
+    </div>
+    <div class="feedback">
+      <span class="close">×</span>
+      <h3>Could you tell us a little more? <span style="color:var(--fg-muted);font-weight:400">(optional)</span></h3>
+      <div class="opts">
+        <label><input type="checkbox"> Inaccurate</label>
+        <label><input type="checkbox"> Outdated source</label>
+        <label><input type="checkbox"> Missing context</label>
+      </div>
+      <textarea placeholder="Enter detailed feedback"></textarea>
+      <div class="row">
+        <button class="btn primary">Submit</button>
+        <button class="btn ghost">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BASE — anatomy -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      Feedback &amp; Sources · Base
+    </div>
+    <h2>Anatomy</h2>
+    <div class="sub">Tokens, slots, and the order actions appear in.</div>
+
+    <div class="kicker">Action order (LTR)</div>
+    <div class="specs">
+      <ol style="margin:0;padding-left:18px">
+        <li><strong>Copy</strong> — primary, always present</li>
+        <li><strong>Regenerate</strong> — only on AI messages, never on user</li>
+        <li><strong>Thumbs up / down</strong> — capture qualitative signal</li>
+        <li><strong>Flag / Report</strong> — escalation to human review</li>
+        <li><strong>Sources used (n)</strong> — trailing, expands the rail below</li>
+      </ol>
+    </div>
+
+    <div class="kicker">Source-chip variants</div>
+    <div class="actions" style="flex-wrap:wrap">
+      <span class="src-chip"><span class="num">1</span> Source label</span>
+      <span class="src-chip" style="border-color:var(--k-spruce-60);background:rgba(41,112,122,.06)"><span class="num">2</span> Hovered</span>
+      <span class="src-chip" style="border-style:dashed"><span class="num">3</span> Citing CMDB</span>
+    </div>
+
+    <div class="kicker">Feedback form</div>
+    <div class="specs">
+      <ul>
+        <li>Form opens INLINE, never in a modal — the response stays visible above.</li>
+        <li>Checkboxes are a fixed taxonomy of <code>3–5</code> options — never freeform-only.</li>
+        <li>Submit posts to the "Learned from you" inbox, mirroring agentic feedback signals.</li>
+      </ul>
+    </div>
+
+    <div class="kicker">Don't</div>
+    <div class="specs">
+      <ul>
+        <li>Don't combine sources + feedback in the same expansion — keep one open at a time.</li>
+        <li>Don't show feedback panel without a thumbs-down event first.</li>
+        <li>Don't paginate sources beyond 10 — collapse with "Show more".</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body></html>

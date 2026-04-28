@@ -1,6 +1,6 @@
 /* =============================================================
    Storybook-style chrome — Kyndryl Agentic Framework
-   Foundations come from ../colors_and_type.css. This file only
+   Foundations come from colors_and_type.css. This file only
    styles the static Storybook host (sidebar, toolbar, canvas,
    addon panel). Stories are rendered in an iframe and own their
    own styles.

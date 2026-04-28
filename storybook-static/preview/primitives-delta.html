@@ -1,0 +1,104 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;font-family:var(--font-sans);color:var(--fg-1)}
+  .row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+  .cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;position:relative}
+  .num{font-variant-numeric:tabular-nums;font-size:24px;font-weight:700;letter-spacing:-.01em}
+  .delta{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;padding:2px 7px;border-radius:9999px;border:1px solid}
+  .up{background:#D1FAE5;color:#047857;border-color:#A7F3D0}
+  .dn{background:#FFE4E6;color:#BE123C;border-color:#FECDD3}
+  .flat{background:#F1F5F9;color:#475569;border-color:#E2E8F0}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted)}
+  .hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+  .hdr .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .hdr .hint{font-size:11px;color:var(--fg-muted)}
+  .hint b{color:var(--fg-2);font-weight:600}
+</style></head><body>
+
+<div class="hdr">
+  <span class="t">DeltaIndicator · agentic</span>
+  <span class="hint">Click to <b>explain change</b>, <b>set alert</b>, or <b>compare periods</b></span>
+</div>
+
+<div class="row">
+  <div class="cell">
+    <span class="num">92.4%</span>
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="delta up">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+        <span class="agentic-label">+2.1 pp vs last wk</span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Change driver</span><span class="ap-meta">7d window</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Opened change explanation">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01M12 7a2.5 2.5 0 1 1 2.5 2.5c-1 .5-2 1.5-2 3"/></svg>
+          Explain this change<span class="ap-sub">Agent will surface top contributing CIs</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Alert created · &gt; ±3 pp">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          Set alert threshold<span class="ap-sub">Notify me when change exceeds ±X pp</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Compare sidebar opened">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+          Compare periods<span class="ap-sub">7d vs 30d vs QoQ</span>
+        </button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="teach">Teach the agent what caused this</button>
+      </div>
+      <div class="ap-confirm" data-for="teach" hidden>
+        <p>Labels this change with a cause the agent will use to detect similar patterns. Continue?</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Labeled · pattern added to detection model">Label &amp; teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">up · good</span>
+  </div>
+
+  <div class="cell">
+    <span class="num">418</span>
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="delta dn">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="agentic-label">−14 vs yesterday</span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Change driver</span><span class="ap-meta">24h window</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Opened change explanation">Explain this change</button>
+        <button type="button" class="ap-action" data-toast="Alert created">Set alert threshold</button>
+        <button type="button" class="ap-action" data-toast="Compare sidebar opened">Compare periods</button>
+      </div>
+    </div>
+    <span class="lbl">down · attention</span>
+  </div>
+
+  <div class="cell">
+    <span class="num">1,204</span>
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="delta flat">
+        <span class="agentic-label">±0.0% · stable</span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Change driver</span><span class="ap-meta">30d window</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Stability rationale shown">Why so stable?</button>
+        <button type="button" class="ap-action" data-toast="Alert created">Alert me on any movement</button>
+        <button type="button" class="ap-action" data-toast="Compare sidebar opened">Compare periods</button>
+      </div>
+    </div>
+    <span class="lbl">flat</span>
+  </div>
+</div>
+
+<script src="agentic.js"></script>
+</body></html>

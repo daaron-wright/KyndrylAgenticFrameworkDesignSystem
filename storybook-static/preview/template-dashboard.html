@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC;font-family:var(--font-sans)}
+.template{max-width:900px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px}
+.slot{border:1.5px dashed #CBD5E1;border-radius:6px;padding:10px;background:#F8FAFC;color:#64748B;font-family:var(--font-mono);font-size:10px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:36px}
+.slot.filled{background:#fff;border:1px solid var(--border-1);color:var(--fg-1)}
+.hd{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);font-weight:700;margin-bottom:8px}
+.grid{display:grid;gap:10px}
+.header-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border-1);margin-bottom:12px}
+.header-row h2{margin:0;font-size:14px;font-weight:600}
+.kpi-grid{grid-template-columns:repeat(3,1fr)}
+.row2{grid-template-columns:1.1fr .9fr}
+</style></head><body>
+<div class="template">
+  <div class="header-row"><h2>DashboardTemplate</h2><span class="hd" style="margin:0">AppShell › header · KpiGrid · StatusBanner[] · chart row</span></div>
+  <div class="grid kpi-grid" style="margin-bottom:10px">
+    <div class="slot filled" style="padding:12px"><div><div class="hd" style="margin:0 0 2px">Trust score</div><div style="font-size:20px;font-weight:700">62%</div></div></div>
+    <div class="slot filled" style="padding:12px"><div><div class="hd" style="margin:0 0 2px">Stale CIs</div><div style="font-size:20px;font-weight:700">312</div></div></div>
+    <div class="slot filled" style="padding:12px"><div><div class="hd" style="margin:0 0 2px">Orphans</div><div style="font-size:20px;font-weight:700">47</div></div></div>
+  </div>
+  <div class="slot" style="margin-bottom:10px">StatusBannerCard[] — severity alerts + Investigate CTA</div>
+  <div class="grid row2" style="margin-bottom:10px"><div class="slot" style="height:110px">Chart · Impacted CIs by Domain</div><div class="slot" style="height:110px">Chart · Priority mix donut</div></div>
+  <div class="slot" style="height:80px">SignalsPanel · Optimisation + Reconciliation triggers</div>
+</div>
+</body></html>

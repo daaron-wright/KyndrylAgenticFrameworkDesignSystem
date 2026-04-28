@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#fff;font-family:var(--font-sans)}
+.row{margin-bottom:14px}
+.row h4{font-family:var(--font-display);font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-muted);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(11,1fr);gap:6px}
+.grid-spruce{grid-template-columns:repeat(10,1fr)}
+.sw{border-radius:4px;overflow:hidden;border:1px solid var(--border-1);min-width:0}
+.chip{height:56px;display:flex;align-items:flex-end;padding:6px;color:#fff;font-family:var(--font-mono);font-size:9px}
+.chip.dark{color:var(--fg-1)}
+.meta{padding:6px 8px;background:#fff}
+.name{font-size:10px;font-weight:500;color:var(--fg-1)}
+.hex{font-family:var(--font-mono);font-size:9px;color:var(--fg-muted);margin-top:1px}
+.brand{display:flex;gap:10px;margin-bottom:16px}
+.brand .big{flex:1;border-radius:8px;padding:18px;color:#fff;background:var(--k-warm-red-50);display:flex;flex-direction:column;justify-content:space-between;min-height:96px}
+.brand .big.spruce{background:var(--k-spruce-60)}
+.brand .big .label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.8;font-family:var(--font-display)}
+.brand .big .val{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-0.01em;margin-top:8px}
+.brand .big .use{font-size:11px;opacity:0.85;margin-top:4px}
+</style></head><body>
+<div class="brand">
+  <div class="big">
+    <div><div class="label">Brand accent</div><div class="val">Warm Red 50</div></div>
+    <div><div class="use">Logo · brand moments · destructive attention</div><div style="font-family:var(--font-mono);font-size:10px;margin-top:4px;opacity:0.8">#FF462D · --k-warm-red-50</div></div>
+  </div>
+  <div class="big spruce">
+    <div><div class="label">Interactive primary</div><div class="val">Spruce 60</div></div>
+    <div><div class="use">Links · primary buttons · focus · selected</div><div style="font-family:var(--font-mono);font-size:10px;margin-top:4px;opacity:0.8">#29707A · --k-spruce-60</div></div>
+  </div>
+</div>
+
+<div class="row">
+  <h4>Warm Red — brand accent ramp</h4>
+  <div class="grid">
+    <div class="sw"><div class="chip dark" style="background:var(--k-warm-red-10)">10</div><div class="meta"><div class="name">Warm Red 10</div><div class="hex">#FFE8E0</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-warm-red-20)">20</div><div class="meta"><div class="name">20</div><div class="hex">#FFB8A3</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-warm-red-30)">30</div><div class="meta"><div class="name">30</div><div class="hex">#FF8766</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-40)">40</div><div class="meta"><div class="name">40</div><div class="hex">#FF6647</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-50);outline:2px solid var(--k-warm-red-50);outline-offset:-2px">50 ★</div><div class="meta"><div class="name">50 · brand</div><div class="hex">#FF462D</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-60)">60</div><div class="meta"><div class="name">60</div><div class="hex">#E63A22</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-70)">70</div><div class="meta"><div class="name">70</div><div class="hex">#B82915</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-80)">80</div><div class="meta"><div class="name">80</div><div class="hex">#8A1E0D</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-90)">90</div><div class="meta"><div class="name">90</div><div class="hex">#5C1408</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-100)">100</div><div class="meta"><div class="name">100</div><div class="hex">#2E0A04</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-warm-red-110)">110</div><div class="meta"><div class="name">110</div><div class="hex">#1A0602</div></div></div>
+  </div>
+</div>
+
+<div class="row">
+  <h4>Spruce — UI workhorse ramp</h4>
+  <div class="grid grid-spruce">
+    <div class="sw"><div class="chip dark" style="background:var(--k-spruce-10)">10</div><div class="meta"><div class="name">Spruce 10</div><div class="hex">#E8F2F4</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-spruce-20)">20</div><div class="meta"><div class="name">20</div><div class="hex">#BEDDE2</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-spruce-30)">30</div><div class="meta"><div class="name">30</div><div class="hex">#91C4CC</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-40)">40</div><div class="meta"><div class="name">40</div><div class="hex">#5BA2AE</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-50)">50</div><div class="meta"><div class="name">50</div><div class="hex">#3D8590</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-60);outline:2px solid var(--k-spruce-60);outline-offset:-2px">60 ★</div><div class="meta"><div class="name">60 · primary</div><div class="hex">#29707A</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-70)">70</div><div class="meta"><div class="name">70 · hover</div><div class="hex">#1F5A63</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-80)">80</div><div class="meta"><div class="name">80 · pressed</div><div class="hex">#17444B</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-90)">90</div><div class="meta"><div class="name">90</div><div class="hex">#0F2E33</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--k-spruce-100)">100</div><div class="meta"><div class="name">100</div><div class="hex">#07191C</div></div></div>
+  </div>
+</div>
+
+<div class="row">
+  <h4>AI-surface tints — Opacity.AI convention</h4>
+  <div class="grid" style="grid-template-columns:repeat(6,1fr)">
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-spruce-06)">06</div><div class="meta"><div class="name">AI Spruce 06</div><div class="hex">rgba(41,112,122,.06)</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-spruce-12)">12</div><div class="meta"><div class="name">AI Spruce 12</div><div class="hex">rgba(41,112,122,.12)</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-spruce-20)">20</div><div class="meta"><div class="name">AI Spruce 20</div><div class="hex">rgba(41,112,122,.20)</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-warm-red-06)">06</div><div class="meta"><div class="name">AI Warm Red 06</div><div class="hex">rgba(255,70,45,.06)</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-warm-red-12)">12</div><div class="meta"><div class="name">AI Warm Red 12</div><div class="hex">rgba(255,70,45,.12)</div></div></div>
+    <div class="sw"><div class="chip dark" style="background:var(--k-ai-warm-red-20)">20</div><div class="meta"><div class="name">AI Warm Red 20</div><div class="hex">rgba(255,70,45,.20)</div></div></div>
+  </div>
+</div>
+</body></html>

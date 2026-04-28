@@ -1,0 +1,806 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Agentic interaction states</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:var(--bg-2);font-family:var(--font-sans);color:var(--fg-1);font-size:13px}
+  .wrap{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .card{background:#fff;border:1px solid var(--border-1);border-radius:var(--radius-lg);padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+  .card.full{grid-column:1/-1}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;color:#8A4FBF;font-weight:600}
+  .eyebrow svg{width:12px;height:12px}
+  h2{font-family:var(--font-display);font-size:19px;font-weight:500;margin:0}
+  .sub{font-size:12px;color:var(--fg-muted);line-height:1.55;margin:0}
+  .kicker{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;margin:6px 0 0}
+  .specs{font-size:12px;color:var(--fg-2);line-height:1.6}
+  .specs ul{margin:4px 0 0;padding-left:18px}
+  .specs strong{color:var(--fg-1)}
+  code,.t-mono{font-family:var(--font-mono);font-size:11px;background:var(--bg-3);padding:1px 5px;border-radius:3px;color:var(--fg-1)}
+
+  /* AI gradient border helper — reused across all primitives */
+  .ai-edge{
+    background:
+      linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28) 0%, rgba(255,70,45,.28) 100%) border-box;
+    border:1px solid transparent;
+  }
+  .ai-edge.tint{
+    background:
+      linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05)) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+  }
+
+  /* AI sparkle glyph */
+  .ai-glyph{
+    width:14px;height:14px;display:inline-block;flex-shrink:0;
+    background:linear-gradient(135deg, var(--k-spruce-60) 0%, var(--k-warm-red-50) 100%);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+  }
+
+  /* ========= AGENT STATUS BAR ========= */
+  .asb{
+    display:flex;align-items:center;gap:10px;padding:8px 12px;
+    border-radius:8px;font-size:12px;
+  }
+  .asb .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .asb .label{font-weight:600;color:var(--fg-1)}
+  .asb .meta{color:var(--fg-muted);font-family:var(--font-mono);font-size:10.5px}
+  .asb .controls{margin-left:auto;display:inline-flex;gap:4px}
+  .asb .btn{
+    height:22px;padding:0 8px;border:1px solid var(--border-1);background:#fff;
+    border-radius:4px;font-size:10.5px;font-weight:500;color:var(--fg-2);
+    cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:inherit;
+  }
+  .asb .btn:hover{background:var(--bg-3)}
+  .asb .btn svg{width:10px;height:10px}
+  .asb .btn.danger{color:var(--k-warm-red-60)}
+
+  /* state variants */
+  .asb.thinking .dot{
+    background:var(--k-spruce-60);
+    animation:asb-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes asb-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(41,112,122,.5)}
+    50%{box-shadow:0 0 0 5px rgba(41,112,122,0)}
+  }
+  .asb.streaming .dot{
+    background:var(--k-spruce-60);
+    animation:asb-stream 1s linear infinite;
+  }
+  @keyframes asb-stream{
+    0%{transform:scale(.8);opacity:.6}
+    50%{transform:scale(1.2);opacity:1}
+    100%{transform:scale(.8);opacity:.6}
+  }
+  .asb.waiting{background:#FEF7E6;border:1px solid #F8DC8E}
+  .asb.waiting .dot{background:#B45309}
+  .asb.waiting .label{color:#7A4800}
+  .asb.paused{background:var(--bg-3);border:1px dashed var(--border-1)}
+  .asb.paused .dot{background:var(--fg-muted)}
+  .asb.paused .label{color:var(--fg-2)}
+  .asb.done{background:#E0F2E8;border:1px solid #A8DDBF}
+  .asb.done .dot{background:#0D5C2E}
+  .asb.done .label{color:#0D5C2E}
+  .asb.thinking,.asb.streaming{background:var(--k-ai-spruce-06);border:1px solid var(--k-ai-spruce-12)}
+
+  /* caret animation for streaming */
+  .caret::after{
+    content:"";display:inline-block;width:6px;height:11px;background:var(--k-spruce-60);
+    margin-left:3px;vertical-align:-1px;animation:caret 1s steps(2) infinite;border-radius:1px;
+  }
+  @keyframes caret{50%{opacity:0}}
+
+  /* ========= TOOL CALL CARD ========= */
+  .tcc{
+    border-radius:10px;padding:0;overflow:hidden;font-size:12.5px;
+  }
+  .tcc-head{
+    display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;
+    padding:10px 12px;border-bottom:1px solid rgba(15,23,42,.06);
+    cursor:pointer;
+  }
+  .tcc-icon{
+    width:24px;height:24px;border-radius:6px;background:var(--k-ai-spruce-12);
+    color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center;
+  }
+  .tcc-icon svg{width:13px;height:13px}
+  .tcc-title{font-weight:600;color:var(--fg-1);font-size:12.5px}
+  .tcc-title .tool{font-family:var(--font-mono);color:var(--k-spruce-70);font-weight:500}
+  .tcc-meta{font-size:10.5px;color:var(--fg-muted);margin-top:1px;font-family:var(--font-mono)}
+  .tcc-status{font-size:10.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+  .tcc-status .sd{width:6px;height:6px;border-radius:50%}
+  .tcc.running .tcc-status{color:var(--k-spruce-70)}
+  .tcc.running .tcc-status .sd{background:var(--k-spruce-60);animation:asb-pulse 1.4s ease-in-out infinite}
+  .tcc.ok .tcc-status{color:#0D5C2E}
+  .tcc.ok .tcc-status .sd{background:#10B981}
+  .tcc.err .tcc-status{color:#8A1E0D}
+  .tcc.err .tcc-status .sd{background:var(--k-warm-red-50)}
+  .tcc.pending .tcc-status{color:var(--fg-muted)}
+  .tcc.pending .tcc-status .sd{background:var(--fg-muted)}
+
+  .tcc-body{padding:10px 12px;background:rgba(248,250,252,.6);border-top:1px solid rgba(15,23,42,.04)}
+  .tcc-args{
+    font-family:var(--font-mono);font-size:11px;line-height:1.55;color:var(--fg-2);
+    background:#fff;border:1px solid var(--border-1);border-radius:5px;padding:8px 10px;
+    white-space:pre;overflow-x:auto;
+  }
+  .tcc-args .k{color:#8A4FBF}
+  .tcc-args .s{color:var(--k-warm-red-60)}
+  .tcc-args .n{color:var(--k-spruce-70)}
+  .tcc-args .editable{
+    border-bottom:1px dashed var(--k-spruce-60);
+    padding:0 1px;cursor:text;background:rgba(41,112,122,.06);
+  }
+  .tcc-actions{
+    display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center;
+  }
+  .tcc .btn{
+    height:24px;padding:0 9px;border:1px solid var(--border-1);background:#fff;
+    border-radius:4px;font-size:10.5px;font-weight:500;color:var(--fg-2);
+    cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;
+  }
+  .tcc .btn:hover{background:var(--bg-3)}
+  .tcc .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .tcc .btn.prim:hover{background:var(--k-spruce-70)}
+  .tcc .btn svg{width:10px;height:10px}
+  .tcc .gate{
+    margin-left:auto;font-size:10.5px;color:var(--fg-muted);font-family:var(--font-mono);
+  }
+
+  /* ========= HUMAN INPUT REQUEST ========= */
+  .hir{
+    border-radius:10px;padding:14px 16px;font-size:12.5px;
+    border:1px solid #F8DC8E;background:linear-gradient(180deg,#FEF7E6,#FEFCF3);
+  }
+  .hir-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .hir-head .glyph{
+    width:22px;height:22px;border-radius:50%;background:#FEF3C7;color:#7A4800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hir-head .glyph svg{width:12px;height:12px}
+  .hir-head .agent{font-size:11px;color:#7A4800;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .hir-head .ts{margin-left:auto;font-size:10.5px;color:var(--fg-muted);font-family:var(--font-mono)}
+  .hir-prompt{font-size:13px;line-height:1.55;color:var(--fg-1);margin:2px 0 8px;font-weight:500}
+  .hir-context{
+    font-size:11.5px;color:var(--fg-2);background:rgba(255,255,255,.7);
+    border:1px solid rgba(184,87,0,.15);border-radius:6px;padding:8px 10px;
+    line-height:1.55;
+  }
+  .hir-context b{color:var(--fg-1)}
+  .hir-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  .hir-actions .btn{
+    height:28px;padding:0 12px;border:1px solid var(--border-1);background:#fff;
+    border-radius:4px;font-size:11.5px;font-weight:500;color:var(--fg-1);
+    cursor:pointer;font-family:inherit;
+  }
+  .hir-actions .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .hir-actions .btn.prim:hover{background:var(--k-spruce-70)}
+  .hir-actions .blocking{
+    margin-left:auto;font-size:10.5px;color:#7A4800;font-family:var(--font-mono);
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .hir-actions .blocking::before{
+    content:"";width:6px;height:6px;border-radius:50%;background:#B45309;
+    animation:asb-pulse 1.4s ease-in-out infinite;
+  }
+
+  /* ========= STEP TIMELINE ========= */
+  .stl{font-size:12px}
+  .stl-step{
+    display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:start;
+    padding:6px 0;position:relative;
+  }
+  .stl-step .rail{
+    width:18px;display:flex;flex-direction:column;align-items:center;align-self:stretch;
+  }
+  .stl-step .marker{
+    width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--border-1);
+    flex-shrink:0;margin-top:2px;position:relative;z-index:1;
+  }
+  .stl-step:not(:last-child) .rail::after{
+    content:"";flex:1;width:2px;background:var(--border-1);margin-top:1px;min-height:6px;
+  }
+  .stl-step.done .marker{background:#10B981;border-color:#10B981}
+  .stl-step.done .marker::after{
+    content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/8px no-repeat;
+  }
+  .stl-step.done:not(:last-child) .rail::after{background:#10B981}
+  .stl-step.active .marker{
+    background:var(--k-spruce-60);border-color:var(--k-spruce-60);
+    animation:asb-pulse 1.4s ease-in-out infinite;
+  }
+  .stl-step.failed .marker{background:var(--k-warm-red-50);border-color:var(--k-warm-red-50)}
+  .stl-step.failed .marker::after{
+    content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>") center/8px no-repeat;
+  }
+  .stl-step .label{font-size:12px;color:var(--fg-1);font-weight:500;line-height:1.45;padding-top:1px}
+  .stl-step.pending .label{color:var(--fg-muted)}
+  .stl-step.active .label{color:var(--fg-1);font-weight:600}
+  .stl-step .sub{font-size:10.5px;color:var(--fg-muted);margin-top:2px;line-height:1.5}
+  .stl-step .ts{font-size:10.5px;color:var(--fg-muted);font-family:var(--font-mono);padding-top:2px}
+  .stl-step.active .ts{color:var(--k-spruce-70)}
+  .stl-step .approve{
+    margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:nowrap;
+  }
+  .stl-step .approve .btn{
+    height:22px;padding:0 8px;font-size:10.5px;font-weight:500;white-space:nowrap;
+    border:1px solid var(--border-1);border-radius:4px;background:#fff;cursor:pointer;font-family:inherit;
+  }
+  .stl-step .approve .btn.prim{background:var(--k-spruce-60);color:#fff;border:none}
+
+  /* ========= HANDOFF CARD ========= */
+  .hoc{
+    display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+    padding:12px 14px;border-radius:10px;font-size:12.5px;
+  }
+  .hoc-from,.hoc-to{
+    display:flex;flex-direction:column;align-items:center;gap:4px;min-width:88px;text-align:center;
+  }
+  .hoc-av{
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+  }
+  .hoc-av.agent{background:var(--k-ai-spruce-12);color:var(--k-spruce-70)}
+  .hoc-av.human{background:var(--k-ai-warm-red-12);color:var(--k-warm-red-60)}
+  .hoc-av.specialist{background:#EEF2FF;color:#4338CA}
+  .hoc-name{font-size:11px;font-weight:600;color:var(--fg-1);line-height:1.2}
+  .hoc-role{font-size:10px;color:var(--fg-muted);line-height:1.2}
+  .hoc-arrow{
+    flex:1;display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:120px;padding:0 8px;
+  }
+  .hoc-arrow .reason{
+    font-size:10.5px;color:var(--fg-muted);font-family:var(--font-mono);
+    text-transform:uppercase;letter-spacing:.06em;text-align:center;
+  }
+  .hoc-arrow .line{
+    width:100%;height:10px;display:block;
+  }
+  .hoc-arrow .line svg{width:100%;height:10px;display:block;overflow:visible}
+  .hoc-arrow .ctx{
+    font-size:11px;color:var(--fg-2);text-align:center;line-height:1.4;
+  }
+  .hoc-actions .btn{
+    height:26px;padding:0 10px;border:1px solid var(--border-1);background:#fff;
+    border-radius:4px;font-size:11px;font-weight:500;color:var(--fg-1);
+    cursor:pointer;font-family:inherit;
+  }
+  .hoc-actions .btn.prim{background:var(--k-spruce-60);color:#fff;border:none}
+
+  /* ========= STATE DELTA TOAST ========= */
+  .sdt{
+    display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+    padding:10px 14px;border-radius:10px;font-size:12.5px;
+    background:#fff;border:1px solid var(--border-1);
+    box-shadow:0 6px 20px rgba(15,23,42,.06);
+    max-width:520px;
+  }
+  .sdt .glyph{
+    width:24px;height:24px;border-radius:6px;background:var(--k-ai-spruce-12);
+    color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center;
+  }
+  .sdt .glyph svg{width:13px;height:13px}
+  .sdt .body{font-size:12.5px;color:var(--fg-1);line-height:1.5}
+  .sdt .body b{font-weight:600}
+  .sdt .diff{
+    margin-top:3px;font-family:var(--font-mono);font-size:11px;color:var(--fg-2);
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  }
+  .sdt .diff .from{color:var(--fg-muted);text-decoration:line-through;text-decoration-color:rgba(100,116,139,.4)}
+  .sdt .diff .arr{color:var(--fg-muted)}
+  .sdt .diff .to{color:#0D5C2E;font-weight:600}
+  .sdt .diff .to.warm{color:var(--k-warm-red-60)}
+  .sdt .actions{display:flex;gap:4px}
+  .sdt .actions .btn{
+    height:22px;padding:0 8px;border:none;background:transparent;
+    color:var(--k-spruce-60);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;border-radius:4px;
+  }
+  .sdt .actions .btn:hover{background:var(--k-ai-spruce-06)}
+
+  /* example layout helpers */
+  .demo-grid{display:flex;flex-direction:column;gap:10px}
+  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row-2.tight{gap:8px}
+</style>
+</head><body>
+
+<div class="wrap">
+
+  <!-- ========================== INTRO ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      Agentic interaction states
+    </div>
+    <h2>Agentic interaction states</h2>
+    <p class="sub">
+      Six primitives that surface what the agent is doing <em>right now</em> — thinking, calling tools, asking for input, walking through a plan, handing off, and updating shared state.
+      They complement the <em>post-hoc</em> agentic primitives (ConfidenceBadge, FreshnessBadge, etc.) that let users override decisions <em>after</em> the fact:
+      these new components let users <strong>pause, edit, approve, branch, and correct</strong> the agent <strong>during</strong> a run.
+    </p>
+    <div class="kicker">Visual contract</div>
+    <div class="specs">
+      <ul>
+        <li>All live agentic surfaces use the AI gradient border (<code>spruce-60 ↔ warm-red-50</code>, 28% α) on white — the same vocabulary as <code>ChatMessage</code> and <code>SnapshotCard</code>.</li>
+        <li>Activity is signalled by a single moving element: a pulsing dot (thinking), a streaming caret (response), an animated timeline marker (step active). No spinners, no progress bars except inside <code>StepTimeline</code> rows.</li>
+        <li>Every primitive ships with a <strong>step-through gate</strong>: the user can pause, edit args, approve individually, branch, or inject a correction without leaving the surface.</li>
+        <li>Audit-trail consequence: every interactive state, when actioned, writes to the <em>Learned from you</em> inbox via <code>preview/agentic.js</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== AGENT STATUS BAR ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <span class="ai-glyph"></span>
+      AgentStatusBar · 5 states
+    </div>
+    <h2>AgentStatusBar</h2>
+    <p class="sub">A persistent header above any agentic surface (chat, modal, side panel, DAG). Communicates the agent's current state in two lines: an animated dot, a verb, and a step counter — plus controls to pause/resume/cancel.</p>
+
+    <div class="demo-grid">
+      <div class="asb thinking ai-edge">
+        <span class="dot"></span>
+        <span class="label">Planning · gathering signals</span>
+        <span class="meta">step 2 of 6 · 4.2s</span>
+        <div class="controls">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>Pause</button>
+          <button class="btn danger">Cancel</button>
+        </div>
+      </div>
+
+      <div class="asb streaming ai-edge">
+        <span class="dot"></span>
+        <span class="label">Responding<span class="caret"></span></span>
+        <span class="meta">142 tokens · 18 t/s</span>
+        <div class="controls">
+          <button class="btn">Stop</button>
+          <button class="btn">Inject correction</button>
+        </div>
+      </div>
+
+      <div class="asb waiting">
+        <span class="dot"></span>
+        <span class="label">Waiting for you · approval required</span>
+        <span class="meta">on step 3 · drop-table impact</span>
+        <div class="controls">
+          <button class="btn">Skip step</button>
+          <button class="btn" style="background:#7A4800;color:#fff;border-color:#7A4800">Review</button>
+        </div>
+      </div>
+
+      <div class="asb paused">
+        <span class="dot"></span>
+        <span class="label">Paused by you</span>
+        <span class="meta">at 14:08:22 · 3 steps remaining</span>
+        <div class="controls">
+          <button class="btn">Discard</button>
+          <button class="btn" style="background:var(--k-spruce-60);color:#fff;border:none">Resume</button>
+        </div>
+      </div>
+
+      <div class="asb done">
+        <span class="dot"></span>
+        <span class="label">Done · 6 steps in 38s</span>
+        <span class="meta">2 tools · 1 handoff · 0 errors</span>
+        <div class="controls">
+          <button class="btn">View trace</button>
+          <button class="btn">Branch from end</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Always pinned to the top of the agentic surface — sticky on scroll. Never inline in the message stream.</li>
+        <li>State changes animate the dot, never the bar; the bar's chrome is stable so the user's eye doesn't jitter.</li>
+        <li><strong>Pause</strong> is universal — present on every active state, never replaced by Cancel.</li>
+        <li><strong>Branch from end</strong> on <code>.done</code> creates a fork in the conversation: same priors, new instructions.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== TOOL CALL CARD ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      ToolCallCard · 4 states
+    </div>
+    <h2>ToolCallCard</h2>
+    <p class="sub">Inline in the chat stream, between messages. Shows the tool the agent is about to invoke (or just invoked), with editable arguments, an approval gate, and a result preview.</p>
+
+    <div class="demo-grid">
+      <!-- PENDING — awaiting user approval -->
+      <div class="tcc pending ai-edge">
+        <div class="tcc-head">
+          <div class="tcc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+          <div>
+            <div class="tcc-title">About to call <span class="tool">cmdb.query</span></div>
+            <div class="tcc-meta">step 2 of 6 · ServiceNow read · ~80ms expected</div>
+          </div>
+          <div class="tcc-status"><span class="sd"></span>Awaiting approval</div>
+        </div>
+        <div class="tcc-body">
+          <div class="tcc-args"><span class="k">filter</span>: <span class="s">"status:orphaned AND domain:</span><span class="editable s">payments</span><span class="s">"</span>
+<span class="k">window</span>: <span class="editable s">"24h"</span>
+<span class="k">limit</span>: <span class="editable n">50</span></div>
+          <div class="tcc-actions">
+            <button class="btn prim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Approve &amp; run</button>
+            <button class="btn">Edit args</button>
+            <button class="btn">Skip</button>
+            <span class="gate">step-through mode · on</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RUNNING -->
+      <div class="tcc running ai-edge">
+        <div class="tcc-head">
+          <div class="tcc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+          <div>
+            <div class="tcc-title">Calling <span class="tool">graph.expand</span></div>
+            <div class="tcc-meta">step 3 of 6 · upstream-1 · 1.4s elapsed</div>
+          </div>
+          <div class="tcc-status"><span class="sd"></span>Running</div>
+        </div>
+      </div>
+
+      <!-- OK -->
+      <div class="tcc ok ai-edge">
+        <div class="tcc-head">
+          <div class="tcc-icon" style="background:#E0F2E8;color:#0D5C2E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div>
+            <div class="tcc-title">Returned <span class="tool">cmdb.query</span> · 22 rows</div>
+            <div class="tcc-meta">230ms · 22 orphaned CIs · expand to view payload</div>
+          </div>
+          <div class="tcc-status"><span class="sd"></span>OK · used in step 4</div>
+        </div>
+      </div>
+
+      <!-- ERR -->
+      <div class="tcc err ai-edge">
+        <div class="tcc-head">
+          <div class="tcc-icon" style="background:#FDE7E2;color:#8A1E0D"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div>
+            <div class="tcc-title"><span class="tool">graph.write</span> · permission denied</div>
+            <div class="tcc-meta">role <code style="font-size:10px">access.requestor</code> can read but not mutate the graph</div>
+          </div>
+          <div class="tcc-status"><span class="sd"></span>Error</div>
+        </div>
+        <div class="tcc-body">
+          <div class="tcc-actions">
+            <button class="btn">Retry as reviewer</button>
+            <button class="btn">Hand off to admin</button>
+            <button class="btn">Branch · readonly</button>
+            <span class="gate">retry budget · 2 of 3 left</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>The <strong>tool name is monospaced</strong> and reads like a function — <code>cmdb.query</code>, <code>graph.expand</code>, <code>incident.create</code>. Always <code>namespace.verb</code>, never free text.</li>
+        <li>Args are <strong>editable in place</strong> (dashed underline) when the card is in <code>pending</code>. Edits trigger a rationale prompt before re-arming.</li>
+        <li>Step-through mode is a session toggle on the AgentStatusBar — when off, only destructive tools surface a <code>pending</code> card; reads run silently and collapse to the <code>ok</code> state.</li>
+        <li>Result rows collapse by default; click the title to expand. Long payloads paginate at 200 lines with <em>"Show in inspector"</em>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== HUMAN INPUT REQUEST ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      HumanInputRequest · blocking
+    </div>
+    <h2>HumanInputRequest</h2>
+    <p class="sub">When the agent must stop and ask a question to proceed. Inline in the message stream, amber-tinted to break the AI gradient pattern — this is intentionally <em>not</em> just another bubble.</p>
+
+    <div class="demo-grid">
+      <div class="hir">
+        <div class="hir-head">
+          <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          <span class="agent">Reconciliation Agent · needs your call</span>
+          <span class="ts">14:08:22</span>
+        </div>
+        <p class="hir-prompt">The orphan has two plausible owners. Which one should I assign?</p>
+        <div class="hir-context">
+          CI <code>web-gateway-02</code> (payments-svc) was last touched by <b>A. Ortiz</b> on 12-Mar (deploy) and <b>K. Patel</b> on 14-Mar (config). The deploy edit is structural, the config edit is cosmetic — but the recency rule would pick K. Patel.
+        </div>
+        <div class="hir-actions">
+          <button class="btn">Assign to A. Ortiz (structural)</button>
+          <button class="btn">Assign to K. Patel (recency)</button>
+          <button class="btn">Leave unassigned · escalate</button>
+          <span class="blocking">blocking · agent paused</span>
+        </div>
+      </div>
+
+      <div class="hir">
+        <div class="hir-head">
+          <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          <span class="agent">Triage Agent · confirmation</span>
+          <span class="ts">14:09:01</span>
+        </div>
+        <p class="hir-prompt">I'm about to retire 47 CIs. The blast radius extends past your usual threshold — should I proceed?</p>
+        <div class="hir-context">
+          Threshold: <b>≤ 25 CIs / batch</b>. This batch: <b>47 CIs</b> across <b>4 BUs</b>. Past 30 days you've approved 3 batches over threshold (avg 38) — none rolled back.
+        </div>
+        <div class="hir-actions">
+          <button class="btn prim">Proceed (47)</button>
+          <button class="btn">Split into 2 batches</button>
+          <button class="btn">Lower threshold &amp; cancel</button>
+          <span class="blocking">blocking · 14m at this prompt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>HIRs <strong>break the visual rhythm on purpose</strong> — amber surface, never the AI gradient. The user's eye must catch it on a long scroll.</li>
+        <li>Always carry: a one-line question, a 2–3 sentence context block with named priors, and 2–4 named choices. Never <em>"Yes / No"</em> alone.</li>
+        <li><strong>Blocking</strong> indicator pulses while the prompt is open. The AgentStatusBar above flips to <code>waiting</code>.</li>
+        <li>Choosing an option records the rationale; the agent uses it as a teaching signal for similar future moments (writes to <em>Learned from you</em>).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== STEP TIMELINE ========================== -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      StepTimeline · live
+    </div>
+    <h2>StepTimeline</h2>
+    <p class="sub">A stepped plan rendered live as the agent walks it. Right-rail companion to chat; also embeds inline in the execution composite.</p>
+
+    <div class="stl">
+      <div class="stl-step done">
+        <div class="rail"><div class="marker"></div></div>
+        <div>
+          <div class="label">Identified 22 orphans in payments-svc</div>
+          <div class="sub">via <code>cmdb.query</code> · 230ms · 22 rows</div>
+        </div>
+        <span class="ts">+0.4s</span>
+      </div>
+      <div class="stl-step done">
+        <div class="rail"><div class="marker"></div></div>
+        <div>
+          <div class="label">Expanded upstream graph</div>
+          <div class="sub">via <code>graph.expand</code> · 1 affected app · checkout-api</div>
+        </div>
+        <span class="ts">+1.8s</span>
+      </div>
+      <div class="stl-step active">
+        <div class="rail"><div class="marker"></div></div>
+        <div>
+          <div class="label">Inferring most likely owners</div>
+          <div class="sub">cross-checking 12-week commit + deploy history</div>
+          <div class="approve">
+            <button class="btn">Edit step</button>
+            <button class="btn">Approve once</button>
+            <button class="btn prim">Approve all</button>
+          </div>
+        </div>
+        <span class="ts">running…</span>
+      </div>
+      <div class="stl-step pending">
+        <div class="rail"><div class="marker"></div></div>
+        <div>
+          <div class="label">Draft owner-assignment plan</div>
+          <div class="sub">requires approval before write</div>
+        </div>
+        <span class="ts">queued</span>
+      </div>
+      <div class="stl-step pending">
+        <div class="rail"><div class="marker"></div></div>
+        <div>
+          <div class="label">Notify owners and open correction request</div>
+          <div class="sub">writes to <code>graph</code>, sends 1 email</div>
+        </div>
+        <span class="ts">queued</span>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Active marker pulses spruce; done is solid green; failed is solid warm-red with an ✕. Never use color alone — every state pairs with a glyph.</li>
+        <li>The <strong>active step</strong> reveals row-level controls (Edit · Approve once · Approve all). Other rows are read-only.</li>
+        <li>"Approve all" disengages step-through mode for the rest of the run; flips the AgentStatusBar to <code>thinking</code>/<code>streaming</code> with no further gates.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== HANDOFF CARD ========================== -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      HandoffCard · 2 patterns
+    </div>
+    <h2>HandoffCard</h2>
+    <p class="sub">Marks the moment one agent passes work to another agent or to a human. Inline in chat, between messages.</p>
+
+    <div class="demo-grid">
+      <!-- agent → specialist agent -->
+      <div class="hoc ai-edge">
+        <div class="hoc-from">
+          <div class="hoc-av agent"><span class="ai-glyph"></span></div>
+          <div class="hoc-name">Triage</div>
+          <div class="hoc-role">general agent</div>
+        </div>
+        <div class="hoc-arrow">
+          <span class="reason">Handing off · needs SQL skill</span>
+          <div class="line"><svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="5" x2="194" y2="5" stroke="#475569" stroke-width="1" vector-effect="non-scaling-stroke"/><polyline points="189,1 194,5 189,9" fill="none" stroke="#475569" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>
+          <span class="ctx">Carrying: 22 orphan CI list · payments-svc context · user threshold ≤ 25</span>
+        </div>
+        <div class="hoc-to">
+          <div class="hoc-av specialist">RA</div>
+          <div class="hoc-name">Reconciliation</div>
+          <div class="hoc-role">specialist agent</div>
+        </div>
+      </div>
+
+      <!-- agent → human -->
+      <div class="hoc ai-edge">
+        <div class="hoc-from">
+          <div class="hoc-av agent"><span class="ai-glyph"></span></div>
+          <div class="hoc-name">Reconciliation</div>
+          <div class="hoc-role">specialist agent</div>
+        </div>
+        <div class="hoc-arrow">
+          <span class="reason">Handing back · review needed</span>
+          <div class="line"><svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="5" x2="194" y2="5" stroke="#475569" stroke-width="1" vector-effect="non-scaling-stroke"/><polyline points="189,1 194,5 189,9" fill="none" stroke="#475569" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>
+          <span class="ctx">Plan ready · 47 retire actions · over batch threshold · awaiting your sign-off</span>
+        </div>
+        <div class="hoc-to">
+          <div class="hoc-av human">DA</div>
+          <div class="hoc-name">D. Aaron</div>
+          <div class="hoc-role">CMDB owner</div>
+        </div>
+      </div>
+
+      <div class="hoc-actions" style="display:flex;gap:6px;justify-content:flex-end">
+        <button class="btn" style="height:26px;padding:0 10px;border:1px solid var(--border-1);background:#fff;border-radius:4px;font-size:11px;font-weight:500;color:var(--fg-1);cursor:pointer;font-family:inherit">View handoff trace</button>
+        <button class="btn prim" style="height:26px;padding:0 10px;background:var(--k-spruce-60);color:#fff;border:none;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit">Accept &amp; continue</button>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Always two-sided. Left = origin, right = recipient. Both nodes show identity (avatar) and role (function).</li>
+        <li>The <strong>reason chip</strong> is required and must name a capability — <em>"needs SQL skill"</em>, <em>"review needed"</em>, <em>"out-of-policy escalation"</em>.</li>
+        <li>The <strong>carrying ctx</strong> line lists the priors travelling with the handoff. Click to inspect the full state envelope.</li>
+        <li>Agent → Human handoffs flip the AgentStatusBar to <code>waiting</code>; Agent → Agent handoffs keep it <code>thinking</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== STATE DELTA TOAST ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      StateDeltaToast · ambient updates
+    </div>
+    <h2>StateDeltaToast</h2>
+    <p class="sub">Passive notification surfacing when the agent updates a value the user can see elsewhere on the screen. Bottom-left, non-blocking, dismissable. Always shows the diff inline.</p>
+
+    <div class="row-2">
+      <div class="sdt">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div class="body">
+          Agent updated <b>payments-svc owner</b>
+          <div class="diff">
+            <span class="from">unassigned</span>
+            <span class="arr">→</span>
+            <span class="to">A. Ortiz</span>
+            <span style="color:var(--fg-muted)">· confidence 0.78</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn">Undo</button>
+          <button class="btn">Why?</button>
+        </div>
+      </div>
+
+      <div class="sdt">
+        <div class="glyph" style="background:var(--k-ai-warm-red-12);color:var(--k-warm-red-60)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 12 10 16 18 8"/></svg></div>
+        <div class="body">
+          Trust score <b>recomputed</b>
+          <div class="diff">
+            <span class="from">62%</span>
+            <span class="arr">→</span>
+            <span class="to warm">58%</span>
+            <span style="color:var(--fg-muted)">· payments domain</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn">Why?</button>
+          <button class="btn">Open</button>
+        </div>
+      </div>
+
+      <div class="sdt">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        <div class="body">
+          Filter applied · <b>severity ≥ Warning</b>
+          <div class="diff">
+            <span class="from">312 rows</span>
+            <span class="arr">→</span>
+            <span class="to">94 rows</span>
+            <span style="color:var(--fg-muted)">· per your earlier instruction</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn">Undo</button>
+        </div>
+      </div>
+
+      <div class="sdt">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="body">
+          Threshold suggestion · <b>stale window</b>
+          <div class="diff">
+            <span class="from">24h</span>
+            <span class="arr">→</span>
+            <span class="to">72h</span>
+            <span style="color:var(--fg-muted)">· proposed, not applied</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn">Apply</button>
+          <button class="btn">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Toasts <strong>always carry the diff</strong> (<code>from → to</code>). Never just <em>"Updated owner"</em> — show the actual values.</li>
+        <li>Auto-dismiss at 5s for non-destructive deltas; sticky for proposed deltas (<em>"not applied"</em>) until the user accepts or dismisses.</li>
+        <li>Stack vertically, max 3 visible. Older toasts collapse into a single <em>"+ 4 more"</em> chip.</li>
+        <li>Every toast is also written to <em>Learned from you</em> — the toast is ephemeral, the audit row is permanent.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== EVENT MAP ========================== -->
+  <section class="card full">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      Mapping
+    </div>
+    <h2>Which primitive renders which agent event</h2>
+    <div class="specs" style="margin-top:4px">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="text-align:left;color:var(--fg-muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border-1)">
+            <th style="padding:8px 6px;font-weight:700">Agent event</th>
+            <th style="padding:8px 6px;font-weight:700">Primitive</th>
+            <th style="padding:8px 6px;font-weight:700">Surface</th>
+            <th style="padding:8px 6px;font-weight:700">Blocking?</th>
+          </tr>
+        </thead>
+        <tbody style="font-family:var(--font-mono);font-size:11.5px">
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>run.started</code> / <code>run.thinking</code></td><td style="padding:8px 6px">AgentStatusBar · <em>thinking</em></td><td style="padding:8px 6px;font-family:var(--font-sans)">Top of surface</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>step.started</code> / <code>step.completed</code></td><td style="padding:8px 6px">StepTimeline row</td><td style="padding:8px 6px;font-family:var(--font-sans)">Right rail or inline</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>tool.requested</code></td><td style="padding:8px 6px">ToolCallCard · <em>pending</em></td><td style="padding:8px 6px;font-family:var(--font-sans)">Inline in stream</td><td style="padding:8px 6px;font-family:var(--font-sans)"><b>Yes (step-through on)</b></td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>tool.executing</code> / <code>tool.completed</code></td><td style="padding:8px 6px">ToolCallCard · <em>running / ok / err</em></td><td style="padding:8px 6px;font-family:var(--font-sans)">Inline in stream</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>response.streaming</code></td><td style="padding:8px 6px">AgentStatusBar · <em>streaming</em> + ChatMessage</td><td style="padding:8px 6px;font-family:var(--font-sans)">Top + stream</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>input.required</code></td><td style="padding:8px 6px">HumanInputRequest</td><td style="padding:8px 6px;font-family:var(--font-sans)">Inline in stream</td><td style="padding:8px 6px;font-family:var(--font-sans)"><b>Yes</b></td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>handoff.dispatched</code> / <code>handoff.received</code></td><td style="padding:8px 6px">HandoffCard</td><td style="padding:8px 6px;font-family:var(--font-sans)">Inline in stream</td><td style="padding:8px 6px;font-family:var(--font-sans)">Sometimes (→ human)</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>state.delta</code></td><td style="padding:8px 6px">StateDeltaToast</td><td style="padding:8px 6px;font-family:var(--font-sans)">Bottom-left ambient</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr style="border-bottom:1px solid var(--bg-3)"><td style="padding:8px 6px"><code>run.paused</code> (by user)</td><td style="padding:8px 6px">AgentStatusBar · <em>paused</em></td><td style="padding:8px 6px;font-family:var(--font-sans)">Top</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+          <tr><td style="padding:8px 6px"><code>run.completed</code> / <code>run.failed</code></td><td style="padding:8px 6px">AgentStatusBar · <em>done</em> + ExecutionTimeline</td><td style="padding:8px 6px;font-family:var(--font-sans)">Top + stream</td><td style="padding:8px 6px;font-family:var(--font-sans)">No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</body></html>

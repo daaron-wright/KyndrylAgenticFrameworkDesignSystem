@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:20px;background:#F2F4F5;font-family:var(--font-sans)}
+.card{max-width:640px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:16px}
+.head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.head h3{margin:0;font-size:13px;font-weight:600}
+.head .lbl{font-size:10px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.rows{display:flex;flex-direction:column;gap:2px}
+.r{display:grid;grid-template-columns:120px 1fr 60px;align-items:center;gap:12px;padding:6px 0}
+.name{font-size:11px;color:var(--fg-2);display:flex;align-items:center;gap:6px}
+.name i{width:8px;height:8px;border-radius:2px}
+.bar{height:18px;background:#F1F5F9;border-radius:4px;position:relative;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:#29707A;border-radius:4px;display:flex;align-items:center;padding-left:8px;color:#fff;font-size:10px;font-weight:600;font-variant-numeric:tabular-nums}
+.v{font-size:12px;font-weight:600;color:var(--fg-1);text-align:right;font-variant-numeric:tabular-nums}
+.tot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border-1);display:flex;justify-content:space-between;align-items:center}
+.tot b{font-size:14px;font-weight:600;color:var(--fg-1)}
+.tot span{font-size:11px;color:var(--fg-muted)}
+</style></head><body>
+<div class="card">
+  <div class="head"><h3>Impact rollup · before action</h3><span class="lbl">Blast radius</span></div>
+  <div class="rows">
+    <div class="r"><span class="name"><i style="background:#29707A"></i>CIs</span><div class="bar"><div class="fill" style="width:88%">47</div></div><span class="v">47</span></div>
+    <div class="r"><span class="name"><i style="background:#5BA2AE"></i>Applications</span><div class="bar"><div class="fill" style="background:#5BA2AE;width:28%">3</div></div><span class="v">3</span></div>
+    <div class="r"><span class="name"><i style="background:#91C4CC"></i>Processes</span><div class="bar"><div class="fill" style="background:#91C4CC;width:18%">2</div></div><span class="v">2</span></div>
+    <div class="r"><span class="name"><i style="background:#3D8590"></i>Business units</span><div class="bar"><div class="fill" style="background:#3D8590;width:10%">1</div></div><span class="v">1</span></div>
+    <div class="r"><span class="name"><i style="background:#334155"></i>Domains</span><div class="bar"><div class="fill" style="background:#334155;width:10%">1</div></div><span class="v">1</span></div>
+  </div>
+  <div class="tot"><b>Total impact footprint · 54 items</b><span>Embeddable before every Execute</span></div>
+</div>
+</body></html>

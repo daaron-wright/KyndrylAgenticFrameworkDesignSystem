@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shidoka — Component Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<script src="../../assets/icons/ki.js" defer></script>
+<style>
+/* ------------------------------------------------------------------
+   Shidoka Component Kit
+   A faithful recreation of shidoka-applications primitives using
+   the token set in colors_and_type.css.  Pure HTML + CSS — no Lit —
+   so it doubles as a visual reference for designers.
+   ------------------------------------------------------------------ */
+:root{
+  --kd-color-background-page-default: var(--bg-2, #F1F5F9);
+  --kd-color-background-container-default: #FFFFFF;
+  --kd-color-background-opacity-1: rgba(15,23,42,.04);
+  --kd-color-text-level-primary: var(--fg-1, #0F172A);
+  --kd-color-text-level-secondary: var(--fg-2, #334155);
+  --kd-color-text-level-tertiary: var(--fg-muted, #64748B);
+  --kd-color-text-link-level-default: var(--kyn-primary, #29707A);
+  --kd-color-text-link-level-hover: #1F5860;
+  --kd-color-text-button-dark-primary: #FFFFFF;
+  --kd-color-border-level-tertiary: #CBD5E1;
+  --kd-color-border-variants-light: #E2E8F0;
+  --kd-color-border-variants-focus: #29707A;
+  --kd-color-border-forms-default: #94A3B8;
+  --kd-color-border-ui-hover: #475569;
+  --kd-color-icon-primary: var(--fg-1, #0F172A);
+  --kd-color-icon-secondary: var(--fg-2, #334155);
+  --kd-color-icon-accent: var(--kyn-accent, #FF462D);
+  --kd-color-icon-disabled: #CBD5E1;
+  --kd-color-icon-destructive: #B91C1C;
+  --kd-color-status-success-dark: #047857;
+  --kd-color-status-warning-dark: #B45309;
+  --kd-color-status-error-dark: #B91C1C;
+  --kd-color-background-loader-bar-primary: #29707A;
+  --kd-color-background-loader-bar-secondary: #E2E8F0;
+  --kd-color-background-button-primary-state-default: #29707A;
+  --kd-color-background-button-primary-state-hover: #1F5860;
+  --kd-color-background-button-primary-state-pressed: #184A51;
+  --kd-color-background-button-secondary-state-default: #0F172A;
+  --kd-color-background-button-secondary-state-hover: #1F2937;
+  --kd-color-background-ai-default: linear-gradient(135deg,#29707A 0%,#FF462D 100%);
+  --kd-color-opacity-ai-warm-red-90: #FF462D;
+  --kd-color-background-menu-state-default: #FFFFFF;
+  --kd-color-background-menu-state-hover: rgba(15,23,42,.06);
+  --kd-color-background-menu-state-open: rgba(41,112,122,.08);
+  --kd-color-badge-success-bg: #D1FAE5;
+  --kd-color-badge-success-fg: #065F46;
+  --kd-color-badge-warn-bg:  #FEF3C7;
+  --kd-color-badge-warn-fg:  #92400E;
+  --kd-color-badge-err-bg:   #FEE2E2;
+  --kd-color-badge-err-fg:   #991B1B;
+  --kd-color-badge-info-bg:  #E0F2FE;
+  --kd-color-badge-info-fg:  #075985;
+
+  --kd-header-height: 56px;
+  --kd-header-reserved-space: 64px;
+  --kd-page-gutter: 16px;
+  --kd-z-header: 100;
+  --shadow-1: 0 1px 2px rgba(15,23,42,.05), 0 1px 3px rgba(15,23,42,.06);
+  --shadow-2: 0 4px 12px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.05);
+  --shadow-pop: 0 1px 2px rgba(15,23,42,.12), 0 4px 12px rgba(15,23,42,.08);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--kd-color-background-page-default);
+  color:var(--kd-color-text-level-primary);
+  font-family:var(--font-sans, 'Roboto', system-ui, sans-serif);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ------- Header (kyn-header) ------- */
+.kyn-header{
+  position:fixed; top:0; left:0; right:0;
+  height:var(--kd-header-height);
+  padding:4px 16px 4px 20px;
+  margin:8px;
+  display:flex; align-items:center; gap:24px;
+  background:#fff;
+  border-radius:8px;
+  box-shadow:var(--shadow-1);
+  z-index:var(--kd-z-header);
+}
+.kyn-header__logo{display:inline-flex;align-items:center;text-decoration:none;color:var(--kd-color-text-level-primary)}
+.kyn-header__logo img{height:20px;width:auto}
+.kyn-header__title{
+  font-family:'TWK Everett','TWKEverett',system-ui,sans-serif;
+  font-weight:300; font-size:16px;
+  padding-left:16px; border-left:1px solid var(--kd-color-border-level-tertiary);
+  color:var(--kd-color-text-level-primary);
+}
+.kyn-header__right{margin-left:auto; display:flex; align-items:center; gap:4px}
+.kyn-header__nav{display:flex; align-items:center; gap:4px; margin-left:16px}
+.kyn-nav-link{
+  font-size:14px; color:var(--kd-color-text-level-primary); text-decoration:none;
+  padding:6px 12px; border-radius:4px; font-weight:400;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:background-color 150ms ease-out, color 150ms ease-out;
+}
+.kyn-nav-link:hover{background:var(--kd-color-background-menu-state-hover); color:var(--kd-color-text-button-dark-primary); background-color:#0F172A; }
+.kyn-nav-link.is-active{background:var(--kd-color-background-menu-state-open); font-weight:500;}
+.kyn-header__icon-btn{
+  width:36px; height:36px; border-radius:4px; background:transparent; border:0;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--kd-color-icon-primary); cursor:pointer;
+  transition:background-color 150ms;
+}
+.kyn-header__icon-btn:hover{background:var(--kd-color-background-menu-state-hover)}
+.kyn-header__icon-btn svg{width:20px;height:20px}
+.kyn-avatar{
+  width:32px; height:32px; border-radius:50%;
+  background:#29707A; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:500; cursor:pointer;
+}
+
+/* ------- Layout ------- */
+.layout{
+  padding-top:var(--kd-header-reserved-space);
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:16px;
+  padding-left:16px; padding-right:16px; padding-bottom:40px;
+  max-width:1600px; margin:0 auto;
+}
+.sidenav{
+  background:#fff;
+  border-radius:8px;
+  box-shadow:var(--shadow-1);
+  padding:12px;
+  height:fit-content;
+  position:sticky; top:calc(var(--kd-header-reserved-space) + 8px);
+}
+.sidenav h4{
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--kd-color-text-level-tertiary); margin:12px 8px 4px;
+  font-weight:600;
+}
+.sidenav h4:first-child{margin-top:4px}
+.sidenav a{
+  display:block; font-size:13px; padding:6px 10px; border-radius:4px;
+  color:var(--kd-color-text-level-primary); text-decoration:none;
+  transition:background-color 120ms;
+}
+.sidenav a:hover{background:var(--kd-color-background-menu-state-hover)}
+.sidenav a.is-active{background:var(--kd-color-background-menu-state-open); font-weight:500}
+
+main{min-width:0}
+section.kit-section{
+  background:#fff;
+  border-radius:8px;
+  padding:24px;
+  box-shadow:var(--shadow-1);
+  margin-bottom:16px;
+}
+section.kit-section > header{
+  padding-bottom:12px; margin-bottom:20px;
+  border-bottom:1px solid var(--kd-color-border-variants-light);
+}
+section.kit-section > header h2{
+  font-family:'TWK Everett','TWKEverett',system-ui,sans-serif;
+  font-weight:300; font-size:22px; letter-spacing:-.005em; margin:0 0 2px;
+  color:var(--kd-color-text-level-primary);
+}
+section.kit-section > header p{margin:0; color:var(--kd-color-text-level-tertiary); font-size:13px}
+.subsec{margin-bottom:24px}
+.subsec:last-child{margin-bottom:0}
+.subsec h3{
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--kd-color-text-level-tertiary);
+  margin:0 0 12px; padding-bottom:6px;
+  border-bottom:1px dashed var(--kd-color-border-variants-light);
+}
+.demo-row{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:16px}
+.demo-row:last-child{margin-bottom:0}
+.demo-col{display:flex; flex-direction:column; gap:12px; margin-bottom:16px}
+.demo-grid{display:grid; gap:16px}
+.demo-label{
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--kd-color-text-level-tertiary); font-weight:600;
+  margin-bottom:6px;
+}
+
+/* ===================================================================
+   BUTTONS  (kyn-button)
+   =================================================================== */
+.kyn-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  height:48px; padding:0 24px;
+  font:500 16px/24px var(--font-sans, 'Roboto', sans-serif);
+  letter-spacing:.02em;
+  border-radius:4px; border:1px solid transparent;
+  cursor:pointer; text-decoration:none;
+  transition:background-color 150ms, color 150ms, border-color 150ms;
+  position:relative;
+}
+.kyn-btn:focus-visible{outline:2px solid var(--kd-color-border-variants-focus); outline-offset:2px}
+.kyn-btn--size-sm{height:32px; padding:0 16px; font-size:14px}
+.kyn-btn--size-md{height:42px; padding:0 20px; font-size:14px}
+.kyn-btn--size-lg{height:48px; padding:0 24px; font-size:16px}
+
+.kyn-btn--primary{background:var(--kd-color-background-button-primary-state-default); color:#fff}
+.kyn-btn--primary:hover{background:var(--kd-color-background-button-primary-state-hover)}
+.kyn-btn--primary:active{background:var(--kd-color-background-button-primary-state-pressed)}
+.kyn-btn--primary[disabled]{background:#CBD5E1; color:#fff; cursor:not-allowed}
+
+.kyn-btn--secondary{background:var(--kd-color-background-button-secondary-state-default); color:#fff}
+.kyn-btn--secondary:hover{background:var(--kd-color-background-button-secondary-state-hover)}
+
+.kyn-btn--tertiary{background:transparent; color:var(--kd-color-text-level-primary); border-color:var(--kd-color-text-level-primary)}
+.kyn-btn--tertiary:hover{background:#0F172A; color:#fff}
+
+.kyn-btn--ghost{background:transparent; color:var(--kd-color-text-level-primary)}
+.kyn-btn--ghost:hover{background:var(--kd-color-background-menu-state-hover)}
+
+.kyn-btn--destructive{background:#B91C1C; color:#fff}
+.kyn-btn--destructive:hover{background:#991B1B}
+
+.kyn-btn--outline-destructive{background:transparent; color:#B91C1C; border-color:#B91C1C}
+.kyn-btn--outline-destructive:hover{background:#B91C1C; color:#fff}
+
+.kyn-btn--ai{
+  color:#fff;
+  background:linear-gradient(135deg,#29707A 0%,#FF462D 100%);
+  border:1px solid transparent;
+}
+.kyn-btn--ai:hover{filter:brightness(1.08)}
+
+.kyn-btn svg{width:16px; height:16px; flex-shrink:0}
+.kyn-btn--size-lg svg{width:18px; height:18px}
+
+.kyn-btn--icon-only{padding:0; width:42px}
+.kyn-btn--icon-only.kyn-btn--size-sm{width:32px}
+.kyn-btn--icon-only.kyn-btn--size-lg{width:48px}
+
+/* ===================================================================
+   FORM INPUTS
+   =================================================================== */
+.kyn-field{display:flex; flex-direction:column; gap:6px}
+.kyn-label{font-size:14px; font-weight:400; color:var(--kd-color-text-level-primary)}
+.kyn-label .req{color:#B91C1C; margin-left:2px}
+.kyn-caption{font-size:12px; color:var(--kd-color-text-level-secondary)}
+.kyn-error{font-size:12px; color:#B91C1C; display:inline-flex; align-items:center; gap:4px}
+.kyn-input{
+  height:48px; padding:0 16px;
+  font:400 16px/24px var(--font-sans, 'Roboto', sans-serif);
+  border:1px solid var(--kd-color-border-forms-default);
+  border-radius:4px;
+  background:#fff;
+  color:var(--kd-color-text-level-primary);
+  transition:border-color 150ms, outline-color 150ms;
+  outline:2px solid transparent; outline-offset:0;
+}
+.kyn-input:hover:not(:disabled):not([readonly]){border-color:var(--kd-color-border-ui-hover)}
+.kyn-input:focus-visible{outline-color:var(--kd-color-border-variants-focus); border-color:transparent}
+.kyn-input::placeholder{color:#94A3B8}
+.kyn-input[disabled]{background:#F8FAFC; color:#94A3B8; cursor:not-allowed}
+.kyn-input[invalid]{border-color:#B91C1C}
+.kyn-input--sm{height:32px; font-size:14px}
+.kyn-input--lg{height:56px}
+
+.kyn-input-wrap{position:relative; display:flex; align-items:center}
+.kyn-input-wrap .icon{position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--kd-color-icon-secondary); pointer-events:none; display:flex}
+.kyn-input-wrap .icon svg{width:16px;height:16px}
+.kyn-input-wrap input.has-icon{padding-left:44px}
+.kyn-input-wrap .clear{position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:0; width:24px; height:24px; border-radius:4px; color:var(--kd-color-icon-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center}
+.kyn-input-wrap .clear:hover{background:var(--kd-color-background-menu-state-hover)}
+
+textarea.kyn-input{height:auto; min-height:96px; padding:12px 16px; resize:vertical; line-height:20px}
+
+/* Checkbox */
+.kyn-check{display:inline-flex; align-items:flex-start; gap:10px; cursor:pointer; user-select:none; font-size:14px}
+.kyn-check input{
+  appearance:none; width:16px; height:16px; flex-shrink:0;
+  border:2px solid var(--kd-color-icon-primary); border-radius:2px;
+  background:#fff; margin-top:3px; display:inline-flex; align-items:center; justify-content:center;
+  transition:background 150ms, border-color 150ms;
+  position:relative;
+}
+.kyn-check input:hover{background:#F8FAFC; border-color:var(--kd-color-border-ui-hover)}
+.kyn-check input:checked{background:#0F172A; border-color:transparent}
+.kyn-check input:checked::after{content:""; position:absolute; left:2px; top:0px; width:9px; height:7px; border-right:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(45deg)}
+.kyn-check input:focus-visible{outline:2px solid var(--kd-color-border-variants-focus); outline-offset:2px}
+.kyn-check input:indeterminate{background:#0F172A; border-color:transparent}
+.kyn-check input:indeterminate::after{content:""; position:absolute; left:1.5px; top:5px; width:9px; height:2px; background:#fff}
+.kyn-check input[disabled]{border-color:var(--kd-color-icon-disabled); background:transparent; cursor:not-allowed}
+.kyn-check input[disabled]:checked{background:var(--kd-color-icon-disabled)}
+
+/* Radio */
+.kyn-radio{display:inline-flex; align-items:flex-start; gap:10px; cursor:pointer; user-select:none; font-size:14px}
+.kyn-radio input{
+  appearance:none; width:18px; height:18px; flex-shrink:0;
+  border:2px solid var(--kd-color-icon-primary); border-radius:50%;
+  background:#fff; margin-top:1px; position:relative;
+  transition:background 150ms, border-color 150ms;
+}
+.kyn-radio input:hover{background:#F8FAFC; border-color:var(--kd-color-border-ui-hover)}
+.kyn-radio input:checked{border-width:3px}
+.kyn-radio input:checked::after{content:""; position:absolute; inset:2px; border-radius:50%; background:var(--kd-color-icon-primary)}
+.kyn-radio input:focus-visible{outline:2px solid var(--kd-color-border-variants-focus); outline-offset:2px}
+.kyn-radio input[disabled]{border-color:var(--kd-color-icon-disabled); background:transparent; cursor:not-allowed}
+
+/* Toggle */
+.kyn-toggle{display:inline-flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; user-select:none}
+.kyn-toggle input{appearance:none; width:38px; height:20px; border-radius:9999px; background:#94A3B8; position:relative; cursor:pointer; transition:background 150ms}
+.kyn-toggle input::after{content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:transform 150ms}
+.kyn-toggle input:checked{background:var(--kd-color-background-button-primary-state-default)}
+.kyn-toggle input:checked::after{transform:translateX(18px)}
+.kyn-toggle input:focus-visible{outline:2px solid var(--kd-color-border-variants-focus); outline-offset:2px}
+
+/* ===================================================================
+   DROPDOWN / SELECT
+   =================================================================== */
+.kyn-dropdown{position:relative; display:inline-flex; flex-direction:column; min-width:240px}
+.kyn-select{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  height:48px; padding:0 16px;
+  border:1px solid var(--kd-color-border-forms-default); border-radius:4px;
+  background:#fff; color:var(--kd-color-text-level-primary); font-size:16px;
+  cursor:pointer;
+  transition:border-color 150ms;
+}
+.kyn-select:hover{border-color:var(--kd-color-border-ui-hover)}
+.kyn-select[aria-expanded="true"]{outline:2px solid var(--kd-color-border-variants-focus); border-color:transparent}
+.kyn-select .arrow{transition:transform 150ms; color:var(--kd-color-icon-secondary)}
+.kyn-select[aria-expanded="true"] .arrow{transform:rotate(180deg)}
+.kyn-select .placeholder{color:#94A3B8}
+.kyn-options{
+  list-style:none; margin:4px 0 0; padding:6px 0;
+  background:#fff; border-radius:4px;
+  box-shadow:var(--shadow-2);
+  max-height:280px; overflow-y:auto;
+  opacity:1; transform:scaleY(1); transform-origin:top;
+  position:absolute; top:100%; left:0; right:0; z-index:20;
+}
+.kyn-options[hidden]{display:none}
+.kyn-options li{
+  padding:8px 16px; font-size:14px;
+  color:var(--kd-color-text-level-primary); cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  transition:background-color 120ms;
+}
+.kyn-options li:hover{background:var(--kd-color-background-menu-state-hover)}
+.kyn-options li[aria-selected="true"]{background:var(--kd-color-background-menu-state-open); font-weight:500}
+
+/* ===================================================================
+   BADGES / TAGS
+   =================================================================== */
+.kyn-badge{
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 8px; border-radius:9999px;
+  font-size:11px; font-weight:500; line-height:16px;
+  background:#E2E8F0; color:var(--kd-color-text-level-primary);
+  border:0;
+  font-variant-numeric:tabular-nums;
+}
+.kyn-badge--success{background:var(--kd-color-badge-success-bg); color:var(--kd-color-badge-success-fg)}
+.kyn-badge--warn{background:var(--kd-color-badge-warn-bg); color:var(--kd-color-badge-warn-fg)}
+.kyn-badge--err{background:var(--kd-color-badge-err-bg); color:var(--kd-color-badge-err-fg)}
+.kyn-badge--info{background:var(--kd-color-badge-info-bg); color:var(--kd-color-badge-info-fg)}
+.kyn-badge--subtle{background:rgba(15,23,42,.06); color:var(--kd-color-text-level-secondary)}
+.kyn-badge--ai{background:linear-gradient(135deg,#FBD9D3,#FFECCA); color:#7C2D12}
+.kyn-badge--xs{font-size:10px; padding:1px 6px; line-height:14px}
+
+.kyn-tag{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:4px;
+  font-size:12px; font-weight:500;
+  background:#F1F5F9; color:var(--kd-color-text-level-primary);
+  border:1px solid transparent;
+}
+.kyn-tag.is-closable{padding-right:4px}
+.kyn-tag .close{
+  width:18px; height:18px; border-radius:2px; background:transparent; border:0;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  color:var(--kd-color-icon-secondary);
+}
+.kyn-tag .close:hover{background:rgba(15,23,42,.08)}
+
+/* ===================================================================
+   CARDS
+   =================================================================== */
+.kyn-card{
+  background:#fff;
+  border-radius:8px;
+  box-shadow:var(--shadow-1);
+  padding:20px;
+  border:1px solid transparent;
+  transition:box-shadow 150ms, border-color 150ms;
+}
+.kyn-card--clickable{cursor:pointer}
+.kyn-card--clickable:hover{box-shadow:var(--shadow-2); border-color:var(--kd-color-border-variants-light)}
+.kyn-card h4{margin:0 0 4px; font-size:16px; font-weight:500}
+.kyn-card p{margin:0; color:var(--kd-color-text-level-secondary); font-size:13px; line-height:1.5}
+.kyn-card--ai{
+  background:linear-gradient(180deg,rgba(41,112,122,.04),rgba(255,70,45,.04)),#fff;
+  border:1px solid transparent;
+  position:relative;
+}
+.kyn-card--ai::before{
+  content:""; position:absolute; inset:0; border-radius:8px; padding:1px;
+  background:linear-gradient(135deg,#29707A,#FF462D);
+  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite:exclude; -webkit-mask-composite:xor;
+  pointer-events:none;
+}
+
+/* ===================================================================
+   NOTIFICATIONS / ALERTS  (kyn-notification)
+   =================================================================== */
+.kyn-notif{
+  display:flex; gap:12px; padding:12px 16px;
+  background:#fff; border-radius:4px;
+  border-left:4px solid #94A3B8;
+  box-shadow:var(--shadow-1);
+  font-size:14px;
+}
+.kyn-notif .icon{flex-shrink:0; margin-top:2px; display:flex}
+.kyn-notif .icon svg{width:20px; height:20px}
+.kyn-notif .body{flex:1}
+.kyn-notif .title{font-weight:500; margin:0 0 4px}
+.kyn-notif .msg{margin:0; color:var(--kd-color-text-level-secondary)}
+.kyn-notif .close{flex-shrink:0; background:transparent; border:0; cursor:pointer; color:var(--kd-color-icon-secondary); padding:2px; border-radius:4px}
+.kyn-notif .close:hover{background:var(--kd-color-background-menu-state-hover)}
+.kyn-notif--success{border-left-color:var(--kd-color-status-success-dark)}
+.kyn-notif--success .icon{color:var(--kd-color-status-success-dark)}
+.kyn-notif--warn{border-left-color:var(--kd-color-status-warning-dark)}
+.kyn-notif--warn .icon{color:var(--kd-color-status-warning-dark)}
+.kyn-notif--err{border-left-color:var(--kd-color-status-error-dark)}
+.kyn-notif--err .icon{color:var(--kd-color-status-error-dark)}
+.kyn-notif--info{border-left-color:var(--kd-color-text-link-level-default)}
+.kyn-notif--info .icon{color:var(--kd-color-text-link-level-default)}
+.kyn-notif--ai{
+  border-left:0;
+  border:1px solid transparent;
+  background:linear-gradient(180deg,rgba(41,112,122,.04),rgba(255,70,45,.04)),#fff;
+  position:relative;
+}
+.kyn-notif--ai::before{
+  content:""; position:absolute; inset:0; border-radius:4px; padding:1px;
+  background:linear-gradient(135deg,#29707A,#FF462D);
+  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite:exclude; -webkit-mask-composite:xor;
+  pointer-events:none;
+}
+
+/* Inline confirm */
+.kyn-inline-confirm{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; background:#FEE2E2; border-radius:4px; font-size:13px}
+.kyn-inline-confirm strong{color:#991B1B}
+
+/* ===================================================================
+   MODAL (trigger + overlay mock)
+   =================================================================== */
+.kyn-modal-preview{
+  background:linear-gradient(180deg,#F8FAFC,#fff);
+  border:1px solid var(--kd-color-border-variants-light);
+  border-radius:8px;
+  padding:0;
+  overflow:hidden;
+  box-shadow:var(--shadow-2);
+  max-width:560px;
+}
+.kyn-modal-preview__head{padding:20px 24px 12px; display:flex; align-items:center; justify-content:space-between}
+.kyn-modal-preview__head h3{margin:0; font-family:'TWK Everett','TWKEverett',sans-serif; font-weight:400; font-size:20px}
+.kyn-modal-preview__body{padding:4px 24px 20px; color:var(--kd-color-text-level-secondary)}
+.kyn-modal-preview__foot{padding:16px 24px; display:flex; gap:8px; justify-content:flex-end; background:#F8FAFC; border-top:1px solid var(--kd-color-border-variants-light)}
+
+/* Side drawer preview */
+.kyn-drawer-preview{
+  background:#fff;
+  border-radius:8px 0 0 8px;
+  box-shadow:var(--shadow-2);
+  width:360px;
+  border-left:4px solid #29707A;
+  overflow:hidden;
+}
+.kyn-drawer-preview header{
+  padding:16px 20px; border-bottom:1px solid var(--kd-color-border-variants-light);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.kyn-drawer-preview header h4{margin:0; font-family:'TWK Everett','TWKEverett',sans-serif; font-weight:400; font-size:18px}
+.kyn-drawer-preview .content{padding:16px 20px; font-size:13px; color:var(--kd-color-text-level-secondary); line-height:1.6}
+.kyn-drawer-preview .foot{padding:12px 20px; border-top:1px solid var(--kd-color-border-variants-light); display:flex; gap:8px; justify-content:flex-end}
+
+/* ===================================================================
+   ACCORDION
+   =================================================================== */
+.kyn-accordion{background:#fff; border-radius:8px; box-shadow:var(--shadow-1); overflow:hidden}
+.kyn-accordion details{border-bottom:1px solid var(--kd-color-border-variants-light)}
+.kyn-accordion details:last-child{border-bottom:0}
+.kyn-accordion summary{
+  padding:14px 16px; cursor:pointer; font-weight:500;
+  list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  transition:background-color 120ms;
+}
+.kyn-accordion summary::-webkit-details-marker{display:none}
+.kyn-accordion summary:hover{background:var(--kd-color-background-menu-state-hover)}
+.kyn-accordion summary .chev{transition:transform 150ms}
+.kyn-accordion details[open] summary .chev{transform:rotate(180deg)}
+.kyn-accordion details[open] summary{background:var(--kd-color-background-menu-state-open)}
+.kyn-accordion .body{padding:4px 16px 16px; font-size:13px; color:var(--kd-color-text-level-secondary)}
+
+/* ===================================================================
+   BREADCRUMBS, LINKS, PAGINATION
+   =================================================================== */
+.kyn-breadcrumbs{display:flex; align-items:center; gap:16px; list-style:none; margin:0; padding:0; font-size:14px}
+.kyn-breadcrumbs a{color:var(--kd-color-text-link-level-default); text-decoration:none; display:inline-flex; align-items:center; gap:16px}
+.kyn-breadcrumbs a:hover{text-decoration:underline}
+.kyn-breadcrumbs a::after{
+  content:""; width:14px; height:14px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'><path d='M9.625 7L5.25 11.375L4.6375 10.7625L8.4 7L4.6375 3.2375L5.25 2.625L9.625 7Z' fill='%2394A3B8'/></svg>") no-repeat center/contain;
+}
+.kyn-breadcrumbs strong{color:var(--kd-color-text-level-primary); font-weight:400}
+
+.kyn-link{color:var(--kd-color-text-link-level-default); text-decoration:none; font-weight:400}
+.kyn-link:hover{text-decoration:underline; color:var(--kd-color-text-link-level-hover)}
+.kyn-link--standalone{display:inline-flex; align-items:center; gap:6px}
+
+.kyn-pagination{
+  display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+  font-size:11px; color:var(--kd-color-text-level-primary);
+}
+.kyn-pagination__pages{display:inline-flex; align-items:center; gap:4px}
+.kyn-pagination__btn{
+  width:28px; height:28px; border-radius:4px; border:0; background:transparent;
+  color:var(--kd-color-text-level-primary); cursor:pointer; font-size:13px;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.kyn-pagination__btn:hover{background:var(--kd-color-background-menu-state-hover)}
+.kyn-pagination__btn.is-active{background:var(--kd-color-background-menu-state-open); font-weight:600}
+
+/* ===================================================================
+   LOADERS / PROGRESS
+   =================================================================== */
+.kyn-progress{margin-bottom:12px}
+.kyn-progress__head{display:flex; justify-content:space-between; align-items:baseline; font-size:14px; margin-bottom:8px}
+.kyn-progress__head span:last-child{font-variant-numeric:tabular-nums; color:var(--kd-color-text-level-secondary)}
+.kyn-progress__track{height:4px; background:var(--kd-color-background-loader-bar-secondary); border-radius:4px; overflow:hidden; position:relative}
+.kyn-progress__fill{height:100%; background:var(--kd-color-background-loader-bar-primary); border-radius:4px 0 0 4px; transition:width .3s ease-in-out}
+.kyn-progress--success .kyn-progress__fill{background:var(--kd-color-status-success-dark)}
+.kyn-progress--warn .kyn-progress__fill{background:var(--kd-color-status-warning-dark)}
+.kyn-progress--err .kyn-progress__fill{background:var(--kd-color-status-error-dark)}
+.kyn-progress--indet .kyn-progress__fill{width:30%; border-radius:4px; animation:indeterminate 3s ease-in-out infinite}
+@keyframes indeterminate{ 0%{left:-30%; margin-left:0} 50%{left:70%} 100%{left:100%} }
+.kyn-progress--indet .kyn-progress__track{position:relative}
+.kyn-progress--indet .kyn-progress__fill{position:absolute; left:0}
+
+/* AI spinner */
+.ai-spinner{
+  width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center;
+}
+.ai-spinner svg{width:100%; height:100%; animation:ai-rot 1.25s linear infinite; transform-origin:50% 50%}
+@keyframes ai-rot{ to{ transform:rotate(360deg) } }
+.ai-spinner .track{fill:none; stroke:var(--kd-color-background-loader-bar-secondary); stroke-width:10; vector-effect:non-scaling-stroke}
+.ai-spinner .arc{fill:none; stroke:var(--kd-color-opacity-ai-warm-red-90); stroke-width:10; stroke-linecap:round; stroke-dasharray:25 276.46; stroke-dashoffset:0; vector-effect:non-scaling-stroke}
+
+.spinner{display:inline-block; width:24px; height:24px; border-radius:50%; border:3px solid var(--kd-color-background-loader-bar-secondary); border-top-color:var(--kd-color-background-loader-bar-primary); animation:spin 0.9s linear infinite}
+@keyframes spin{ to{ transform:rotate(360deg) } }
+
+/* Skeleton */
+.kyn-skel{background:linear-gradient(90deg,#E2E8F0,#F1F5F9,#E2E8F0); background-size:200% 100%; border-radius:4px; animation:skel 1.8s ease-in-out infinite}
+@keyframes skel{ 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+.kyn-skel--text{height:12px}
+.kyn-skel--line{height:16px}
+.kyn-skel--h{height:24px; width:60%}
+
+/* ===================================================================
+   TABLE
+   =================================================================== */
+.kyn-table{
+  width:100%; border-collapse:separate; border-spacing:0;
+  background:#fff; border-radius:8px; overflow:hidden;
+  box-shadow:var(--shadow-1);
+  font-size:13px;
+}
+.kyn-table thead{background:#F8FAFC}
+.kyn-table th{
+  text-align:left; padding:12px 16px;
+  font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--kd-color-text-level-tertiary);
+  border-bottom:1px solid var(--kd-color-border-variants-light);
+}
+.kyn-table td{
+  padding:14px 16px; color:var(--kd-color-text-level-primary);
+  border-bottom:1px solid var(--kd-color-border-variants-light);
+  font-variant-numeric:tabular-nums;
+}
+.kyn-table tr:last-child td{border-bottom:0}
+.kyn-table tbody tr:hover{background:rgba(248,250,252,.7)}
+.kyn-table__actions{display:inline-flex; gap:4px}
+.kyn-table__num{text-align:right; font-variant-numeric:tabular-nums}
+
+/* ===================================================================
+   TOOLTIP (hover demo)
+   =================================================================== */
+.kyn-tt{position:relative; display:inline-flex; align-items:center; gap:4px}
+.kyn-tt .bubble{
+  visibility:hidden; opacity:0; transition:opacity 150ms;
+  position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+  background:#0F172A; color:#fff; padding:6px 10px; border-radius:4px;
+  font-size:12px; white-space:nowrap; z-index:10; pointer-events:none;
+}
+.kyn-tt:hover .bubble, .kyn-tt:focus-within .bubble{visibility:visible; opacity:1}
+
+/* ===================================================================
+   AI LAUNCH BUTTON (reusable/aiLaunchBtn parity)
+   =================================================================== */
+.kyn-ai-launch{
+  display:inline-flex; align-items:center; gap:10px;
+  height:44px; padding:0 18px;
+  border-radius:22px; border:1px solid transparent;
+  background:#fff; color:var(--kd-color-text-level-primary); cursor:pointer;
+  font-weight:500; font-size:14px;
+  position:relative;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+  transition:transform 150ms;
+}
+.kyn-ai-launch::before{
+  content:""; position:absolute; inset:0; border-radius:22px; padding:1px;
+  background:linear-gradient(135deg,#29707A,#FF462D);
+  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite:exclude; -webkit-mask-composite:xor;
+  pointer-events:none;
+}
+.kyn-ai-launch:hover{transform:translateY(-1px)}
+.kyn-ai-launch .ai-dot{
+  width:22px; height:22px; border-radius:50%;
+  background:linear-gradient(135deg,#29707A,#FF462D);
+  display:inline-flex; align-items:center; justify-content:center; color:#fff;
+}
+.kyn-ai-launch .ai-dot svg{width:12px; height:12px}
+
+/* ===================================================================
+   SOURCES / FEEDBACK
+   =================================================================== */
+.kyn-sources{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 10px; border-radius:16px; background:rgba(15,23,42,.04);
+  font-size:12px; color:var(--kd-color-text-level-secondary);
+}
+.kyn-sources__icons{display:inline-flex; gap:-4px}
+.kyn-sources__icons span{
+  width:20px; height:20px; border-radius:50%; border:2px solid #fff;
+  background:#E2E8F0; display:inline-flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:600; color:var(--kd-color-text-level-secondary);
+  margin-left:-6px;
+}
+.kyn-sources__icons span:first-child{margin-left:0}
+.kyn-sources__icons span.src-docs{background:#E0F2FE; color:#075985}
+.kyn-sources__icons span.src-ci{background:#FEF3C7; color:#92400E}
+.kyn-sources__icons span.src-ticket{background:#D1FAE5; color:#065F46}
+
+.kyn-feedback{display:inline-flex; align-items:center; gap:4px}
+.kyn-feedback button{
+  width:28px; height:28px; border:0; background:transparent; border-radius:4px;
+  color:var(--kd-color-icon-secondary); cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  transition:background-color 120ms, color 120ms;
+}
+.kyn-feedback button:hover{background:var(--kd-color-background-menu-state-hover); color:var(--kd-color-text-level-primary)}
+.kyn-feedback button.is-active{background:var(--kd-color-background-menu-state-open); color:var(--kd-color-text-link-level-default)}
+
+/* ===================================================================
+   Utility
+   =================================================================== */
+.code{font-family:var(--font-mono,'Geist Mono',monospace); font-size:12px; background:#F1F5F9; padding:2px 6px; border-radius:4px}
+.hr{height:1px; background:var(--kd-color-border-variants-light); margin:20px 0; border:0}
+.row{display:flex; flex-wrap:wrap; gap:12px}
+.stretch{align-items:stretch}
+.cols-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.cols-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+
+@media (max-width:960px){
+  .layout{grid-template-columns:1fr}
+  .sidenav{position:static}
+  .cols-2,.cols-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ================== HEADER ================== -->
+<header class="kyn-header">
+  <a href="#top" class="kyn-header__logo">
+    <img src="../../assets/kyndryl-logo.png" alt="Kyndryl">
+  </a>
+  <span class="kyn-header__title">Shidoka — Component Kit</span>
+  <nav class="kyn-header__nav" aria-label="Primary">
+    <a href="#buttons" class="kyn-nav-link is-active">Primitives</a>
+    <a href="#ai"       class="kyn-nav-link">AI</a>
+    <a href="../cmdb/index.html" class="kyn-nav-link">CMDB kit ↗</a>
+  </nav>
+  <div class="kyn-header__right">
+    <button class="kyn-header__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <button class="kyn-header__icon-btn" aria-label="Notifications" style="position:relative"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span style="position:absolute; top:6px; right:8px; width:8px; height:8px; border-radius:50%; background:#FF462D; border:2px solid #fff"></span></button>
+    <button class="kyn-header__icon-btn" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
+    <div class="kyn-avatar" title="Dana Aaron">DA</div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- ================== SIDE NAV ================== -->
+  <aside class="sidenav">
+    <h4>Foundations</h4>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+
+    <h4>Forms</h4>
+    <a href="#inputs">Text input</a>
+    <a href="#dropdown">Dropdown</a>
+    <a href="#selection">Checkbox / Radio / Toggle</a>
+
+    <h4>Navigation</h4>
+    <a href="#breadcrumbs">Breadcrumbs</a>
+    <a href="#links">Links</a>
+    <a href="#pagination">Pagination</a>
+
+    <h4>Data display</h4>
+    <a href="#badges">Badges & Tags</a>
+    <a href="#cards">Cards</a>
+    <a href="#table">Table</a>
+    <a href="#accordion">Accordion</a>
+
+    <h4>Feedback</h4>
+    <a href="#notifications">Notifications</a>
+    <a href="#modal">Modal &amp; Drawer</a>
+    <a href="#progress">Progress &amp; Loaders</a>
+    <a href="#tooltip">Tooltip</a>
+
+    <h4>AI</h4>
+    <a href="#ai">AI primitives</a>
+  </aside>
+
+  <!-- ================== MAIN ================== -->
+  <main id="top">
+
+    <!-- TYPOGRAPHY -->
+    <section id="typography" class="kit-section">
+      <header><h2>Typography</h2><p>TWK Everett for headings &amp; display · Roboto for body UI · Geist Mono for code/IDs.</p></header>
+
+      <div class="cols-2">
+        <div>
+          <div class="demo-label">Display / Heading</div>
+          <div style="font-family:'TWK Everett',sans-serif; font-weight:300; font-size:44px; line-height:1.1; letter-spacing:-.01em">Display · 44/52</div>
+          <div style="font-family:'TWK Everett',sans-serif; font-weight:300; font-size:32px; line-height:1.2; margin-top:12px">Heading 1 · 32/38</div>
+          <div style="font-family:'TWK Everett',sans-serif; font-weight:400; font-size:24px; line-height:1.25; margin-top:12px">Heading 2 · 24/30</div>
+          <div style="font-family:'TWK Everett',sans-serif; font-weight:500; font-size:18px; line-height:1.35; margin-top:12px">Heading 3 · 18/24</div>
+        </div>
+        <div>
+          <div class="demo-label">Body / UI</div>
+          <div style="font-size:16px; line-height:24px">Body L · 16/24 — Default paragraph text. The quick brown fox jumps over the lazy dog.</div>
+          <div style="font-size:14px; line-height:20px; margin-top:8px">Body M · 14/20 — Dense UI. The quick brown fox jumps over the lazy dog.</div>
+          <div style="font-size:12px; line-height:16px; margin-top:8px; color:var(--kd-color-text-level-secondary)">Caption · 12/16 — meta &amp; helper text.</div>
+          <div style="font-family:var(--font-mono,'Geist Mono',monospace); font-size:13px; margin-top:12px">Mono · CI-0019837 · v4.2.1 · tabular-nums 1 234 567.89</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section id="buttons" class="kit-section">
+      <header><h2>Buttons</h2><p>Primary (Spruce), Secondary (Stone), Tertiary (outline), Ghost, Destructive, AI — sm / md / lg.</p></header>
+
+      <div class="subsec">
+        <h3>Variants</h3>
+        <div class="demo-row">
+          <button class="kyn-btn kyn-btn--primary">Primary</button>
+          <button class="kyn-btn kyn-btn--secondary">Secondary</button>
+          <button class="kyn-btn kyn-btn--tertiary">Tertiary</button>
+          <button class="kyn-btn kyn-btn--ghost">Ghost</button>
+          <button class="kyn-btn kyn-btn--destructive">Destructive</button>
+          <button class="kyn-btn kyn-btn--outline-destructive">Outline&nbsp;destructive</button>
+          <button class="kyn-btn kyn-btn--ai">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>
+            Ask the agent
+          </button>
+        </div>
+      </div>
+
+      <div class="subsec">
+        <h3>Sizes</h3>
+        <div class="demo-row">
+          <button class="kyn-btn kyn-btn--primary kyn-btn--size-sm">Small</button>
+          <button class="kyn-btn kyn-btn--primary kyn-btn--size-md">Medium</button>
+          <button class="kyn-btn kyn-btn--primary kyn-btn--size-lg">Large</button>
+          <button class="kyn-btn kyn-btn--primary" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <div class="subsec">
+        <h3>With icon</h3>
+        <div class="demo-row">
+          <button class="kyn-btn kyn-btn--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Run reconciliation</button>
+          <button class="kyn-btn kyn-btn--tertiary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Refresh</button>
+          <button class="kyn-btn kyn-btn--tertiary kyn-btn--icon-only" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INPUTS -->
+    <section id="inputs" class="kit-section">
+      <header><h2>Text input</h2><p>Sizes (sm / md / lg), icon slots, readonly, disabled, invalid.</p></header>
+
+      <div class="cols-2">
+        <div class="kyn-field">
+          <label class="kyn-label" for="i1">CI name <span class="req">*</span></label>
+          <input id="i1" class="kyn-input" placeholder="e.g. web-prod-12" value="web-prod-12">
+          <div class="kyn-caption">Must match an existing asset in the CMDB.</div>
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="i2">Search</label>
+          <div class="kyn-input-wrap">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+            <input id="i2" class="kyn-input has-icon" placeholder="Search CIs, tickets, owners…">
+          </div>
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="i3">Small</label>
+          <input id="i3" class="kyn-input kyn-input--sm" value="32px height">
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="i4">Large</label>
+          <input id="i4" class="kyn-input kyn-input--lg" value="56px height">
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="i5">Disabled</label>
+          <input id="i5" class="kyn-input" value="Read-only value" disabled>
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="i6">Invalid</label>
+          <input id="i6" class="kyn-input" value="not-a-real-ci" invalid>
+          <div class="kyn-error"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>CI not found in the registry.</div>
+        </div>
+
+        <div class="kyn-field" style="grid-column:1/-1">
+          <label class="kyn-label" for="t1">Message</label>
+          <textarea id="t1" class="kyn-input" placeholder="Describe the change…"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- DROPDOWN -->
+    <section id="dropdown" class="kit-section">
+      <header><h2>Dropdown</h2><p>Single-select select control with listbox, hover and selected states.</p></header>
+
+      <div class="cols-2">
+        <div class="kyn-field">
+          <label class="kyn-label" for="dd1">Environment</label>
+          <div class="kyn-dropdown">
+            <button id="dd1" class="kyn-select" aria-haspopup="listbox" aria-expanded="false" onclick="toggleDD(this)">
+              <span>Production</span>
+              <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span>
+            </button>
+            <ul class="kyn-options" hidden role="listbox">
+              <li aria-selected="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Production</li>
+              <li>Staging</li>
+              <li>Development</li>
+              <li>Sandbox</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="kyn-field">
+          <label class="kyn-label" for="dd2">Status (multi)</label>
+          <div class="kyn-dropdown">
+            <button id="dd2" class="kyn-select" aria-haspopup="listbox" aria-expanded="false" onclick="toggleDD(this)">
+              <span>2 selected</span>
+              <span class="arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span>
+            </button>
+            <ul class="kyn-options" hidden role="listbox">
+              <li aria-selected="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Stale</li>
+              <li aria-selected="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Orphaned</li>
+              <li>Reconciled</li>
+              <li>Under review</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELECTION -->
+    <section id="selection" class="kit-section">
+      <header><h2>Checkbox · Radio · Toggle</h2></header>
+
+      <div class="cols-3">
+        <div>
+          <div class="demo-label">Checkbox</div>
+          <div class="demo-col">
+            <label class="kyn-check"><input type="checkbox" checked><span>Include reconciled CIs</span></label>
+            <label class="kyn-check"><input type="checkbox"><span>Exclude orphans</span></label>
+            <label class="kyn-check"><input type="checkbox" indeterminate onload="this.indeterminate=true"><span>All environments</span></label>
+            <label class="kyn-check"><input type="checkbox" disabled checked><span>Disabled checked</span></label>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-label">Radio</div>
+          <div class="demo-col">
+            <label class="kyn-radio"><input type="radio" name="r1" checked><span>All teams</span></label>
+            <label class="kyn-radio"><input type="radio" name="r1"><span>My team only</span></label>
+            <label class="kyn-radio"><input type="radio" name="r1"><span>Specific owner…</span></label>
+            <label class="kyn-radio"><input type="radio" name="r1" disabled><span>Disabled</span></label>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-label">Toggle</div>
+          <div class="demo-col">
+            <label class="kyn-toggle"><input type="checkbox" checked><span>Auto-reconcile low-risk CIs</span></label>
+            <label class="kyn-toggle"><input type="checkbox"><span>Send Slack notification</span></label>
+            <label class="kyn-toggle"><input type="checkbox" checked><span>Require approval &gt; 50 CIs</span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BREADCRUMBS -->
+    <section id="breadcrumbs" class="kit-section">
+      <header><h2>Breadcrumbs</h2></header>
+      <ul class="kyn-breadcrumbs">
+        <li><a href="#">Workspace</a></li>
+        <li><a href="#">CMDB</a></li>
+        <li><a href="#">Triage</a></li>
+        <li><strong>CI-0019837</strong></li>
+      </ul>
+    </section>
+
+    <!-- LINKS -->
+    <section id="links" class="kit-section">
+      <header><h2>Links</h2></header>
+      <div class="demo-row">
+        <a href="#" class="kyn-link">Inline link</a>
+        <a href="#" class="kyn-link kyn-link--standalone">Standalone link <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="#" class="kyn-link" style="color:var(--kd-color-text-level-tertiary)">Visited / muted</a>
+        <a href="#" class="kyn-link" style="color:#B91C1C">Destructive link</a>
+      </div>
+    </section>
+
+    <!-- PAGINATION -->
+    <section id="pagination" class="kit-section">
+      <header><h2>Pagination</h2></header>
+      <div class="kyn-pagination">
+        <span>Items per page: <strong>25</strong></span>
+        <span>1–25 of 1,284 items</span>
+        <div class="kyn-pagination__pages">
+          <button class="kyn-pagination__btn" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="kyn-pagination__btn is-active">1</button>
+          <button class="kyn-pagination__btn">2</button>
+          <button class="kyn-pagination__btn">3</button>
+          <button class="kyn-pagination__btn">…</button>
+          <button class="kyn-pagination__btn">52</button>
+          <button class="kyn-pagination__btn" aria-label="Next"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section id="badges" class="kit-section">
+      <header><h2>Badges &amp; Tags</h2></header>
+
+      <div class="subsec">
+        <h3>Status badges</h3>
+        <div class="demo-row">
+          <span class="kyn-badge kyn-badge--success">Reconciled</span>
+          <span class="kyn-badge kyn-badge--warn">Stale 17d</span>
+          <span class="kyn-badge kyn-badge--err">Orphaned</span>
+          <span class="kyn-badge kyn-badge--info">In review</span>
+          <span class="kyn-badge kyn-badge--subtle">Draft</span>
+          <span class="kyn-badge kyn-badge--ai">AI suggested</span>
+        </div>
+      </div>
+
+      <div class="subsec">
+        <h3>Tags</h3>
+        <div class="demo-row">
+          <span class="kyn-tag">prod</span>
+          <span class="kyn-tag is-closable">owner: Dana A. <button class="close" aria-label="Remove">×</button></span>
+          <span class="kyn-tag is-closable">region: us-east-1 <button class="close" aria-label="Remove">×</button></span>
+          <span class="kyn-tag" style="background:#E0F2FE; color:#075985">AI-derived</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section id="cards" class="kit-section">
+      <header><h2>Cards</h2><p>Surface, clickable, and AI-connected variants.</p></header>
+
+      <div class="cols-3">
+        <div class="kyn-card">
+          <h4>Surface</h4>
+          <p>A flat card with elevation-1. Used for grouping content without interactivity.</p>
+        </div>
+        <div class="kyn-card kyn-card--clickable" tabindex="0">
+          <h4>Clickable <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; color:var(--kd-color-text-level-tertiary)"><path d="M5 12h14M12 5l7 7-7 7"/></svg></h4>
+          <p>Elevation increases on hover; border appears. Entire card is the hit target.</p>
+        </div>
+        <div class="kyn-card kyn-card--ai">
+          <h4 style="display:flex; align-items:center; gap:8px">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="url(#g1)"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#29707A"/><stop offset="1" stop-color="#FF462D"/></linearGradient></defs><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>
+            AI-connected
+          </h4>
+          <p>Carries the gradient border. Reserved for surfaces that are generated, reasoned, or agent-authored.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section id="table" class="kit-section">
+      <header><h2>Table</h2><p>Dense CI list — tabular-nums, zebra-free, hover row.</p></header>
+
+      <table class="kyn-table">
+        <thead>
+          <tr>
+            <th style="width:28px"><label class="kyn-check"><input type="checkbox"><span class="sr"></span></label></th>
+            <th>CI ID</th>
+            <th>Name</th>
+            <th>Env</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th class="kyn-table__num">Last seen</th>
+            <th style="width:60px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><label class="kyn-check"><input type="checkbox"></label></td>
+            <td style="font-family:var(--font-mono,monospace)">CI-0019837</td>
+            <td>payments-api-prod-01</td>
+            <td>Prod</td>
+            <td>Dana Aaron</td>
+            <td><span class="kyn-badge kyn-badge--warn">Stale 17d</span></td>
+            <td class="kyn-table__num">2025-11-03 14:02</td>
+            <td><button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm kyn-btn--icon-only" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+          </tr>
+          <tr>
+            <td><label class="kyn-check"><input type="checkbox" checked></label></td>
+            <td style="font-family:var(--font-mono,monospace)">CI-0019841</td>
+            <td>ledger-worker-prod-04</td>
+            <td>Prod</td>
+            <td>Mia Quin</td>
+            <td><span class="kyn-badge kyn-badge--err">Orphaned</span></td>
+            <td class="kyn-table__num">2025-10-18 09:14</td>
+            <td><button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm kyn-btn--icon-only" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+          </tr>
+          <tr>
+            <td><label class="kyn-check"><input type="checkbox"></label></td>
+            <td style="font-family:var(--font-mono,monospace)">CI-0019855</td>
+            <td>checkout-gateway-stage</td>
+            <td>Stage</td>
+            <td>Owen Lee</td>
+            <td><span class="kyn-badge kyn-badge--success">Reconciled</span></td>
+            <td class="kyn-table__num">2025-11-19 11:28</td>
+            <td><button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm kyn-btn--icon-only" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+          </tr>
+          <tr>
+            <td><label class="kyn-check"><input type="checkbox"></label></td>
+            <td style="font-family:var(--font-mono,monospace)">CI-0019902</td>
+            <td>notif-queue-prod-02</td>
+            <td>Prod</td>
+            <td>—</td>
+            <td><span class="kyn-badge kyn-badge--info">In review</span></td>
+            <td class="kyn-table__num">2025-11-21 03:51</td>
+            <td><button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm kyn-btn--icon-only" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ACCORDION -->
+    <section id="accordion" class="kit-section">
+      <header><h2>Accordion</h2></header>
+      <div class="kyn-accordion">
+        <details open>
+          <summary>What counts as a stale CI?<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></summary>
+          <div class="body">A configuration item whose most-recent inventory signal is older than the environment’s stale threshold — default is 14 days for Prod and 30 for non-Prod.</div>
+        </details>
+        <details>
+          <summary>How does the agent choose a reconciliation strategy?<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></summary>
+          <div class="body">The agent scores each CI across three axes — confidence, blast radius, and cost-to-revert — and selects the lowest-risk plan that meets the target freshness SLO.</div>
+        </details>
+        <details>
+          <summary>Who can approve bulk corrections?<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span></summary>
+          <div class="body">Any user with the <span class="code">cmdb.correction.approve</span> role. Bulk changes over 50 CIs additionally require the change-manager role.</div>
+        </details>
+      </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section id="notifications" class="kit-section">
+      <header><h2>Notifications</h2><p>Inline, not toast. Dismissable. AI variant carries the gradient border.</p></header>
+
+      <div class="demo-col">
+        <div class="kyn-notif kyn-notif--success">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 14-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7z"/></svg></span>
+          <div class="body">
+            <p class="title">Reconciliation complete</p>
+            <p class="msg">48 CIs re-synced. 2 required manual review and are listed in the drawer.</p>
+          </div>
+          <button class="close" aria-label="Dismiss"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+        </div>
+
+        <div class="kyn-notif kyn-notif--warn">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V10h2v4z"/></svg></span>
+          <div class="body">
+            <p class="title">Stale threshold reached</p>
+            <p class="msg">17 Prod CIs have not checked in for 14+ days. Investigate before the next audit cycle.</p>
+          </div>
+        </div>
+
+        <div class="kyn-notif kyn-notif--err">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 13.6L15.6 17 12 13.4 8.4 17 7 15.6 10.6 12 7 8.4 8.4 7 12 10.6 15.6 7 17 8.4 13.4 12 17 15.6z"/></svg></span>
+          <div class="body">
+            <p class="title">Reconciliation failed</p>
+            <p class="msg">Source adapter returned a 502. Run will retry automatically in 5 minutes.</p>
+          </div>
+        </div>
+
+        <div class="kyn-notif kyn-notif--info">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
+          <div class="body">
+            <p class="title">New data source available</p>
+            <p class="msg">Cloud-inventory v3 adapter is ready. <a href="#" class="kyn-link">Enable it</a>.</p>
+          </div>
+        </div>
+
+        <div class="kyn-notif kyn-notif--ai">
+          <span class="icon" style="color:#29707A"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></span>
+          <div class="body">
+            <p class="title">Agent recommendation</p>
+            <p class="msg">11 of the 17 stale CIs share the same owner and region. I can group them into one correction request. <a href="#" class="kyn-link">Review plan</a>.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-label">Inline confirm (destructive)</div>
+          <div class="kyn-inline-confirm">
+            <strong>Discard 48 pending edits?</strong>
+            <button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm">Cancel</button>
+            <button class="kyn-btn kyn-btn--destructive kyn-btn--size-sm">Discard</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL / DRAWER -->
+    <section id="modal" class="kit-section">
+      <header><h2>Modal &amp; Side drawer</h2><p>Visual reference — rendered inline to show chrome, header, body, footer patterns.</p></header>
+
+      <div class="cols-2 stretch">
+        <div>
+          <div class="demo-label">Modal</div>
+          <div class="kyn-modal-preview">
+            <div class="kyn-modal-preview__head">
+              <h3>Approve correction request</h3>
+              <button class="kyn-header__icon-btn" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+            </div>
+            <div class="kyn-modal-preview__body">
+              <p>This action will update 48 CIs in Production. The change is reversible for 24 hours. Approvals are logged to the audit trail.</p>
+              <label class="kyn-check" style="margin-top:12px"><input type="checkbox"><span>Send Slack notification to <strong>#cmdb-owners</strong></span></label>
+            </div>
+            <div class="kyn-modal-preview__foot">
+              <button class="kyn-btn kyn-btn--tertiary kyn-btn--size-md">Cancel</button>
+              <button class="kyn-btn kyn-btn--primary kyn-btn--size-md">Approve &amp; apply</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-label">Side drawer</div>
+          <div class="kyn-drawer-preview">
+            <header>
+              <h4>CI-0019837</h4>
+              <button class="kyn-header__icon-btn" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+            </header>
+            <div class="content">
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--kd-color-text-level-tertiary); margin:0 0 4px; font-weight:600">Owner</p>
+              <p style="color:var(--kd-color-text-level-primary); margin:0 0 12px">Dana Aaron · Payments team</p>
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--kd-color-text-level-tertiary); margin:0 0 4px; font-weight:600">Freshness</p>
+              <p style="margin:0 0 12px"><span class="kyn-badge kyn-badge--warn">Stale 17d</span></p>
+              <p style="font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--kd-color-text-level-tertiary); margin:0 0 4px; font-weight:600">Blast radius</p>
+              <p style="margin:0">Downstream: 2 services, 14 dependents.</p>
+            </div>
+            <div class="foot">
+              <button class="kyn-btn kyn-btn--tertiary kyn-btn--size-sm">Open in graph</button>
+              <button class="kyn-btn kyn-btn--primary kyn-btn--size-sm">Reconcile</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS / LOADERS -->
+    <section id="progress" class="kit-section">
+      <header><h2>Progress &amp; Loaders</h2></header>
+
+      <div class="cols-2">
+        <div>
+          <div class="kyn-progress">
+            <div class="kyn-progress__head"><span>Reconciling CIs</span><span>48 / 120</span></div>
+            <div class="kyn-progress__track"><div class="kyn-progress__fill" style="width:40%"></div></div>
+          </div>
+          <div class="kyn-progress kyn-progress--success">
+            <div class="kyn-progress__head"><span>Complete</span><span>100%</span></div>
+            <div class="kyn-progress__track"><div class="kyn-progress__fill" style="width:100%"></div></div>
+          </div>
+          <div class="kyn-progress kyn-progress--warn">
+            <div class="kyn-progress__head"><span>Stalled retry</span><span>67%</span></div>
+            <div class="kyn-progress__track"><div class="kyn-progress__fill" style="width:67%"></div></div>
+          </div>
+          <div class="kyn-progress kyn-progress--err">
+            <div class="kyn-progress__head"><span>Failed</span><span>23%</span></div>
+            <div class="kyn-progress__track"><div class="kyn-progress__fill" style="width:23%"></div></div>
+          </div>
+          <div class="kyn-progress kyn-progress--indet">
+            <div class="kyn-progress__head"><span>Indeterminate — evaluating plan</span><span>—</span></div>
+            <div class="kyn-progress__track"><div class="kyn-progress__fill"></div></div>
+          </div>
+        </div>
+
+        <div class="demo-col">
+          <div class="demo-label">Skeletons</div>
+          <div class="kyn-card" style="padding:16px">
+            <div class="kyn-skel kyn-skel--h" style="margin-bottom:12px"></div>
+            <div class="kyn-skel kyn-skel--line" style="margin-bottom:8px"></div>
+            <div class="kyn-skel kyn-skel--line" style="width:88%; margin-bottom:8px"></div>
+            <div class="kyn-skel kyn-skel--line" style="width:72%"></div>
+          </div>
+
+          <div class="demo-label" style="margin-top:8px">Spinners</div>
+          <div class="demo-row" style="align-items:center">
+            <span class="spinner" aria-label="Loading"></span>
+            <span class="ai-spinner" aria-label="Agent thinking">
+              <svg viewBox="-50 -50 100 100">
+                <circle class="track" r="44"/>
+                <circle class="arc" r="44" transform="rotate(-90)"/>
+              </svg>
+            </span>
+            <span style="color:var(--kd-color-text-level-secondary); font-size:13px">Agent reasoning…</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLTIP -->
+    <section id="tooltip" class="kit-section">
+      <header><h2>Tooltip</h2></header>
+      <div class="demo-row" style="padding:20px 0">
+        <span class="kyn-tt">
+          <span class="kyn-badge kyn-badge--warn">Stale 17d</span>
+          <span class="bubble">Last seen 2025-11-03 · threshold 14d</span>
+        </span>
+        <span class="kyn-tt">
+          <button class="kyn-btn kyn-btn--tertiary kyn-btn--size-sm">Explain this number</button>
+          <span class="bubble">Computed from 3 sources · 92% confidence</span>
+        </span>
+        <span class="kyn-tt">
+          <button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm kyn-btn--icon-only" aria-label="Info">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </button>
+          <span class="bubble">Derived metric · updated every 15 minutes</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- AI -->
+    <section id="ai" class="kit-section">
+      <header><h2>AI primitives</h2><p>The agent’s surface signature — gradient border (Spruce → Warm Red), never raw purple.</p></header>
+
+      <div class="subsec">
+        <h3>Launch button</h3>
+        <div class="demo-row">
+          <button class="kyn-ai-launch">
+            <span class="ai-dot"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></span>
+            Ask the agent
+          </button>
+          <button class="kyn-btn kyn-btn--ai">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>
+            Generate correction plan
+          </button>
+        </div>
+      </div>
+
+      <div class="subsec">
+        <h3>Sources &amp; feedback</h3>
+        <div class="demo-row">
+          <div class="kyn-sources">
+            Evidence
+            <span class="kyn-sources__icons">
+              <span class="src-docs" title="Documentation">📄</span>
+              <span class="src-ci"   title="CMDB asset">🗄</span>
+              <span class="src-ticket" title="Ticket">🎫</span>
+            </span>
+            <strong style="font-weight:500; color:var(--kd-color-text-level-primary)">3 sources</strong>
+          </div>
+
+          <div class="kyn-feedback" role="group" aria-label="Was this useful?">
+            <button class="is-active" aria-label="Helpful"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 10v10h4V10H2zm18 0h-6.3l1-4.5c.1-.3.1-.6.1-1a1.5 1.5 0 0 0-1.5-1.5L12 9v11h7a2 2 0 0 0 2-1.7l1-5.3V10c0-1-.9-2-2-2z"/></svg></button>
+            <button aria-label="Not helpful"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="transform:rotate(180deg)"><path d="M2 10v10h4V10H2zm18 0h-6.3l1-4.5c.1-.3.1-.6.1-1a1.5 1.5 0 0 0-1.5-1.5L12 9v11h7a2 2 0 0 0 2-1.7l1-5.3V10c0-1-.9-2-2-2z"/></svg></button>
+            <button aria-label="Comment"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsec">
+        <h3>Reasoning card</h3>
+        <div class="kyn-card kyn-card--ai">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="url(#g2)"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#29707A"/><stop offset="1" stop-color="#FF462D"/></linearGradient></defs><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>
+            <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--kd-color-text-level-tertiary)">Agent reasoning · 92% confidence</span>
+          </div>
+          <p style="margin:0 0 10px; font-size:14px">11 of the 17 stale Prod CIs share <strong>owner: payments-team</strong> and <strong>region: us-east-1</strong>. Reconciling them as one batch reduces approval overhead from 11 decisions to 1 and cuts MTTR by ~4 hours.</p>
+          <div class="demo-row" style="margin:0">
+            <button class="kyn-btn kyn-btn--primary kyn-btn--size-sm">Review plan</button>
+            <button class="kyn-btn kyn-btn--tertiary kyn-btn--size-sm">Show evidence</button>
+            <button class="kyn-btn kyn-btn--ghost kyn-btn--size-sm">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="text-align:center; padding:24px 0 8px; font-size:12px; color:var(--kd-color-text-level-tertiary)">
+      Shidoka component kit · Kyndryl CMDB DS
+    </footer>
+  </main>
+</div>
+
+<script>
+// --- smooth scroll-spy for side nav ---
+(function(){
+  const links = document.querySelectorAll('.sidenav a');
+  const map = {};
+  links.forEach(a=>{ const id = a.getAttribute('href').slice(1); map[id]=a; });
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(a=>a.classList.remove('is-active'));
+        const a = map[e.target.id]; if(a) a.classList.add('is-active');
+      }
+    });
+  }, {rootMargin:'-80px 0px -60% 0px', threshold:0.01});
+  document.querySelectorAll('section.kit-section').forEach(s=>io.observe(s));
+})();
+
+// --- dropdown toggle ---
+function toggleDD(btn){
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  document.querySelectorAll('.kyn-select[aria-expanded="true"]').forEach(b=>{
+    b.setAttribute('aria-expanded','false');
+    b.nextElementSibling.hidden = true;
+  });
+  if(!open){
+    btn.setAttribute('aria-expanded','true');
+    btn.nextElementSibling.hidden = false;
+  }
+}
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.kyn-dropdown')){
+    document.querySelectorAll('.kyn-select[aria-expanded="true"]').forEach(b=>{
+      b.setAttribute('aria-expanded','false');
+      b.nextElementSibling.hidden = true;
+    });
+  }
+});
+
+// --- indeterminate checkbox ---
+document.querySelectorAll('input[type="checkbox"][indeterminate]').forEach(c=>c.indeterminate = true);
+</script>
+
+</body>
+</html>

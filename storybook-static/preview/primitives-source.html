@@ -1,0 +1,123 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;font-family:var(--font-sans);color:var(--fg-1)}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;position:relative}
+  .src{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--fg-muted);border:1px solid var(--border-1);padding:3px 8px;border-radius:6px;background:#fff;font-weight:500}
+  .src b{color:var(--fg-1);font-weight:600}
+  .src.ai{border-color:#C7D2FE;background:#EEF2FF;color:#3730A3}
+  .src.ai b{color:#312E81}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted)}
+  .hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .hdr .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .hdr .hint{font-size:11px;color:var(--fg-muted)}
+  .hint b{color:var(--fg-2);font-weight:600}
+</style></head><body>
+
+<div class="hdr">
+  <span class="t">SourceAttribution · agentic</span>
+  <span class="hint">Click to <b>open source</b>, <b>dispute</b>, or <b>request re-derivation</b></span>
+</div>
+
+<div class="row">
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="src">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        from <b>ServiceNow CMDB</b>
+        <span class="agentic-label" style="display:none"></span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Source of record</span><span class="ap-meta">sync 12m ago</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Opened ServiceNow record">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open in ServiceNow<span class="ap-sub">svc.123 · asset management</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Provenance trace opened">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6a3 3 0 0 0 3 3h6"/></svg>
+          View provenance trace<span class="ap-sub">Who wrote, when, via which pipeline</span>
+        </button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="dispute">Dispute this source</button>
+      </div>
+      <div class="ap-confirm" data-for="dispute" hidden>
+        <p>Dispute flags the source for owner review and removes its data from live dashboards until resolved.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Source disputed · flagged to owner">File dispute</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">system of record</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="src ai">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.2L20 8l-4 4 1 5.6L12 15l-5 2.6L8 12l-4-4 5.6-.8z"/></svg>
+        derived by <b>Reconciliation Agent</b>
+        <span class="agentic-label" style="display:none"></span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agentic source</span><span class="ap-meta">confidence 0.84</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Derivation chain opened">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6a3 3 0 0 0 3 3h6"/></svg>
+          Show derivation chain<span class="ap-sub">6 inputs · 2 rules · 1 LLM call</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Re-derivation queued · ETA 45s">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          Request re-derivation<span class="ap-sub">With current inputs, fresh pass</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Alternative hypotheses shown">Show alternatives</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="dispute">Dispute &amp; teach the agent</button>
+      </div>
+      <div class="ap-confirm" data-for="dispute" hidden>
+        <p>Marks this derivation as incorrect. The agent updates its priors for similar cases.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Disputed · agent priors updated · added to inbox">Dispute &amp; teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">agentic · inspectable</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="src">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+        entered by <b>A. Kim</b>
+        <span class="agentic-label" style="display:none"></span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Human-entered</span><span class="ap-meta">13 days ago</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Profile opened">View who entered this</button>
+        <button type="button" class="ap-action" data-toast="Verification requested from owner">Ask owner to verify</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="dispute">Dispute this value</button>
+      </div>
+      <div class="ap-confirm" data-for="dispute" hidden>
+        <p>Owner will be notified and the value flagged for re-entry.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary">File dispute</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">human · attributable</span>
+  </div>
+</div>
+
+<script src="agentic.js"></script>
+</body></html>

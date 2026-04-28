@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F2F4F5;font-family:var(--font-sans)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:920px}
+.card{background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:12px;min-height:130px;display:flex;flex-direction:column;gap:6px}
+.k{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700}
+.t{font-size:12px;font-weight:600;color:var(--fg-1);margin:0}
+.s{font-size:11px;color:var(--fg-2);line-height:1.5;margin:0}
+button.btn{height:26px;padding:0 10px;border:1px solid #E2E8F0;background:#fff;color:var(--fg-1);border-radius:4px;font-size:10.5px;font-weight:500;cursor:pointer;font-family:inherit;align-self:flex-start}
+button.prim{background:#171717;color:#fff;border:none}
+.skel{background:linear-gradient(90deg,#F1F5F9 25%,#E2E8F0 50%,#F1F5F9 75%);background-size:200% 100%;animation:sk 1.6s linear infinite;border-radius:4px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sev{font-size:10px;padding:2px 7px;border-radius:9999px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;align-self:flex-start}
+.amber{background:#FEF3CF;color:#7A4800;border:1px solid #FCE38F}
+.rose{background:#FDE7E2;color:#8A1E0D;border:1px solid #FBB8AB}
+.slate{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
+.emerald{background:#E0F2E8;color:#0D5C2E;border:1px solid #A8DDBF}
+.dots i{width:4px;height:4px;border-radius:50%;background:#29707A;display:inline-block;margin-right:3px;animation:ex 1s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes ex{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+svg{width:12px;height:12px}
+</style></head><body>
+<div class="grid">
+  <div class="card"><span class="k">loading</span><div class="skel" style="height:14px;width:60%"></div><div class="skel" style="height:10px;width:85%"></div><div class="skel" style="height:10px;width:70%"></div><div class="skel" style="height:26px;width:40%;margin-top:auto"></div></div>
+
+  <div class="card"><span class="k">empty</span><p class="t" style="text-align:center;margin:auto 0 4px">No stale CIs</p><p class="s" style="text-align:center">Scan ran 4m ago · nothing to triage</p><button class="btn prim" style="align-self:center">Run scan again</button></div>
+
+  <div class="card"><span class="k">filtered-empty</span><p class="t" style="text-align:center;margin:auto 0 4px">No results match filters</p><p class="s" style="text-align:center">3 filters active · 312 rows hidden</p><button class="btn" style="align-self:center">Clear all filters</button></div>
+
+  <div class="card" style="background:#FFF7ED;border-color:#FED7AA"><span class="k" style="color:#9A3412">error</span><p class="t">Couldn't load findings</p><p class="s">Upstream cmdb_sync returned 502 at 14:04. Agent has retried 2× unsuccessfully.</p><div style="display:flex;gap:6px"><button class="btn prim">Retry</button><button class="btn">Escalate</button></div></div>
+
+  <div class="card"><span class="k">stale</span><span class="sev amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>94d old</span><p class="t">Payments domain trust</p><p class="s">Underlying data not refreshed in 94 days. Treat figures as advisory.</p></div>
+
+  <div class="card"><span class="k">unauthorized</span><p class="t">Access review is approver-only</p><p class="s">Your role: <b>access.requestor</b>. Ask an admin to grant <code style="font-size:10px">access.reviewer</code> to see findings.</p><button class="btn">Request access</button></div>
+
+  <div class="card"><span class="k">executing</span><p class="t">Retiring 47 CIs…</p><p class="s dots"><i></i><i></i><i></i> Step 2 of 4 · validating incidents</p><div style="background:#F1F5F9;border-radius:9999px;height:4px;overflow:hidden"><div style="background:#29707A;height:100%;width:52%"></div></div><button class="btn" disabled style="opacity:.5;cursor:not-allowed">Execute · in flight</button></div>
+
+  <div class="card" style="background:#E0F2E8;border-color:#A8DDBF"><span class="k" style="color:#0D5C2E">success-after-action</span><span class="sev emerald"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Executed</span><p class="t">47 CIs retired · +2.1 pts trust</p><p class="s">Agent is monitoring for regressions</p><div style="display:flex;gap:6px"><button class="btn">View audit</button><button class="btn">Undo (4:12)</button></div></div>
+</div>
+</body></html>

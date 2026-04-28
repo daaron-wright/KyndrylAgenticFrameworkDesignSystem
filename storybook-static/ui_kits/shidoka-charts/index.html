@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shidoka — Charts Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg-page:#F1F5F9;
+  --fg-1:#0F172A; --fg-2:#334155; --fg-muted:#64748B;
+  --border-1:#E2E8F0; --border-2:#CBD5E1;
+  --primary:#29707A; --accent:#FF462D;
+  --shadow-1:0 1px 2px rgba(15,23,42,.05), 0 1px 3px rgba(15,23,42,.06);
+  --header-h:56px;
+  /* Shidoka data-viz categorical (10-step) */
+  --cat-1:#29707A; --cat-2:#FF462D; --cat-3:#3E8AC2; --cat-4:#8A4FBF;
+  --cat-5:#E68A00; --cat-6:#5C6A73; --cat-7:#5BA2AE; --cat-8:#FF8766;
+  --cat-9:#1F5580; --cat-10:#B82915;
+  /* Sequential (spruce) */
+  --seq-1:#E8F2F4; --seq-2:#BEDDE2; --seq-3:#91C4CC; --seq-4:#5BA2AE;
+  --seq-5:#3D8590; --seq-6:#29707A; --seq-7:#1F5A63; --seq-8:#17444B;
+  --seq-9:#0F2E33; --seq-10:#07191C;
+  /* Divergent (red↔neutral↔spruce) */
+  --neg-3:#B82915; --neg-2:#FF462D; --neg-1:#FF8766;
+  --neu:#E2E8F0;
+  --pos-1:#91C4CC; --pos-2:#3D8590; --pos-3:#17444B;
+  /* RAG */
+  --rag-success:#16A34A; --rag-warning:#F59E0B; --rag-error:#DC2626; --rag-info:#2563EB; --rag-critical:#7F1D1D;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg-page); color:var(--fg-1);
+  font:14px/1.5 var(--font-sans,'Roboto',system-ui,sans-serif);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Header */
+.kyn-header{
+  position:fixed; top:0; left:0; right:0; height:var(--header-h);
+  padding:4px 16px 4px 20px; margin:8px;
+  display:flex; align-items:center; gap:24px;
+  background:#fff; border-radius:8px; box-shadow:var(--shadow-1); z-index:100;
+}
+.kyn-header img{height:20px}
+.kyn-header .title{
+  font-family:'TWK Everett','TWKEverett',system-ui,sans-serif;
+  font-weight:300; font-size:16px;
+  padding-left:16px; border-left:1px solid var(--border-2);
+}
+.kyn-header nav{margin-left:24px; display:flex; gap:4px}
+.kyn-header nav a{
+  font-size:14px; color:var(--fg-1); text-decoration:none;
+  padding:6px 12px; border-radius:4px;
+}
+.kyn-header nav a:hover{background:#0F172A; color:#fff}
+.kyn-header nav a.is-active{background:rgba(41,112,122,.08); font-weight:500}
+.kyn-header .right{margin-left:auto; display:flex; align-items:center; gap:8px}
+.avatar{width:32px; height:32px; border-radius:50%; background:var(--primary); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:500}
+
+.layout{
+  padding-top:72px; padding-left:16px; padding-right:16px; padding-bottom:40px;
+  max-width:1600px; margin:0 auto;
+  display:grid; grid-template-columns:200px 1fr; gap:16px;
+}
+.sidenav{
+  background:#fff; border-radius:8px; box-shadow:var(--shadow-1);
+  padding:10px; height:fit-content; position:sticky; top:80px;
+}
+.sidenav h4{
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--fg-muted); margin:10px 8px 4px; font-weight:600;
+}
+.sidenav h4:first-child{margin-top:2px}
+.sidenav a{
+  display:block; font-size:13px; padding:6px 10px; border-radius:4px;
+  color:var(--fg-1); text-decoration:none;
+}
+.sidenav a:hover{background:rgba(15,23,42,.06)}
+.sidenav a.is-active{background:rgba(41,112,122,.08); font-weight:500}
+
+main{min-width:0}
+section.kit-section{
+  background:#fff; border-radius:8px; padding:24px;
+  box-shadow:var(--shadow-1); margin-bottom:16px;
+}
+section.kit-section > header{
+  padding-bottom:12px; margin-bottom:20px;
+  border-bottom:1px solid var(--border-1);
+  display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+section.kit-section > header h2{
+  font-family:'TWK Everett','TWKEverett',sans-serif;
+  font-weight:300; font-size:22px; margin:0 0 2px;
+}
+section.kit-section > header p{margin:0; color:var(--fg-muted); font-size:13px}
+section.kit-section > header .meta{font-size:11px; color:var(--fg-muted); letter-spacing:.08em; text-transform:uppercase; font-weight:600}
+
+.chart-title{font:500 13px/1.3 var(--font-sans); margin:0 0 2px}
+.chart-sub{font-size:11px; color:var(--fg-muted); margin:0 0 12px}
+.chart-wrap{position:relative}
+.chart-box{position:relative; height:260px}
+.chart-box.tall{height:320px}
+.chart-box.short{height:180px}
+
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.three-col{display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px}
+
+/* Legend */
+.legend{display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:10px; font-size:12px; color:var(--fg-2)}
+.legend .sw{display:inline-flex; align-items:center; gap:6px}
+.legend .sw i{width:10px; height:10px; border-radius:2px; display:inline-block}
+
+/* KPI meters */
+.meter-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+.meter{
+  padding:16px; border:1px solid var(--border-1); border-radius:8px; background:#fff;
+}
+.meter .lab{font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--fg-muted); font-weight:600; margin:0 0 4px}
+.meter .num{font-family:'TWK Everett',sans-serif; font-weight:400; font-size:28px; line-height:1; font-variant-numeric:tabular-nums; margin:0 0 8px}
+.meter .num small{font-size:14px; color:var(--fg-muted); font-weight:300}
+
+/* Dot/gauge trust */
+.trust-gauge{position:relative; width:200px; height:120px; margin:0 auto}
+.trust-label{text-align:center; margin-top:-34px; font-family:'TWK Everett',sans-serif; font-weight:400; font-size:32px; font-variant-numeric:tabular-nums}
+.trust-sub{text-align:center; font-size:11px; color:var(--fg-muted)}
+
+/* Status pill for meters */
+.pill{
+  display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px;
+  font-size:11px; font-weight:500;
+}
+.pill--ok{background:#D1FAE5; color:#065F46}
+.pill--warn{background:#FEF3C7; color:#92400E}
+.pill--err{background:#FEE2E2; color:#991B1B}
+.delta{font-size:12px; font-variant-numeric:tabular-nums}
+.delta.up{color:#16A34A} .delta.down{color:#DC2626}
+
+/* Swatch strip */
+.swatches{display:grid; grid-template-columns:repeat(10,1fr); gap:2px}
+.swatches div{height:24px; border-radius:2px; font-size:9px; color:#fff; display:flex; align-items:flex-end; justify-content:flex-start; padding:2px 4px; font-variant-numeric:tabular-nums; opacity:.95}
+
+/* Sankey custom SVG */
+.sankey-svg{width:100%; height:320px; display:block}
+.sankey-node rect{cursor:pointer; rx:2}
+.sankey-label{font:500 11px var(--font-sans); fill:var(--fg-1)}
+.sankey-sub{font:11px var(--font-sans); fill:var(--fg-muted)}
+.sankey-link{fill-opacity:.32; transition:fill-opacity 150ms}
+.sankey-link:hover{fill-opacity:.55}
+
+/* Matrix / heatmap */
+.matrix{display:grid; gap:2px; font-size:11px}
+.matrix .cell{aspect-ratio:1; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#fff; font-variant-numeric:tabular-nums; font-size:10px; font-weight:500}
+.matrix .axisY{padding-right:6px; display:flex; align-items:center; justify-content:flex-end; font-size:11px; color:var(--fg-muted)}
+.matrix .axisX{font-size:11px; color:var(--fg-muted); text-align:center; padding-top:4px}
+
+/* Tree / dendrogram */
+.tree-svg{width:100%; height:320px; display:block}
+.tree-svg .link{fill:none; stroke:#CBD5E1; stroke-width:1.25}
+.tree-svg .node circle{fill:#fff; stroke:var(--primary); stroke-width:2}
+.tree-svg .node.leaf circle{fill:var(--primary)}
+.tree-svg .node.warn circle{stroke:var(--rag-warning); fill:var(--rag-warning)}
+.tree-svg .node.err  circle{stroke:var(--rag-error); fill:var(--rag-error)}
+.tree-svg text{font:500 11px var(--font-sans); fill:var(--fg-1)}
+
+/* Map placeholder */
+.choropleth{
+  height:260px; background:
+    radial-gradient(ellipse at 30% 40%, #BEDDE2 0%, transparent 22%),
+    radial-gradient(ellipse at 50% 55%, #3D8590 0%, transparent 28%),
+    radial-gradient(ellipse at 68% 50%, #29707A 0%, transparent 26%),
+    radial-gradient(ellipse at 80% 65%, #91C4CC 0%, transparent 24%),
+    radial-gradient(ellipse at 20% 70%, #5BA2AE 0%, transparent 20%),
+    #F1F5F9;
+  background-blend-mode:multiply;
+  border-radius:8px; position:relative; overflow:hidden;
+  border:1px solid var(--border-1);
+}
+.choropleth .marker{
+  position:absolute; width:10px; height:10px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 0 3px rgba(255,70,45,.25);
+  transform:translate(-50%,-50%);
+}
+.choropleth .caption{
+  position:absolute; bottom:8px; left:10px; right:10px; font-size:11px;
+  color:var(--fg-muted); background:rgba(255,255,255,.8); padding:4px 8px; border-radius:4px;
+  backdrop-filter:blur(6px);
+}
+
+.hint{font-size:12px; color:var(--fg-muted); margin-top:8px}
+.tag{display:inline-flex; align-items:center; padding:2px 8px; border-radius:4px; font-size:11px; background:#F1F5F9; color:var(--fg-2)}
+</style>
+</head>
+<body>
+
+<header class="kyn-header">
+  <a href="#"><img src="../../assets/kyndryl-logo.png" alt="Kyndryl"></a>
+  <span class="title">Shidoka — Charts Kit</span>
+  <nav>
+    <a href="../shidoka-components/index.html">Components</a>
+    <a href="../shidoka-shell/index.html">Shell</a>
+    <a href="#" class="is-active">Charts</a>
+    <a href="../cmdb/index.html">CMDB kit ↗</a>
+  </nav>
+  <div class="right">
+    <span class="tag">Chart.js 4 · Shidoka palette</span>
+    <div class="avatar">DA</div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidenav">
+    <h4>Palette</h4>
+    <a href="#palettes">Categorical · Sequential · Divergent</a>
+    <h4>Rectilinear</h4>
+    <a href="#bar">Bar (grouped, stacked, 100%)</a>
+    <a href="#line">Line &amp; area</a>
+    <a href="#scatter">Scatter &amp; bubble</a>
+    <h4>Radial</h4>
+    <a href="#doughnut">Doughnut &amp; pie</a>
+    <a href="#polar">Polar &amp; radar</a>
+    <a href="#meter">Meter-gauge &amp; KPI</a>
+    <h4>Flow &amp; relation</h4>
+    <a href="#sankey">Sankey</a>
+    <a href="#tree">Tree / dendrogram</a>
+    <h4>Matrix &amp; map</h4>
+    <a href="#matrix">Heatmap / matrix</a>
+    <a href="#choropleth">Choropleth (concept)</a>
+    <h4>Distribution</h4>
+    <a href="#box">Boxplot</a>
+  </aside>
+
+  <main>
+
+    <!-- PALETTES -->
+    <section id="palettes" class="kit-section">
+      <header>
+        <div>
+          <h2>Palette</h2>
+          <p>Categorical slots (10, order-locked) · sequential (single hue, 10 steps) · divergent (negative → neutral → positive) · RAG.</p>
+        </div>
+        <span class="meta">colorPalettes.js</span>
+      </header>
+
+      <p class="chart-title">Categorical (<code>categorical</code>)</p>
+      <p class="chart-sub">Start at slot 1; repeat in order. Don’t sort by hue affinity.</p>
+      <div class="swatches">
+        <div style="background:var(--cat-1)">01</div><div style="background:var(--cat-2)">02</div>
+        <div style="background:var(--cat-3)">03</div><div style="background:var(--cat-4)">04</div>
+        <div style="background:var(--cat-5)">05</div><div style="background:var(--cat-6)">06</div>
+        <div style="background:var(--cat-7)">07</div><div style="background:var(--cat-8)">08</div>
+        <div style="background:var(--cat-9)">09</div><div style="background:var(--cat-10)">10</div>
+      </div>
+
+      <div class="two-col" style="margin-top:20px">
+        <div>
+          <p class="chart-title">Sequential 01 (<code>sequential01</code>)</p>
+          <p class="chart-sub">Spruce. For ordinal magnitude — heatmaps, choropleth.</p>
+          <div class="swatches">
+            <div style="background:var(--seq-1); color:var(--fg-1)">10</div><div style="background:var(--seq-2); color:var(--fg-1)">20</div>
+            <div style="background:var(--seq-3); color:var(--fg-1)">30</div><div style="background:var(--seq-4)">40</div>
+            <div style="background:var(--seq-5)">50</div><div style="background:var(--seq-6)">60</div>
+            <div style="background:var(--seq-7)">70</div><div style="background:var(--seq-8)">80</div>
+            <div style="background:var(--seq-9)">90</div><div style="background:var(--seq-10)">100</div>
+          </div>
+        </div>
+        <div>
+          <p class="chart-title">Divergent 01 (<code>divergent01</code>)</p>
+          <p class="chart-sub">Warm Red ↔ neutral ↔ Spruce. For signed deltas.</p>
+          <div class="swatches" style="grid-template-columns:repeat(7,1fr)">
+            <div style="background:var(--neg-3)">-3</div><div style="background:var(--neg-2)">-2</div><div style="background:var(--neg-1)">-1</div>
+            <div style="background:var(--neu); color:var(--fg-1)">0</div>
+            <div style="background:var(--pos-1); color:var(--fg-1)">+1</div><div style="background:var(--pos-2)">+2</div><div style="background:var(--pos-3)">+3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:20px">
+        <div>
+          <p class="chart-title">RAG-3 / RAG-8</p>
+          <p class="chart-sub">Status-coded series. Pair with icon + label.</p>
+          <div class="swatches" style="grid-template-columns:repeat(5,1fr)">
+            <div style="background:var(--rag-success)">OK</div>
+            <div style="background:var(--rag-warning); color:var(--fg-1)">Warn</div>
+            <div style="background:var(--rag-error)">Err</div>
+            <div style="background:var(--rag-info)">Info</div>
+            <div style="background:var(--rag-critical)">Crit</div>
+          </div>
+        </div>
+        <div style="font-size:13px; color:var(--fg-2)">
+          <p class="chart-title">When to pick which</p>
+          <p style="margin:0">• <strong>Categorical</strong> when series are mutually exclusive &amp; unordered (products, teams).</p>
+          <p style="margin:0">• <strong>Sequential</strong> for a single dimension of magnitude (counts, density).</p>
+          <p style="margin:0">• <strong>Divergent</strong> when values cross a meaningful mid (variance vs target, sentiment).</p>
+          <p style="margin:0">• <strong>RAG</strong> only to encode operational status — never for neutral categories.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAR -->
+    <section id="bar" class="kit-section">
+      <header><div><h2>Bar charts</h2><p>Grouped · stacked · 100% stacked · horizontal.</p></div></header>
+      <div class="two-col">
+        <div>
+          <p class="chart-title">CIs by environment &amp; status</p>
+          <p class="chart-sub">Grouped vertical bars · categorical slots 1–3.</p>
+          <div class="chart-box"><canvas id="bar-grouped"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Stale vs reconciled vs orphaned</p>
+          <p class="chart-sub">Stacked · RAG-3 palette.</p>
+          <div class="chart-box"><canvas id="bar-stacked"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Data-source contribution</p>
+          <p class="chart-sub">100%-stacked · sequential spruce.</p>
+          <div class="chart-box"><canvas id="bar-100"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Top 8 owners by open findings</p>
+          <p class="chart-sub">Horizontal · sorted desc.</p>
+          <div class="chart-box"><canvas id="bar-h"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINE -->
+    <section id="line" class="kit-section">
+      <header><div><h2>Line &amp; area</h2><p>Time series · smoothed · filled area · stacked area.</p></div></header>
+      <div class="two-col">
+        <div>
+          <p class="chart-title">Trust score — last 90 days</p>
+          <p class="chart-sub">Line with target marker. Fill below.</p>
+          <div class="chart-box tall"><canvas id="line-trust"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Reconciliation throughput</p>
+          <p class="chart-sub">Stacked area across 3 sources.</p>
+          <div class="chart-box tall"><canvas id="area-stack"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCATTER -->
+    <section id="scatter" class="kit-section">
+      <header><div><h2>Scatter &amp; bubble</h2><p>Two-axis primitive for risk / confidence plots.</p></div></header>
+      <div class="two-col">
+        <div>
+          <p class="chart-title">Confidence × blast radius</p>
+          <p class="chart-sub">Each dot = one agent recommendation. Size = # affected CIs.</p>
+          <div class="chart-box tall"><canvas id="bubble"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Freshness × CI count</p>
+          <p class="chart-sub">Scatter, two series (Prod / Non-Prod).</p>
+          <div class="chart-box tall"><canvas id="scatter-chart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOUGHNUT -->
+    <section id="doughnut" class="kit-section">
+      <header><div><h2>Doughnut &amp; pie</h2><p>Part-to-whole. Doughnut allows a centered label.</p></div></header>
+      <div class="three-col">
+        <div>
+          <p class="chart-title">CI status distribution</p>
+          <p class="chart-sub">Doughnut · RAG-3.</p>
+          <div class="chart-box"><canvas id="doughnut-chart"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Ownership coverage</p>
+          <p class="chart-sub">Pie · categorical.</p>
+          <div class="chart-box"><canvas id="pie"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Change requests by risk</p>
+          <p class="chart-sub">Doughnut · divergent (neg ↔ pos).</p>
+          <div class="chart-box"><canvas id="doughnut2"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POLAR / RADAR -->
+    <section id="polar" class="kit-section">
+      <header><div><h2>Polar &amp; radar</h2><p>Radar for multi-dim assessments (SLO coverage, trust dimensions).</p></div></header>
+      <div class="two-col">
+        <div>
+          <p class="chart-title">Trust posture by dimension</p>
+          <p class="chart-sub">Radar · this month vs last.</p>
+          <div class="chart-box tall"><canvas id="radar"></canvas></div>
+        </div>
+        <div>
+          <p class="chart-title">Volume by region</p>
+          <p class="chart-sub">Polar area · categorical.</p>
+          <div class="chart-box tall"><canvas id="polar-chart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METER -->
+    <section id="meter" class="kit-section">
+      <header><div><h2>Meter-gauge &amp; KPI</h2><p>Single-value dials paired with target markers and status pills.</p></div></header>
+      <div class="meter-grid">
+        <div class="meter">
+          <p class="lab">Trust score</p>
+          <div class="trust-gauge"><canvas id="gauge-1"></canvas></div>
+          <p class="trust-label">78.4<small> / 100</small></p>
+          <p class="trust-sub">Target 85 · <span class="delta up">+2.1</span></p>
+        </div>
+        <div class="meter">
+          <p class="lab">Freshness</p>
+          <div class="trust-gauge"><canvas id="gauge-2"></canvas></div>
+          <p class="trust-label">92<small>%</small></p>
+          <p class="trust-sub">Target 95 · <span class="pill pill--warn">Below</span></p>
+        </div>
+        <div class="meter">
+          <p class="lab">Reconciliation rate</p>
+          <div class="trust-gauge"><canvas id="gauge-3"></canvas></div>
+          <p class="trust-label">68<small>%</small></p>
+          <p class="trust-sub">Target 80 · <span class="pill pill--err">Gap</span></p>
+        </div>
+        <div class="meter">
+          <p class="lab">Automation coverage</p>
+          <div class="trust-gauge"><canvas id="gauge-4"></canvas></div>
+          <p class="trust-label">41<small>%</small></p>
+          <p class="trust-sub">Target 60 · <span class="pill pill--err">Gap</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SANKEY -->
+    <section id="sankey" class="kit-section">
+      <header><div><h2>Sankey</h2><p>Flow from data source → CI state → disposition. Widths = CI counts.</p></div></header>
+      <svg class="sankey-svg" viewBox="0 0 900 320" aria-label="Sankey">
+        <defs>
+          <linearGradient id="lk1" x1="0" x2="1"><stop offset="0" stop-color="#29707A"/><stop offset="1" stop-color="#FF462D"/></linearGradient>
+          <linearGradient id="lk2" x1="0" x2="1"><stop offset="0" stop-color="#3E8AC2"/><stop offset="1" stop-color="#29707A"/></linearGradient>
+          <linearGradient id="lk3" x1="0" x2="1"><stop offset="0" stop-color="#5BA2AE"/><stop offset="1" stop-color="#B82915"/></linearGradient>
+        </defs>
+        <!-- Columns: Source (x=80) → State (x=440) → Disposition (x=820) -->
+        <!-- Nodes col 1 -->
+        <g class="sankey-node">
+          <rect x="60"  y="30"  width="20" height="70" fill="#29707A"/>
+          <text class="sankey-label" x="20"  y="50">ServiceNow</text><text class="sankey-sub" x="20" y="66">612 CIs</text>
+          <rect x="60"  y="120" width="20" height="100" fill="#3E8AC2"/>
+          <text class="sankey-label" x="20"  y="140">Cloud inventory</text><text class="sankey-sub" x="20" y="156">442 CIs</text>
+          <rect x="60"  y="240" width="20" height="50" fill="#5BA2AE"/>
+          <text class="sankey-label" x="20"  y="260">Manual</text><text class="sankey-sub" x="20" y="276">230 CIs</text>
+        </g>
+        <!-- Links col1 -> col2 -->
+        <path class="sankey-link" d="M80 30 C 260 30 260 30 440 20 L 440 90 C 260 100 260 100 80 100 Z" fill="url(#lk1)"/>
+        <path class="sankey-link" d="M80 120 C 260 120 260 140 440 130 L 440 200 C 260 210 260 210 80 220 Z" fill="url(#lk2)"/>
+        <path class="sankey-link" d="M80 240 C 260 240 260 260 440 230 L 440 290 C 260 300 260 300 80 290 Z" fill="url(#lk3)"/>
+        <!-- Nodes col 2 -->
+        <g class="sankey-node">
+          <rect x="440" y="20"  width="20" height="70" fill="#16A34A"/>
+          <text class="sankey-label" x="470" y="40">Reconciled</text><text class="sankey-sub" x="470" y="56">728 CIs</text>
+          <rect x="440" y="130" width="20" height="70" fill="#F59E0B"/>
+          <text class="sankey-label" x="470" y="150">Stale</text><text class="sankey-sub" x="470" y="166">214 CIs</text>
+          <rect x="440" y="230" width="20" height="60" fill="#DC2626"/>
+          <text class="sankey-label" x="470" y="250">Orphaned</text><text class="sankey-sub" x="470" y="266">342 CIs</text>
+        </g>
+        <!-- Links col2 -> col3 -->
+        <path class="sankey-link" d="M460 20 C 640 20 640 30 820 25 L 820 90 C 640 95 640 90 460 90 Z" fill="#16A34A"/>
+        <path class="sankey-link" d="M460 130 C 640 130 640 115 820 110 L 820 150 C 640 160 640 200 460 200 Z" fill="#F59E0B"/>
+        <path class="sankey-link" d="M460 230 C 640 230 640 195 820 175 L 820 260 C 640 285 640 290 460 290 Z" fill="#DC2626"/>
+        <!-- Nodes col 3 -->
+        <g class="sankey-node">
+          <rect x="820" y="25"  width="20" height="65" fill="#29707A"/>
+          <text class="sankey-label" x="848" y="45">Automated</text>
+          <rect x="820" y="110" width="20" height="40" fill="#5BA2AE"/>
+          <text class="sankey-label" x="848" y="130">Agent queue</text>
+          <rect x="820" y="175" width="20" height="85" fill="#B82915"/>
+          <text class="sankey-label" x="848" y="200">Manual review</text>
+        </g>
+      </svg>
+      <p class="hint">SVG reference — the real component uses chartjs-chart-sankey with <code>sankey</code> chart type.</p>
+    </section>
+
+    <!-- TREE -->
+    <section id="tree" class="kit-section">
+      <header><div><h2>Tree / dendrogram</h2><p>Hierarchical relationships — service → BU → app → CI.</p></div></header>
+      <svg class="tree-svg" viewBox="0 0 900 320" aria-label="Service tree">
+        <g class="link">
+          <path d="M80 160 C 200 160 200 60  320 60"/>
+          <path d="M80 160 C 200 160 200 160 320 160"/>
+          <path d="M80 160 C 200 160 200 260 320 260"/>
+          <path d="M320 60  C 440 60  440 30  560 30"/>
+          <path d="M320 60  C 440 60  440 90  560 90"/>
+          <path d="M320 160 C 440 160 440 130 560 130"/>
+          <path d="M320 160 C 440 160 440 190 560 190"/>
+          <path d="M320 260 C 440 260 440 240 560 240"/>
+          <path d="M320 260 C 440 260 440 290 560 290"/>
+          <path d="M560 30  C 680 30  680 20  800 20"/>
+          <path d="M560 30  C 680 30  680 50  800 50"/>
+          <path d="M560 130 C 680 130 680 130 800 130"/>
+          <path d="M560 190 C 680 190 680 190 800 190"/>
+          <path d="M560 240 C 680 240 680 240 800 240"/>
+          <path d="M560 290 C 680 290 680 290 800 290"/>
+        </g>
+        <g class="node">
+          <g><circle cx="80"  cy="160" r="6"/><text x="60" y="145" text-anchor="end">Payments</text></g>
+          <g><circle cx="320" cy="60"  r="5"/><text x="310" y="52" text-anchor="end">Checkout</text></g>
+          <g><circle cx="320" cy="160" r="5"/><text x="310" y="152" text-anchor="end">Ledger</text></g>
+          <g><circle cx="320" cy="260" r="5"/><text x="310" y="252" text-anchor="end">Fraud</text></g>
+          <g><circle cx="560" cy="30"  r="4"/><text x="572" y="34">checkout-api</text></g>
+          <g class="warn"><circle cx="560" cy="90"  r="4"/><text x="572" y="94">checkout-worker</text></g>
+          <g><circle cx="560" cy="130" r="4"/><text x="572" y="134">ledger-db</text></g>
+          <g class="err"><circle cx="560" cy="190" r="4"/><text x="572" y="194">ledger-worker</text></g>
+          <g><circle cx="560" cy="240" r="4"/><text x="572" y="244">fraud-score</text></g>
+          <g><circle cx="560" cy="290" r="4"/><text x="572" y="294">fraud-rules</text></g>
+          <g class="leaf"><circle cx="800" cy="20"  r="3"/><text x="810" y="23">CI-0019837</text></g>
+          <g class="leaf"><circle cx="800" cy="50"  r="3"/><text x="810" y="53">CI-0019841</text></g>
+          <g class="leaf"><circle cx="800" cy="130" r="3"/><text x="810" y="133">CI-0019855</text></g>
+          <g class="leaf"><circle cx="800" cy="190" r="3"/><text x="810" y="193">CI-0019902</text></g>
+          <g class="leaf"><circle cx="800" cy="240" r="3"/><text x="810" y="243">CI-0019911</text></g>
+          <g class="leaf"><circle cx="800" cy="290" r="3"/><text x="810" y="293">CI-0019955</text></g>
+        </g>
+      </svg>
+      <p class="hint">SVG reference. The real component uses <code>tree</code> / <code>dendrogram</code> / <code>forceDirectedGraph</code> chart types.</p>
+    </section>
+
+    <!-- MATRIX -->
+    <section id="matrix" class="kit-section">
+      <header><div><h2>Heatmap / matrix</h2><p>Stale CIs by service &amp; week. Sequential01 scale.</p></div></header>
+      <div style="display:grid; grid-template-columns:120px 1fr; gap:4px">
+        <div></div>
+        <div id="matrix-x" class="matrix" style="grid-template-columns:repeat(12,1fr)"></div>
+        <div id="matrix-y" style="display:grid; grid-template-rows:repeat(6,32px); gap:2px"></div>
+        <div id="matrix-cells" class="matrix" style="grid-template-columns:repeat(12,1fr); grid-template-rows:repeat(6,32px)"></div>
+      </div>
+      <div class="legend" style="margin-top:16px">
+        <span>Low</span>
+        <span style="display:inline-flex; gap:2px">
+          <i style="width:16px; height:10px; background:var(--seq-2)"></i>
+          <i style="width:16px; height:10px; background:var(--seq-4)"></i>
+          <i style="width:16px; height:10px; background:var(--seq-6)"></i>
+          <i style="width:16px; height:10px; background:var(--seq-8)"></i>
+          <i style="width:16px; height:10px; background:var(--seq-10)"></i>
+        </span>
+        <span>High</span>
+      </div>
+    </section>
+
+    <!-- CHOROPLETH -->
+    <section id="choropleth" class="kit-section">
+      <header><div><h2>Choropleth (concept)</h2><p>Region-coded density. Sequential01 with bubble markers for outliers.</p></div></header>
+      <div class="choropleth">
+        <div class="marker" style="left:22%; top:38%"></div>
+        <div class="marker" style="left:68%; top:52%"></div>
+        <div class="marker" style="left:80%; top:64%"></div>
+        <div class="caption">Placeholder visual — real component renders as <code>choropleth</code> or <code>bubbleMap</code> with GeoJSON.</div>
+      </div>
+    </section>
+
+    <!-- BOXPLOT -->
+    <section id="box" class="kit-section">
+      <header><div><h2>Boxplot</h2><p>Reconciliation latency (min) · by source.</p></div></header>
+      <div class="two-col">
+        <div>
+          <p class="chart-title">Latency distribution</p>
+          <svg viewBox="0 0 600 300" style="width:100%; height:300px; display:block" aria-label="Boxplot">
+            <!-- axis -->
+            <line x1="60" x2="60" y1="30" y2="260" stroke="#CBD5E1"/>
+            <line x1="60" x2="580" y1="260" y2="260" stroke="#CBD5E1"/>
+            <g font-size="10" fill="#64748B">
+              <text x="56" y="264" text-anchor="end">0</text>
+              <text x="56" y="204" text-anchor="end">30</text>
+              <text x="56" y="144" text-anchor="end">60</text>
+              <text x="56" y="84"  text-anchor="end">90</text>
+              <text x="56" y="34"  text-anchor="end">120</text>
+            </g>
+            <!-- boxes -->
+            <g>
+              <!-- SNow -->
+              <line x1="140" x2="140" y1="90"  y2="240" stroke="#29707A" stroke-width="1.5"/>
+              <rect x="110" y="130" width="60" height="70" fill="#BEDDE2" stroke="#29707A"/>
+              <line x1="110" x2="170" y1="170" y2="170" stroke="#29707A" stroke-width="2"/>
+              <text x="140" y="278" text-anchor="middle" fill="#64748B" font-size="11">ServiceNow</text>
+              <!-- Cloud -->
+              <line x1="300" x2="300" y1="60"  y2="230" stroke="#FF462D" stroke-width="1.5"/>
+              <rect x="270" y="110" width="60" height="100" fill="#FFE8E0" stroke="#FF462D"/>
+              <line x1="270" x2="330" y1="150" y2="150" stroke="#FF462D" stroke-width="2"/>
+              <text x="300" y="278" text-anchor="middle" fill="#64748B" font-size="11">Cloud inv.</text>
+              <!-- Manual -->
+              <line x1="460" x2="460" y1="40"  y2="250" stroke="#3E8AC2" stroke-width="1.5"/>
+              <rect x="430" y="90"  width="60" height="120" fill="#DBEAFE" stroke="#3E8AC2"/>
+              <line x1="430" x2="490" y1="130" y2="130" stroke="#3E8AC2" stroke-width="2"/>
+              <text x="460" y="278" text-anchor="middle" fill="#64748B" font-size="11">Manual</text>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <p class="chart-title">When to reach for this</p>
+          <p style="color:var(--fg-2); font-size:13px; margin:0 0 12px">Distributions, outliers, SLO tails. Pair with p50/p95 annotation. Shidoka provides <code>boxplot</code> and <code>violin</code> chart types for this.</p>
+          <p style="color:var(--fg-muted); font-size:12px">Pattern reference — chart.js-chart-boxplot in the real component.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer style="text-align:center; padding:24px 0 8px; font-size:12px; color:var(--fg-muted)">
+      Shidoka charts kit · recreated for Kyndryl CMDB DS
+    </footer>
+  </main>
+</div>
+
+<script>
+// ---------- Chart.js defaults ----------
+(function(){
+  const C = Chart;
+  C.defaults.font.family = "'Roboto', system-ui, sans-serif";
+  C.defaults.font.size = 11;
+  C.defaults.color = '#64748B';
+  C.defaults.borderColor = '#E2E8F0';
+  C.defaults.plugins.legend.labels.boxWidth = 10;
+  C.defaults.plugins.legend.labels.boxHeight = 10;
+  C.defaults.plugins.legend.labels.padding = 12;
+  C.defaults.plugins.tooltip.backgroundColor = '#0F172A';
+  C.defaults.plugins.tooltip.padding = 10;
+  C.defaults.plugins.tooltip.cornerRadius = 4;
+  C.defaults.plugins.tooltip.titleFont = {weight: '500', size: 12};
+  C.defaults.plugins.tooltip.bodyFont = {size: 12};
+})();
+
+const CAT = ['#29707A','#FF462D','#3E8AC2','#8A4FBF','#E68A00','#5C6A73','#5BA2AE','#FF8766','#1F5580','#B82915'];
+const RAG3 = ['#16A34A','#F59E0B','#DC2626'];
+const SEQ  = ['#BEDDE2','#91C4CC','#5BA2AE','#3D8590','#29707A','#1F5A63','#17444B'];
+const DIV  = ['#B82915','#FF462D','#FF8766','#E2E8F0','#91C4CC','#3D8590','#17444B'];
+
+const gridOpts = {
+  grid: { color:'#F1F5F9', drawBorder:false, tickColor:'transparent' },
+  ticks: { color:'#64748B' },
+};
+
+// ---------- BAR: grouped ----------
+new Chart('bar-grouped', { type:'bar',
+  data:{
+    labels:['Prod','Stage','Dev','Sandbox'],
+    datasets:[
+      {label:'Reconciled', data:[612,142,204,118], backgroundColor:CAT[0], borderRadius:2},
+      {label:'Stale',      data:[184,62,38,22],  backgroundColor:CAT[1], borderRadius:2},
+      {label:'Orphaned',   data:[48,18,8,4],     backgroundColor:CAT[2], borderRadius:2},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{ x:{...gridOpts, grid:{display:false}}, y:{...gridOpts, beginAtZero:true} }
+  }
+});
+
+// ---------- BAR: stacked RAG ----------
+new Chart('bar-stacked', { type:'bar',
+  data:{
+    labels:['Oct 27','Nov 3','Nov 10','Nov 17','Nov 24'],
+    datasets:[
+      {label:'Reconciled', data:[620,640,665,684,728], backgroundColor:RAG3[0]},
+      {label:'Stale',      data:[210,205,198,220,214], backgroundColor:RAG3[1]},
+      {label:'Orphaned',   data:[410,388,362,350,342], backgroundColor:RAG3[2]},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{
+      x:{...gridOpts, stacked:true, grid:{display:false}},
+      y:{...gridOpts, stacked:true, beginAtZero:true}
+    }
+  }
+});
+
+// ---------- BAR: 100% stacked ----------
+new Chart('bar-100', { type:'bar',
+  data:{
+    labels:['Week 1','Week 2','Week 3','Week 4'],
+    datasets:[
+      {label:'ServiceNow',    data:[52,48,50,54], backgroundColor:SEQ[5]},
+      {label:'Cloud inventory', data:[28,32,30,28], backgroundColor:SEQ[3]},
+      {label:'Manual',        data:[20,20,20,18], backgroundColor:SEQ[1]},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.raw+'%'}}},
+    scales:{
+      x:{...gridOpts, stacked:true, grid:{display:false}},
+      y:{...gridOpts, stacked:true, beginAtZero:true, max:100, ticks:{callback:v=>v+'%', color:'#64748B'}}
+    }
+  }
+});
+
+// ---------- BAR: horizontal ----------
+new Chart('bar-h', { type:'bar',
+  data:{
+    labels:['payments-team','data-platform','fraud-eng','checkout','auth','infra-ops','web','mobile'],
+    datasets:[{label:'Open findings', data:[48,41,33,28,24,18,14,9], backgroundColor:CAT[0], borderRadius:2, barThickness:14}]
+  },
+  options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false}},
+    scales:{ x:{...gridOpts, beginAtZero:true}, y:{...gridOpts, grid:{display:false}} }
+  }
+});
+
+// ---------- LINE: trust ----------
+new Chart('line-trust', { type:'line',
+  data:{
+    labels:['S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12'],
+    datasets:[
+      {label:'Trust score', data:[72,73,71,74,75,76,76,77,78,77,78,78.4],
+        borderColor:CAT[0], backgroundColor:'rgba(41,112,122,.12)',
+        fill:true, tension:.35, pointRadius:3, pointBackgroundColor:CAT[0]},
+      {label:'Target 85', data:Array(12).fill(85), borderColor:'#94A3B8',
+        borderDash:[4,4], pointRadius:0, fill:false, tension:0}
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{ x:{...gridOpts, grid:{display:false}}, y:{...gridOpts, min:60, max:100}}
+  }
+});
+
+// ---------- AREA: stacked ----------
+new Chart('area-stack', { type:'line',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets:[
+      {label:'ServiceNow',       data:[120,140,135,150,170,80,60], borderColor:CAT[0], backgroundColor:'rgba(41,112,122,.35)', fill:'origin', tension:.3, pointRadius:0},
+      {label:'Cloud inventory',  data:[80,95,90,110,120,55,40],    borderColor:CAT[2], backgroundColor:'rgba(62,138,194,.32)', fill:'-1',     tension:.3, pointRadius:0},
+      {label:'Manual',           data:[30,28,32,38,42,15,12],      borderColor:CAT[6], backgroundColor:'rgba(91,162,174,.32)', fill:'-1',     tension:.3, pointRadius:0},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{ x:{...gridOpts, grid:{display:false}}, y:{...gridOpts, stacked:true, beginAtZero:true}}
+  }
+});
+
+// ---------- BUBBLE ----------
+new Chart('bubble', { type:'bubble',
+  data:{
+    datasets:[
+      {label:'High confidence', backgroundColor:'rgba(41,112,122,.55)', borderColor:CAT[0],
+        data:[{x:92,y:14,r:16},{x:88,y:22,r:10},{x:95,y:8,r:22},{x:84,y:18,r:7},{x:90,y:11,r:14}]},
+      {label:'Low confidence', backgroundColor:'rgba(255,70,45,.5)', borderColor:CAT[1],
+        data:[{x:62,y:48,r:18},{x:58,y:55,r:12},{x:66,y:40,r:9},{x:54,y:62,r:22},{x:70,y:44,r:14}]},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{
+      x:{...gridOpts, title:{display:true, text:'Confidence %'}, min:40, max:100},
+      y:{...gridOpts, title:{display:true, text:'Blast radius'}, beginAtZero:true}
+    }
+  }
+});
+
+// ---------- SCATTER ----------
+new Chart('scatter-chart', { type:'scatter',
+  data:{
+    datasets:[
+      {label:'Prod',     backgroundColor:CAT[1], data: Array.from({length:24},()=>({x:Math.random()*30, y:Math.random()*500}))},
+      {label:'Non-Prod', backgroundColor:CAT[0], data: Array.from({length:24},()=>({x:Math.random()*30, y:Math.random()*800}))},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{
+      x:{...gridOpts, title:{display:true, text:'Days since last seen'}, beginAtZero:true},
+      y:{...gridOpts, title:{display:true, text:'CIs'}, beginAtZero:true}
+    }
+  }
+});
+
+// ---------- DOUGHNUT ----------
+new Chart('doughnut-chart', { type:'doughnut',
+  data:{ labels:['Reconciled','Stale','Orphaned'], datasets:[{data:[728,214,342], backgroundColor:RAG3, borderWidth:0}] },
+  options:{ maintainAspectRatio:false, cutout:'65%', plugins:{legend:{position:'bottom'}} }
+});
+
+// ---------- PIE ----------
+new Chart('pie', { type:'pie',
+  data:{ labels:['Payments','Data platform','Fraud','Checkout','Auth','Other'], datasets:[{data:[412,268,210,184,142,68], backgroundColor:CAT.slice(0,6), borderWidth:0}] },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
+});
+
+// ---------- DOUGHNUT2 divergent ----------
+new Chart('doughnut2', { type:'doughnut',
+  data:{ labels:['High risk','Med risk','Low risk','Benign','Improvement'],
+    datasets:[{data:[18,34,58,22,12], backgroundColor:[DIV[0],DIV[1],DIV[2],DIV[4],DIV[5]], borderWidth:0}] },
+  options:{ maintainAspectRatio:false, cutout:'58%', plugins:{legend:{position:'bottom'}} }
+});
+
+// ---------- RADAR ----------
+new Chart('radar', { type:'radar',
+  data:{
+    labels:['Freshness','Ownership','Reconciliation','Automation','Coverage','Accuracy'],
+    datasets:[
+      {label:'This month', data:[78,82,68,41,74,86], borderColor:CAT[0], backgroundColor:'rgba(41,112,122,.22)', pointBackgroundColor:CAT[0]},
+      {label:'Last month', data:[72,80,62,35,72,84], borderColor:CAT[1], backgroundColor:'rgba(255,70,45,.18)', pointBackgroundColor:CAT[1]},
+    ]
+  },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{ r:{ suggestedMin:0, suggestedMax:100, angleLines:{color:'#E2E8F0'}, grid:{color:'#F1F5F9'}, pointLabels:{color:'#334155', font:{size:11}}, ticks:{backdropColor:'transparent', color:'#94A3B8'}}}
+  }
+});
+
+// ---------- POLAR ----------
+new Chart('polar-chart', { type:'polarArea',
+  data:{ labels:['us-east-1','us-west-2','eu-west-1','eu-central-1','ap-south-1','ap-ne-1'],
+    datasets:[{data:[612,284,342,218,184,122], backgroundColor:CAT.slice(0,6).map(c=>c)}] },
+  options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+    scales:{ r:{ grid:{color:'#F1F5F9'}, angleLines:{color:'#E2E8F0'}, ticks:{backdropColor:'transparent', color:'#94A3B8'}}}
+  }
+});
+
+// ---------- METER GAUGES ----------
+function gauge(id, value, target, color){
+  new Chart(id, { type:'doughnut',
+    data:{
+      datasets:[{
+        data:[value, 100-value],
+        backgroundColor:[color, '#E2E8F0'],
+        borderWidth:0,
+        circumference:180, rotation:270, cutout:'72%'
+      }]
+    },
+    options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}} }
+  });
+}
+gauge('gauge-1', 78, 85, CAT[0]);
+gauge('gauge-2', 92, 95, CAT[0]);
+gauge('gauge-3', 68, 80, '#F59E0B');
+gauge('gauge-4', 41, 60, '#DC2626');
+
+// ---------- MATRIX / heatmap ----------
+(function(){
+  const xAxis = document.getElementById('matrix-x');
+  const yAxis = document.getElementById('matrix-y');
+  const cells = document.getElementById('matrix-cells');
+  const rows = ['payments','checkout','ledger','fraud','auth','infra'];
+  const cols = ['W27','W28','W29','W30','W31','W32','W33','W34','W35','W36','W37','W38'];
+  const palette = ['#F1F5F9','#BEDDE2','#91C4CC','#5BA2AE','#3D8590','#29707A','#17444B'];
+  cols.forEach(c=>{ const d=document.createElement('div'); d.className='axisX'; d.textContent=c; xAxis.appendChild(d); });
+  rows.forEach(r=>{ const d=document.createElement('div'); d.className='axisY'; d.textContent=r; d.style.height='32px'; yAxis.appendChild(d); });
+  rows.forEach((_,ri)=>{
+    cols.forEach((_,ci)=>{
+      const v = Math.max(0, Math.round(Math.sin(ri*0.9+ci*0.4)*3 + Math.random()*3));
+      const idx = Math.min(palette.length-1, v);
+      const d = document.createElement('div'); d.className='cell';
+      d.style.background = palette[idx];
+      d.style.color = idx > 3 ? '#fff' : '#334155';
+      d.textContent = v;
+      d.title = rows[ri]+' · '+cols[ci]+' · '+v+' stale CIs';
+      cells.appendChild(d);
+    });
+  });
+})();
+</script>
+</body>
+</html>

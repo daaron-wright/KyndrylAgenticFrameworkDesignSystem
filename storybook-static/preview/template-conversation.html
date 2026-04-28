@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC;font-family:var(--font-sans)}
+.t{max-width:900px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px;display:grid;grid-template-columns:1fr 260px;gap:10px}
+.slot{border:1.5px dashed #CBD5E1;border-radius:6px;padding:10px;background:#F8FAFC;color:#64748B;font-family:var(--font-mono);font-size:10px;min-height:36px;display:flex;align-items:center;justify-content:center}
+.hdr{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--border-1)}
+.hdr h2{margin:0;font-size:14px;font-weight:600}
+.hdr span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);font-weight:700}
+.col{display:flex;flex-direction:column;gap:8px}
+</style></head><body>
+<div class="t">
+  <div class="hdr"><h2>ConversationTemplate</h2><span>Message stream · composer · persistent snapshot rail</span></div>
+  <div class="col">
+    <div class="slot" style="min-height:60px;justify-content:flex-start">ChatMessage · user</div>
+    <div class="slot" style="min-height:120px;justify-content:flex-start;flex-direction:column;align-items:flex-start">
+      <div>ChatMessage · assistant · markdown + HighlightLinks</div>
+      <div style="margin-top:8px;width:100%"><div class="slot" style="min-height:40px">SnapshotCard · highlight-link bound</div></div>
+    </div>
+    <div class="slot" style="min-height:50px">composer · input + attach + send</div>
+  </div>
+  <div class="col">
+    <div class="slot" style="flex-direction:column;align-items:flex-start">Context rail</div>
+    <div class="slot">pinned snapshots</div>
+    <div class="slot">recent queries</div>
+    <div class="slot">SourceAttribution footer</div>
+  </div>
+</div>
+</body></html>

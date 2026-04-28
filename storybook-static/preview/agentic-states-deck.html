@@ -1,0 +1,758 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Agentic interaction states · deck</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  /* ===== deck-level layout ===== */
+  html,body{margin:0;padding:0;background:#000;font-family:var(--font-sans);color:var(--fg-1)}
+  deck-stage{display:block}
+  section{
+    width:1920px;height:1080px;background:#fff;
+    display:grid;grid-template-rows:auto 1fr auto;
+    padding:64px 96px 56px;box-sizing:border-box;
+    position:relative;overflow:hidden;
+  }
+
+  /* slide header */
+  .hd{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .hd .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--k-spruce-70);font-weight:700;font-family:var(--font-mono);
+  }
+  .hd .eyebrow svg{width:13px;height:13px}
+  .hd .ix{
+    margin-left:auto;font-family:var(--font-mono);font-size:12px;
+    color:var(--fg-muted);letter-spacing:.06em;
+  }
+  h1{font-family:var(--font-display);font-size:64px;font-weight:500;letter-spacing:-.015em;margin:0 0 14px;color:var(--fg-1);line-height:1.05}
+  h2{font-family:var(--font-display);font-size:48px;font-weight:500;letter-spacing:-.015em;margin:0 0 8px;color:var(--fg-1);line-height:1.1}
+  .lede{font-size:22px;line-height:1.45;color:var(--fg-2);max-width:1440px;margin:0 0 28px;text-wrap:pretty}
+  .sub{font-size:18px;line-height:1.5;color:var(--fg-muted);max-width:1100px;margin:0;text-wrap:pretty}
+
+  /* slide footer */
+  .ft{
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);
+    border-top:1px solid var(--border-1);padding-top:18px;letter-spacing:.06em;
+  }
+  .ft .l{display:inline-flex;align-items:center;gap:10px}
+  .ft .l .gl{
+    width:14px;height:14px;display:inline-block;
+    background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+  }
+
+  /* body grid */
+  .body{display:grid;gap:48px;align-content:start}
+  .body.split{grid-template-columns:1.05fr .95fr;align-items:start}
+
+  /* primitive container */
+  .demo{
+    background:#fff;border-radius:14px;padding:32px;
+    border:1px solid var(--border-1);
+    box-shadow:0 1px 0 rgba(15,23,42,.02), 0 12px 36px -18px rgba(15,23,42,.18);
+  }
+  .demo + .demo{margin-top:20px}
+
+  /* rules block */
+  .rules{font-size:18px;color:var(--fg-2);line-height:1.55}
+  .rules .kicker{
+    display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--fg-muted);font-weight:700;font-family:var(--font-mono);margin-bottom:14px;
+  }
+  .rules ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;text-wrap:pretty}
+  .rules ul li::marker{color:var(--k-spruce-60)}
+  .rules strong{color:var(--fg-1)}
+  .rules code{font-family:var(--font-mono);font-size:.92em;background:var(--bg-3);padding:1px 6px;border-radius:3px;color:var(--fg-1)}
+
+  /* shared AI-edge gradient border */
+  .ai-edge{
+    background:#fff padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+    border:1px solid transparent;
+  }
+  .ai-edge.tint{
+    background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05)) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+  }
+  .ai-glyph{
+    width:18px;height:18px;display:inline-block;flex-shrink:0;
+    background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;
+  }
+  code,.t-mono{font-family:var(--font-mono);font-size:14px;background:var(--bg-3);padding:2px 7px;border-radius:4px;color:var(--fg-1)}
+
+  @keyframes asb-pulse{0%,100%{box-shadow:0 0 0 0 rgba(41,112,122,.55)}50%{box-shadow:0 0 0 6px rgba(41,112,122,0)}}
+
+  /* =========================================================
+     PRIMITIVE STYLES — scaled up from 13px UI to 18-22px deck
+     ========================================================= */
+
+  /* === AGENT STATUS BAR === */
+  .asb{
+    display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;font-size:18px;
+    background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05)) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+    border:1px solid transparent;
+  }
+  .asb.thinking .dot, .asb.streaming .dot{background:var(--k-spruce-60)}
+  .asb.paused{
+    background:linear-gradient(135deg, rgba(255,255,255,1), rgba(255,255,255,1)) padding-box,
+      linear-gradient(135deg, rgba(180,83,9,.5), rgba(180,83,9,.5)) border-box;
+  }
+  .asb.paused .dot{background:#B45309;animation:none}
+  .asb.done{
+    background:linear-gradient(135deg, rgba(16,185,129,.06), rgba(16,185,129,.06)) padding-box,
+      linear-gradient(135deg, rgba(16,185,129,.5), rgba(16,185,129,.5)) border-box;
+  }
+  .asb.done .dot{background:#10B981;animation:none}
+  .asb .dot{width:9px;height:9px;border-radius:50%;background:var(--k-spruce-60);animation:asb-pulse 1.4s ease-in-out infinite;flex-shrink:0}
+  .asb .label{font-weight:600;color:var(--fg-1);font-size:18px}
+  .asb .meta{color:var(--fg-muted);font-family:var(--font-mono);font-size:14px}
+  .asb .controls{margin-left:auto;display:inline-flex;gap:6px}
+  .asb .btn{
+    height:34px;padding:0 13px;border:1px solid var(--border-1);background:#fff;
+    border-radius:6px;font-size:14px;font-weight:500;color:var(--fg-2);
+    cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;
+  }
+  .asb .btn svg{width:13px;height:13px}
+  .asb .btn.danger{color:var(--k-warm-red-60)}
+
+  /* === TOOL CALL CARD === */
+  .tcc{border-radius:14px;overflow:hidden;font-size:16px}
+  .tcc-head{display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(15,23,42,.06)}
+  .tcc-icon{width:34px;height:34px;border-radius:8px;background:var(--k-ai-spruce-12);color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center}
+  .tcc-icon svg{width:18px;height:18px}
+  .tcc-icon.ok{background:#D1FAE5;color:#0D5C2E}
+  .tcc-icon.warn{background:#FEF3C7;color:#7A4800}
+  .tcc-title{font-weight:600;color:var(--fg-1);font-size:18px}
+  .tcc-title .tool{font-family:var(--font-mono);color:var(--k-spruce-70);font-weight:500}
+  .tcc-meta{font-size:14px;color:var(--fg-muted);margin-top:3px;font-family:var(--font-mono)}
+  .tcc-status{font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+  .tcc-status .sd{width:9px;height:9px;border-radius:50%}
+  .tcc.running .tcc-status{color:var(--k-spruce-70)}
+  .tcc.running .tcc-status .sd{background:var(--k-spruce-60);animation:asb-pulse 1.4s ease-in-out infinite}
+  .tcc.ok .tcc-status{color:#0D5C2E}.tcc.ok .tcc-status .sd{background:#10B981}
+  .tcc.pending .tcc-status{color:#7A4800}.tcc.pending .tcc-status .sd{background:#B45309;animation:asb-pulse 1.4s ease-in-out infinite}
+  .tcc-body{padding:16px;background:rgba(248,250,252,.6);border-top:1px solid rgba(15,23,42,.04)}
+  .tcc-args{font-family:var(--font-mono);font-size:15px;line-height:1.65;color:var(--fg-2);background:#fff;border:1px solid var(--border-1);border-radius:6px;padding:14px 16px;white-space:pre;overflow-x:auto}
+  .tcc-args .k{color:#8A4FBF}
+  .tcc-args .s{color:var(--k-warm-red-60)}
+  .tcc-args .n{color:var(--k-spruce-70)}
+  .tcc-args .editable{border-bottom:1px dashed var(--k-spruce-60);padding:0 2px;background:rgba(41,112,122,.06)}
+  .tcc-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center}
+  .tcc .btn{height:34px;padding:0 14px;border:1px solid var(--border-1);background:#fff;border-radius:6px;font-size:14px;font-weight:500;color:var(--fg-2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px}
+  .tcc .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .tcc .btn svg{width:13px;height:13px}
+  .tcc .gate{margin-left:auto;font-size:14px;color:var(--fg-muted);font-family:var(--font-mono)}
+
+  /* === HUMAN INPUT REQUEST === */
+  .hir{border-radius:14px;padding:22px 26px;font-size:17px;border:1px solid #F8DC8E;background:linear-gradient(180deg,#FEF7E6,#FEFCF3)}
+  .hir-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .hir-head .glyph{width:34px;height:34px;border-radius:50%;background:#FEF3C7;color:#7A4800;display:flex;align-items:center;justify-content:center}
+  .hir-head .glyph svg{width:18px;height:18px}
+  .hir-head .agent{font-size:14px;color:#7A4800;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+  .hir-head .ts{margin-left:auto;font-size:14px;color:var(--fg-muted);font-family:var(--font-mono)}
+  .hir-prompt{font-size:20px;line-height:1.45;color:var(--fg-1);margin:4px 0 14px;font-weight:500}
+  .hir-context{font-size:16px;color:var(--fg-2);background:rgba(255,255,255,.7);border:1px solid rgba(184,87,0,.15);border-radius:8px;padding:14px 16px;line-height:1.55}
+  .hir-context b{color:var(--fg-1)}
+  .hir-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;align-items:center}
+  .hir-actions .btn{height:38px;padding:0 16px;border:1px solid var(--border-1);background:#fff;border-radius:6px;font-size:15px;font-weight:500;color:var(--fg-1);cursor:pointer;font-family:inherit}
+  .hir-actions .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .hir-actions .blocking{margin-left:auto;font-size:14px;color:#7A4800;font-family:var(--font-mono);display:inline-flex;align-items:center;gap:7px}
+  .hir-actions .blocking::before{content:"";width:8px;height:8px;border-radius:50%;background:#B45309;animation:asb-pulse 1.4s ease-in-out infinite}
+
+  /* === STEP TIMELINE === */
+  .stl{font-size:16px;display:flex;flex-direction:column;gap:0}
+  .stl-step{display:grid;grid-template-columns:24px 1fr auto;gap:14px;align-items:start;padding:10px 0;position:relative}
+  .stl-step .rail{width:24px;display:flex;flex-direction:column;align-items:center;align-self:stretch}
+  .stl-step .marker{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--border-1);flex-shrink:0;margin-top:3px;position:relative;z-index:1}
+  .stl-step:not(:last-child) .rail::after{content:"";flex:1;width:2px;background:var(--border-1);margin-top:2px;min-height:8px}
+  .stl-step.done .marker{background:#10B981;border-color:#10B981}
+  .stl-step.done .marker::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/10px no-repeat}
+  .stl-step.done:not(:last-child) .rail::after{background:#10B981}
+  .stl-step.active .marker{background:var(--k-spruce-60);border-color:var(--k-spruce-60);animation:asb-pulse 1.4s ease-in-out infinite}
+  .stl-step.failed .marker{background:var(--k-warm-red-50);border-color:var(--k-warm-red-50)}
+  .stl-step.failed .marker::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>") center/10px no-repeat}
+  .stl-step .label{font-size:17px;color:var(--fg-1);font-weight:500;line-height:1.4;padding-top:1px}
+  .stl-step.pending .label{color:var(--fg-muted)}
+  .stl-step.active .label{color:var(--fg-1);font-weight:600}
+  .stl-step .sub{font-size:14px;color:var(--fg-muted);margin-top:4px;line-height:1.5;font-family:var(--font-mono)}
+  .stl-step .ts{font-size:14px;color:var(--fg-muted);font-family:var(--font-mono);padding-top:3px;white-space:nowrap}
+  .stl-step.active .ts{color:var(--k-spruce-70)}
+  .stl-step .approve{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
+  .stl-step .approve .btn{height:30px;padding:0 11px;font-size:13px;font-weight:500;white-space:nowrap;border:1px solid var(--border-1);border-radius:5px;background:#fff;cursor:pointer;font-family:inherit;color:var(--fg-2)}
+  .stl-step .approve .btn.prim{background:var(--k-spruce-60);color:#fff;border:none}
+
+  /* === HANDOFF CARD === */
+  .hoc{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:22px 24px;border-radius:14px;font-size:16px}
+  .hoc-from,.hoc-to{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:140px;text-align:center}
+  .hoc-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+  .hoc-av.agent{background:var(--k-ai-spruce-12);color:var(--k-spruce-70)}
+  .hoc-av.human{background:var(--k-ai-warm-red-12);color:var(--k-warm-red-60)}
+  .hoc-av.specialist{background:#EEF2FF;color:#4338CA}
+  .hoc-av .ai-glyph{width:22px;height:22px}
+  .hoc-name{font-size:16px;font-weight:600;color:var(--fg-1);line-height:1.2}
+  .hoc-role{font-size:13px;color:var(--fg-muted);line-height:1.2}
+  .hoc-arrow{flex:1;display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:200px;padding:0 14px}
+  .hoc-arrow .reason{font-size:13px;color:var(--fg-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;text-align:center}
+  .hoc-arrow .line{width:100%;height:14px;display:block}
+  .hoc-arrow .line svg{width:100%;height:14px;display:block;overflow:visible}
+  .hoc-arrow .ctx{font-size:14px;color:var(--fg-2);text-align:center;line-height:1.45}
+
+  /* === STATE DELTA TOAST === */
+  .sdt{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:16px 22px;border-radius:14px;font-size:17px;background:#fff;border:1px solid var(--border-1);box-shadow:0 6px 22px rgba(15,23,42,.08);max-width:760px}
+  .sdt .glyph{width:36px;height:36px;border-radius:8px;background:var(--k-ai-spruce-12);color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center}
+  .sdt .glyph.warm{background:var(--k-ai-warm-red-12);color:var(--k-warm-red-60)}
+  .sdt .glyph svg{width:18px;height:18px}
+  .sdt .body{font-size:17px;color:var(--fg-1);line-height:1.45}
+  .sdt .body b{font-weight:600}
+  .sdt .diff{margin-top:5px;font-family:var(--font-mono);font-size:14px;color:var(--fg-2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sdt .diff .from{color:var(--fg-muted);text-decoration:line-through;text-decoration-color:rgba(100,116,139,.4)}
+  .sdt .diff .arr{color:var(--fg-muted)}
+  .sdt .diff .to{color:#0D5C2E;font-weight:600}
+  .sdt .diff .to.warm{color:var(--k-warm-red-60)}
+  .sdt .actions{display:flex;gap:6px}
+  .sdt .actions .btn{height:30px;padding:0 12px;border:none;background:transparent;color:var(--k-spruce-60);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;border-radius:5px}
+
+  /* === COVER === */
+  .cover{padding:96px 120px;background:#fff;display:flex;flex-direction:column;justify-content:space-between}
+  .cover .stamp{display:inline-flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .cover .stamp .gl{width:24px;height:24px;display:inline-block;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat}
+  .cover h1.big{font-family:var(--font-display);font-size:120px;line-height:.95;letter-spacing:-.025em;font-weight:500;margin:0;max-width:1500px;text-wrap:balance}
+  .cover h1.big em{font-style:normal;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .deck-lede{font-size:26px;line-height:1.45;color:var(--fg-2);max-width:1200px;margin:32px 0 0;text-wrap:pretty}
+  .cover .toc{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 32px;font-family:var(--font-mono);font-size:15px;color:var(--fg-2)}
+  .cover .toc .n{color:var(--fg-muted);margin-right:10px}
+  .cover .meta-row{display:flex;justify-content:space-between;align-items:end;font-family:var(--font-mono);font-size:14px;color:var(--fg-muted);letter-spacing:.06em}
+
+  /* === EVENT TABLE (last slide) === */
+  .evtable{width:100%;border-collapse:collapse;font-size:17px;font-family:inherit;table-layout:fixed}
+  .evtable thead th{font-family:var(--font-mono);font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;text-align:left;padding:14px 18px;border-bottom:2px solid var(--border-1)}
+  .evtable tbody td{padding:18px;border-bottom:1px solid var(--bg-3);vertical-align:top;line-height:1.5}
+  .evtable tbody tr:last-child td{border-bottom:none}
+  .evtable tbody tr:nth-child(even) td{background:rgba(248,250,252,.45)}
+  .evtable td code{font-family:var(--font-mono);font-size:14px;background:var(--bg-3);padding:3px 8px;border-radius:4px;color:var(--fg-1)}
+  .evtable td b{font-weight:600;color:var(--fg-1)}
+  .evtable td:nth-child(3){font-family:var(--font-mono);font-size:13px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em}
+  .evtable td .blocking{color:var(--k-warm-red-60);font-weight:600}
+  .evtable td .nonblocking{color:#0D5C2E;font-weight:600}
+</style>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ============ 1 · COVER ============ -->
+  <section class="cover" data-screen-label="01 Cover">
+    <div class="stamp"><span class="gl"></span>Kyndryl CMDB · Design system · Vol. 04</div>
+    <div>
+      <h1 class="big">Agentic <em>interaction states</em></h1>
+      <p class="deck-lede">Six live-surface primitives that govern how the agent shows its work — what it's doing, what it's about to do, and where the human still has the wheel. Every state pairs with an event from the AG-UI protocol, every state surfaces user agency in-place.</p>
+    </div>
+    <div class="meta-row">
+      <span>6 primitives · 8 slides</span>
+      <span>k-cmdb · agentic-states · v1.0</span>
+      <span>April 2026</span>
+    </div>
+  </section>
+
+  <!-- ============ 2 · AGENT STATUS BAR ============ -->
+  <section data-screen-label="02 AgentStatusBar">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 1 of 6</span>
+      <span class="ix">02 / 08</span>
+    </div>
+    <div>
+      <h1>AgentStatusBar</h1>
+      <p class="lede">A single-row "what is the agent doing right now" header. Pinned to the top of any agentic surface — chat modal, run page, inbox detail. Reads activity, exposes session-level controls, and never disappears mid-run.</p>
+
+      <div class="body split">
+        <div>
+          <div class="demo">
+            <div class="asb thinking">
+              <span class="dot"></span>
+              <span class="label">Working through plan · 3 of 6</span>
+              <span class="meta">· 14.2s · 2 tools · 1 handoff</span>
+              <div class="controls">
+                <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>Pause</button>
+                <button class="btn">Inject correction</button>
+                <button class="btn">Branch</button>
+                <button class="btn danger">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo">
+            <div class="asb paused">
+              <span class="dot"></span>
+              <span class="label">Paused · awaiting your tie-break</span>
+              <span class="meta">· step 4 of 6 · 22.0s elapsed</span>
+              <div class="controls">
+                <button class="btn">Resume</button>
+                <button class="btn">Inject correction</button>
+                <button class="btn danger">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo">
+            <div class="asb done">
+              <span class="dot"></span>
+              <span class="label">Done · 6 steps in 38s</span>
+              <span class="meta">· 2 tools · 1 handoff · 0 errors</span>
+              <div class="controls">
+                <button class="btn">View trace</button>
+                <button class="btn">Branch from end</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>Always present, never hidden. Use to give every run a visible, cancellable identity.</li>
+            <li>Single moving element — the dot. No spinners, no progress bars; activity is signalled by the pulse.</li>
+            <li><strong>Inject correction</strong> opens a one-line text input that becomes a <code>user_message</code> event the agent reads on its next turn.</li>
+            <li><strong>Branch</strong> forks the run from this step; the audit trail diverges, both branches are kept.</li>
+            <li>Three states share the same chrome: <code>thinking/streaming</code>, <code>paused</code> (amber), <code>done</code> (green). State changes never re-flow surrounding content.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · run.started · thinking · streaming · paused · done</span>
+    </div>
+  </section>
+
+  <!-- ============ 3 · TOOL CALL CARD ============ -->
+  <section data-screen-label="03 ToolCallCard">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 2 of 6</span>
+      <span class="ix">03 / 08</span>
+    </div>
+    <div>
+      <h1>ToolCallCard</h1>
+      <p class="lede">Inline card that surfaces a tool invocation between chat messages. Three states — about to run (gate), running, returned — with editable args and an approval ladder. Destructive tools always gate; read-only tools gate only when step-through mode is on.</p>
+
+      <div class="body split">
+        <div>
+          <!-- pending / approval gate -->
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none">
+            <div class="tcc pending ai-edge">
+              <div class="tcc-head">
+                <div class="tcc-icon warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                <div>
+                  <div class="tcc-title">About to call <span class="tool">graph.write</span></div>
+                  <div class="tcc-meta">step 4 · proposes 22 owner assignments · destructive · review args</div>
+                </div>
+                <div class="tcc-status"><span class="sd"></span>Awaiting approval</div>
+              </div>
+              <div class="tcc-body">
+<div class="tcc-args"><span class="k">action</span>: <span class="s">"assign_owner"</span>
+<span class="k">scope</span>: <span class="s">"</span><span class="editable s">payments-svc</span><span class="s">"</span>
+<span class="k">policy</span>: <span class="s">"</span><span class="editable s">deploy_recency</span><span class="s">"</span>
+<span class="k">batch_size</span>: <span class="editable n">22</span>
+<span class="k">notify</span>: <span class="n">true</span></div>
+                <div class="tcc-actions">
+                  <button class="btn prim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Approve &amp; run</button>
+                  <button class="btn">Edit args</button>
+                  <button class="btn">Skip</button>
+                  <span class="gate">retries · 0 of 3 used</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- running -->
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none;margin-top:18px">
+            <div class="tcc running ai-edge">
+              <div class="tcc-head">
+                <div class="tcc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+                <div>
+                  <div class="tcc-title">Calling <span class="tool">graph.expand</span></div>
+                  <div class="tcc-meta">depth 2 · 22 root nodes · 1.4s elapsed</div>
+                </div>
+                <div class="tcc-status"><span class="sd"></span>Running</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ok -->
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none;margin-top:18px">
+            <div class="tcc ok ai-edge">
+              <div class="tcc-head">
+                <div class="tcc-icon ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div>
+                  <div class="tcc-title">Returned <span class="tool">cmdb.query</span> · 22 rows</div>
+                  <div class="tcc-meta">230ms · 22 orphaned CIs in payments-svc</div>
+                </div>
+                <div class="tcc-status"><span class="sd"></span>OK</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>The tool name is always rendered in mono (<code>graph.write</code>). The card's identity is the tool, not a fuzzy paraphrase.</li>
+            <li><strong>Editable args</strong> use a dashed underline + spruce 6% tint. Click to edit before approving — no separate dialog.</li>
+            <li>Destructive tools (<code>graph.write</code>, <code>cmdb.write</code>, <code>incident.create</code>) <strong>always</strong> gate, regardless of step-through mode.</li>
+            <li>Returned cards collapse by default. Expand to see args + result envelope; the run's audit log never loses fidelity.</li>
+            <li>Failure swaps the icon to warm-red and surfaces <code>Retry</code> / <code>Skip</code> / <code>Branch</code>. Never auto-retries silently.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · tool.requested · tool.executing · tool.completed · tool.failed</span>
+    </div>
+  </section>
+
+  <!-- ============ 4 · HUMAN INPUT REQUEST ============ -->
+  <section data-screen-label="04 HumanInputRequest">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 3 of 6</span>
+      <span class="ix">04 / 08</span>
+    </div>
+    <div>
+      <h1>HumanInputRequest</h1>
+      <p class="lede">The agent has hit ambiguity it can't (or shouldn't) resolve alone. Renders inline in the message stream, on an amber surface that intentionally breaks the AI gradient — your eye has to find it on a long scroll. The run is paused until you answer.</p>
+
+      <div class="body split">
+        <div>
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none">
+            <div class="hir">
+              <div class="hir-head">
+                <span class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                <span class="agent">Reconciliation Agent · needs your call</span>
+                <span class="ts">14:08:22</span>
+              </div>
+              <p class="hir-prompt">Two of the 22 CIs have ambiguous ownership. Pick a tie-break before I write.</p>
+              <div class="hir-context">
+                <code>web-gateway-02</code> and <code>checkout-api-canary</code> were last touched by <b>A. Ortiz</b> (deploy, structural) and <b>K. Patel</b> (config, cosmetic). Recency rule favours K. Patel; structural-edit rule favours A. Ortiz.
+              </div>
+              <div class="hir-actions">
+                <button class="btn">Use structural-edit (A. Ortiz)</button>
+                <button class="btn">Use recency (K. Patel)</button>
+                <button class="btn">Defer · leave unassigned</button>
+                <span class="blocking">blocking · agent paused</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>The only primitive that breaks the AI gradient — by design. Amber + warm-red on a long scroll cuts through everything else.</li>
+            <li><strong>Always blocking.</strong> The AgentStatusBar flips to <code>paused</code> the moment this renders.</li>
+            <li>Action buttons must be <em>named choices</em>, never "Yes/No" or "Continue/Cancel". The user picks a rule, the agent applies it.</li>
+            <li>Context block restates the priors that led here, in the user's vocabulary. Never echo the raw tool envelope.</li>
+            <li>Answering produces an <code>input.received</code> event; the run resumes from the same step, not the start.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · input.required · input.received · BLOCKING</span>
+    </div>
+  </section>
+
+  <!-- ============ 5 · STEP TIMELINE ============ -->
+  <section data-screen-label="05 StepTimeline">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 4 of 6</span>
+      <span class="ix">05 / 08</span>
+    </div>
+    <div>
+      <h1>StepTimeline</h1>
+      <p class="lede">The agent's plan, rendered. Each step is a row with a marker, a label, a timestamp, and — on the active row — inline approval controls. Lives in the right rail of any agentic surface; in narrow surfaces, collapses to a horizontal stepper.</p>
+
+      <div class="body split">
+        <div class="demo">
+          <div class="stl">
+            <div class="stl-step done">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Pulled overnight orphan list</div>
+                <div class="sub">cmdb.query · 22 rows · payments-svc</div>
+              </div>
+              <span class="ts">14:08:02</span>
+            </div>
+            <div class="stl-step done">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Expanded upstream graph</div>
+                <div class="sub">via graph.expand · 1 affected app · checkout-api</div>
+              </div>
+              <span class="ts">+1.8s</span>
+            </div>
+            <div class="stl-step active">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Inferring most likely owners</div>
+                <div class="sub">cross-checking 12-week commit + deploy history</div>
+                <div class="approve">
+                  <button class="btn">Edit step</button>
+                  <button class="btn">Approve once</button>
+                  <button class="btn prim">Approve all</button>
+                </div>
+              </div>
+              <span class="ts">running…</span>
+            </div>
+            <div class="stl-step pending">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Draft owner-assignment plan</div>
+                <div class="sub">requires approval before write</div>
+              </div>
+              <span class="ts">queued</span>
+            </div>
+            <div class="stl-step pending">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Write 22 owner assignments</div>
+                <div class="sub">graph.write · destructive · approval gate</div>
+              </div>
+              <span class="ts">queued</span>
+            </div>
+            <div class="stl-step pending">
+              <div class="rail"><div class="marker"></div></div>
+              <div>
+                <div class="label">Notify payments-svc owner</div>
+                <div class="sub">incident.create + email</div>
+              </div>
+              <span class="ts">queued</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>Active marker pulses spruce; done is solid green; failed is solid warm-red with an ✕. Never use color alone — every state pairs with a glyph.</li>
+            <li>The <strong>active step</strong> reveals row-level controls — Edit · Approve once · Approve all. Other rows are read-only.</li>
+            <li><strong>Approve all</strong> disengages step-through for the rest of the run; AgentStatusBar flips to <code>thinking</code>/<code>streaming</code> with no further gates.</li>
+            <li>The plan is mutable up to the active step. Edit a pending step and the audit trail records both the original and the override.</li>
+            <li>Branching from any step duplicates the plan from that point and flips both runs into a side-by-side comparison view.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · step.started · step.completed · step.failed · plan.mutated</span>
+    </div>
+  </section>
+
+  <!-- ============ 6 · HANDOFF CARD ============ -->
+  <section data-screen-label="06 HandoffCard">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 5 of 6</span>
+      <span class="ix">06 / 08</span>
+    </div>
+    <div>
+      <h1>HandoffCard</h1>
+      <p class="lede">Marks the moment one agent passes work to another agent or to a human. Inline in chat, between messages. Always two-sided — you see who's leaving, who's arriving, why, and what context travels with them.</p>
+
+      <div class="body split">
+        <div>
+          <!-- agent → specialist -->
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none">
+            <div class="hoc ai-edge">
+              <div class="hoc-from">
+                <div class="hoc-av agent"><span class="ai-glyph"></span></div>
+                <div class="hoc-name">Triage</div>
+                <div class="hoc-role">general agent</div>
+              </div>
+              <div class="hoc-arrow">
+                <span class="reason">Handing off · needs SQL skill</span>
+                <div class="line"><svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="194" y2="7" stroke="#475569" stroke-width="1" vector-effect="non-scaling-stroke"/><polyline points="189,3 194,7 189,11" fill="none" stroke="#475569" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>
+                <span class="ctx">Carrying: 22 orphan CI list · payments-svc context · user threshold ≤ 25</span>
+              </div>
+              <div class="hoc-to">
+                <div class="hoc-av specialist">RA</div>
+                <div class="hoc-name">Reconciliation</div>
+                <div class="hoc-role">specialist agent</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- agent → human -->
+          <div class="demo" style="padding:0;border:none;background:transparent;box-shadow:none;margin-top:20px">
+            <div class="hoc ai-edge">
+              <div class="hoc-from">
+                <div class="hoc-av agent"><span class="ai-glyph"></span></div>
+                <div class="hoc-name">Reconciliation</div>
+                <div class="hoc-role">specialist agent</div>
+              </div>
+              <div class="hoc-arrow">
+                <span class="reason">Handing back · review needed</span>
+                <div class="line"><svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="7" x2="194" y2="7" stroke="#475569" stroke-width="1" vector-effect="non-scaling-stroke"/><polyline points="189,3 194,7 189,11" fill="none" stroke="#475569" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>
+                <span class="ctx">Plan ready · 47 retire actions · over batch threshold · awaiting your sign-off</span>
+              </div>
+              <div class="hoc-to">
+                <div class="hoc-av human">DA</div>
+                <div class="hoc-name">D. Aaron</div>
+                <div class="hoc-role">CMDB owner</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>Always two-sided. Left = origin, right = recipient. Both nodes show identity (avatar) and role (function).</li>
+            <li>The <strong>reason chip</strong> is required and must name a capability — <em>"needs SQL skill"</em>, <em>"review needed"</em>, <em>"out-of-policy escalation"</em>.</li>
+            <li>The <strong>carrying ctx</strong> line lists the priors travelling with the handoff. Click to inspect the full state envelope.</li>
+            <li>Agent → Human handoffs flip the AgentStatusBar to <code>waiting</code>; Agent → Agent handoffs keep it <code>thinking</code>.</li>
+            <li>The arrow is a single vectorized stroke — same weight on every surface, never decorative.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · handoff.dispatched · handoff.received · handoff.accepted</span>
+    </div>
+  </section>
+
+  <!-- ============ 7 · STATE DELTA TOAST ============ -->
+  <section data-screen-label="07 StateDeltaToast">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Primitive · 6 of 6</span>
+      <span class="ix">07 / 08</span>
+    </div>
+    <div>
+      <h1>StateDeltaToast</h1>
+      <p class="lede">Ambient notification when the agent mutates a value visible elsewhere on the page — a trust score, a CI count, an owner name. Bottom-left, non-blocking, ephemeral. The audit trail is permanent; the toast is just the announce.</p>
+
+      <div class="body split">
+        <div>
+          <div class="demo" style="background:#F8FAFC;border:1px dashed var(--border-1)">
+            <div style="font-family:var(--font-mono);font-size:13px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px">ambient stack · bottom-left</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div class="sdt">
+                <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></div>
+                <div class="body">
+                  Agent updated <b>20 CI owners</b>
+                  <div class="diff">
+                    <span class="from">unassigned</span><span class="arr">→</span><span class="to">resolved</span>
+                    <span style="color:var(--fg-muted)">· 2 still ambiguous</span>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn">Undo</button>
+                  <button class="btn">View</button>
+                </div>
+              </div>
+
+              <div class="sdt">
+                <div class="glyph warm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 12 10 16 18 8"/></svg></div>
+                <div class="body">
+                  Trust score <b>recomputed</b>
+                  <div class="diff">
+                    <span class="from">62%</span><span class="arr">→</span><span class="to warm">58%</span>
+                    <span style="color:var(--fg-muted)">· payments domain</span>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn">Why?</button>
+                </div>
+              </div>
+
+              <div class="sdt">
+                <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15a2 2 0 0 1 -2 2h-13l-4 4v-16a2 2 0 0 1 2 -2h15a2 2 0 0 1 2 2z"/></svg></div>
+                <div class="body">
+                  Inbox: <b>3 new items</b> learned from this run
+                  <div class="diff">
+                    <span class="arr">added</span>
+                    <span class="to">3 owner overrides</span>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn">Open inbox</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <span class="kicker">Rules</span>
+          <ul>
+            <li>Bottom-left, never top-right. Right side is reserved for system-level OS toasts; left side is the agent's voice.</li>
+            <li>Stack vertically up to 3. New deltas push older ones up; older ones fade after 8s. Never auto-dismiss the most recent.</li>
+            <li>Always include a <strong>diff</strong> line — old value, arrow, new value. If there's no diff, it's not a state change; don't toast.</li>
+            <li><strong>Undo</strong> is offered for any reversible delta. <strong>Why?</strong> opens the audit trail at this exact event.</li>
+            <li>Toasts are ephemeral; the source-of-truth is the inbox. Never put critical info only here.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>events · state.delta · state.reverted</span>
+    </div>
+  </section>
+
+  <!-- ============ 8 · AG-UI EVENT MAP ============ -->
+  <section data-screen-label="08 Event map">
+    <div class="hd">
+      <span class="eyebrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>Reference</span>
+      <span class="ix">08 / 08</span>
+    </div>
+    <div>
+      <h1>AG-UI events → primitives</h1>
+      <p class="lede">Every agent emission lands on a primitive. The mapping is one-to-one: producers don't pick a component, they pick an event; the system renders the right thing in the right place.</p>
+
+      <div class="body" style="margin-top:8px">
+        <table class="evtable">
+          <colgroup>
+            <col style="width:30%"><col style="width:48%"><col style="width:22%">
+          </colgroup>
+          <thead>
+            <tr><th>AG-UI event</th><th>Renders as</th><th>Blocking?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>run.started</code> / <code>thinking</code></td><td><b>AgentStatusBar</b> — pulse on, label "thinking through plan"</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>step.started</code> / <code>step.completed</code></td><td><b>StepTimeline</b> — row marker advances</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>tool.requested</code></td><td><b>ToolCallCard</b> · pending — approval gate inline</td><td>Sometimes</td></tr>
+            <tr><td><code>tool.executing</code></td><td><b>ToolCallCard</b> · running — pulse on the tool icon</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>tool.completed</code> / <code>tool.failed</code></td><td><b>ToolCallCard</b> · ok or err — collapses to one-line summary</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>response.streaming</code></td><td><b>AgentStatusBar</b> · streaming + ChatMessage caret</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>input.required</code></td><td><b>HumanInputRequest</b> — amber, breaks AI gradient</td><td><span class="blocking">YES</span></td></tr>
+            <tr><td><code>handoff.dispatched</code> / <code>received</code></td><td><b>HandoffCard</b> — two-sided card inline in chat</td><td>Sometimes</td></tr>
+            <tr><td><code>state.delta</code></td><td><b>StateDeltaToast</b> — ambient bottom-left</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>run.paused</code> (by user)</td><td><b>AgentStatusBar</b> · paused — controls swap to Resume</td><td><span class="nonblocking">No</span></td></tr>
+            <tr><td><code>run.completed</code></td><td><b>AgentStatusBar</b> · done + fold all StepTimeline rows</td><td><span class="nonblocking">No</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ft">
+      <span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span>
+      <span>v1.0 · 11 events · 6 primitives · 1 contract</span>
+    </div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+</body></html>

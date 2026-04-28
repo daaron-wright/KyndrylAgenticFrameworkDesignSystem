@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC;font-family:var(--font-sans)}
+.t{max-width:900px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px;display:grid;grid-template-columns:1fr 320px;gap:12px}
+.slot{border:1.5px dashed #CBD5E1;border-radius:6px;padding:10px;background:#F8FAFC;color:#64748B;font-family:var(--font-mono);font-size:10px;display:flex;align-items:center;justify-content:center;min-height:40px}
+.slot.solid{background:#fff;border:1px solid var(--border-1);color:var(--fg-1)}
+.col{display:flex;flex-direction:column;gap:10px}
+.hdr{display:flex;justify-content:space-between;align-items:center;grid-column:1/-1;padding-bottom:8px;border-bottom:1px solid var(--border-1)}
+.hdr h2{margin:0;font-size:14px;font-weight:600}
+.hdr span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);font-weight:700}
+</style></head><body>
+<div class="t">
+  <div class="hdr"><h2>TriageTemplate</h2><span>FilterBar · FindingCard stack · InspectorDrawer</span></div>
+  <div class="col">
+    <div class="slot solid" style="padding:8px 12px">FilterBar · severity · domain · age · owner · clear</div>
+    <div class="slot" style="height:90px">FindingCard · 312 stale CIs (KPI row + distribution chart + table)</div>
+    <div class="slot" style="height:60px">FindingCard · 47 orphans</div>
+    <div class="slot" style="height:60px">FindingCard · 14 duplicate records</div>
+  </div>
+  <div class="col">
+    <div class="slot solid" style="padding:8px 12px;justify-content:flex-start">InspectorDrawer<br><span style="font-size:9px;color:var(--fg-muted);margin-top:4px">(pinned right)</span></div>
+    <div class="slot" style="height:50px">metadataGrid</div>
+    <div class="slot" style="height:50px">signalsList</div>
+    <div class="slot" style="height:40px">relatedItems</div>
+    <div class="slot" style="height:40px">actionBar · Execute · Review · Defer</div>
+  </div>
+</div>
+</body></html>
