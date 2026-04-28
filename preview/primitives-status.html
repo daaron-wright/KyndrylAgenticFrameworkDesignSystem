@@ -1,0 +1,136 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;font-family:var(--font-sans);color:var(--fg-1)}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;position:relative}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:9999px;font-size:11px;font-weight:600;border:1px solid}
+  .p-pending{background:#FEF3C7;color:#B45309;border-color:#FDE68A}
+  .p-approved{background:#CCFBF1;color:#115E59;border-color:#99F6E4}
+  .p-executed{background:#DBEAFE;color:#1E40AF;border-color:#BFDBFE}
+  .p-rejected{background:#F1F5F9;color:#475569;border-color:#E2E8F0}
+  .p-monitoring{background:#EDE9FE;color:#5B21B6;border-color:#DDD6FE}
+  .dot{width:5px;height:5px;border-radius:99px;background:currentColor;opacity:.9}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted)}
+  .hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .hdr .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .hdr .hint{font-size:11px;color:var(--fg-muted)}
+  .hint b{color:var(--fg-2);font-weight:600}
+</style></head><body>
+
+<div class="hdr">
+  <span class="t">StatusBadge (workflow) · agentic</span>
+  <span class="hint">Click to <b>advance</b>, <b>reject</b>, <b>reassign</b>, or <b>add note</b></span>
+</div>
+
+<div class="row">
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="pill p-pending"><span class="dot"></span><span class="agentic-label">Pending review</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Workflow state</span><span class="ap-meta">step 1/3</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Advanced to Approved">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Approve &amp; advance<span class="ap-sub">Moves to Executed queue</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Reassigned to A. Ortiz">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Reassign reviewer<span class="ap-sub">Pick from team · routes notification</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Note added to audit trail">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v16"/></svg>
+          Add note<span class="ap-sub">Visible on the audit trail</span>
+        </button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="reject">Reject &amp; close</button>
+      </div>
+      <div class="ap-confirm" data-for="reject" hidden>
+        <p>Rejection is logged permanently. Owner will be notified with your reason.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Rejected · owner notified">Reject</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">awaiting human</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="pill p-approved"><span class="dot"></span><span class="agentic-label">Approved</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Workflow state</span><span class="ap-meta">step 2/3</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Execution scheduled">Advance to Execute</button>
+        <button type="button" class="ap-action" data-toast="Note added">Add note</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="revert">Revert approval</button>
+      </div>
+      <div class="ap-confirm" data-for="revert" hidden>
+        <p>This will move the item back to Pending and notify the previous reviewer.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary">Revert</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">ready to run</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="pill p-executed"><span class="dot"></span><span class="agentic-label">Executed · 2h ago</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Workflow state</span><span class="ap-meta">step 3/3</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Timeline opened">View execution timeline</button>
+        <button type="button" class="ap-action" data-toast="Note added">Add note</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="rollback">Rollback change</button>
+      </div>
+      <div class="ap-confirm" data-for="rollback" hidden>
+        <p>Rollback will undo 14 downstream writes. This is audit-logged and notifies the CAB.</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Rollback started · CAB notified">Roll back</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">done · reversible</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="pill p-rejected"><span class="dot"></span><span class="agentic-label">Rejected</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Closed</span><span class="ap-meta">final</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Reopened · Pending">Reopen</button>
+        <button type="button" class="ap-action" data-toast="Audit trail opened">View audit trail</button>
+      </div>
+    </div>
+    <span class="lbl">closed</span>
+  </div>
+
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="pill p-monitoring"><span class="dot"></span><span class="agentic-label">Monitoring</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agent watching</span><span class="ap-meta">auto-escalate in 48h</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Escalated now">Escalate now</button>
+        <button type="button" class="ap-action" data-toast="Monitoring stopped">Stop monitoring</button>
+      </div>
+    </div>
+    <span class="lbl">agent-owned</span>
+  </div>
+</div>
+
+<script src="agentic.js"></script>
+</body></html>

@@ -1,0 +1,113 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Iconography · Shidoka</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<script src="../assets/icons/ki.js" defer></script>
+<style>
+  body { margin: 0; padding: 24px; background: #fff; font-family: var(--font-sans); color: var(--fg-1); }
+  .head { margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 14px; }
+  .head h1 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+  .head p { margin: 0; font-size: 12px; color: var(--fg-muted); line-height: 1.55; max-width: 640px; }
+  .section { margin-top: 24px; }
+  .section h2 { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+                 color: var(--fg-muted); margin: 0 0 12px; }
+
+  /* Size scale */
+  .scale { display:flex; align-items:flex-end; gap: 28px; padding: 16px 0; border-top: 1px solid #F1F5F9; border-bottom: 1px solid #F1F5F9; }
+  .scale-item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .scale-item svg { color: var(--fg-1); }
+  .scale-item span { font-size: 10px; color: var(--fg-muted); font-family: var(--font-mono); }
+
+  /* Grid of icons */
+  .grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .ic { display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap: 8px; padding: 16px 8px; border:1px solid #E2E8F0; border-radius: 8px;
+        background:#fff; aspect-ratio: 1 / 1; }
+  .ic svg { width: 22px; height: 22px; color: var(--fg-1); }
+  .ic span { font-size: 10px; color: var(--fg-muted); font-family: var(--font-mono); text-align:center; }
+
+  /* Tonal chips showcase */
+  .chips { display:flex; gap: 12px; align-items:center; padding: 14px 0; }
+  .chip-label { font-size: 10px; color: var(--fg-muted); font-family: var(--font-mono); margin-left: 4px; }
+
+  .notes { margin-top: 20px; padding: 12px 14px; background: #F8FAFC; border-left: 3px solid var(--k-spruce-60);
+           font-size: 11px; color: var(--fg-2); line-height: 1.6; border-radius: 4px; }
+  .notes code { font-family: var(--font-mono); background: #E2E8F0; padding: 1px 5px; border-radius: 3px; font-size: 10.5px; }
+</style></head><body>
+
+<div class="head">
+  <h1>Iconography — Shidoka Icon Library</h1>
+  <p>Icons pulled from <code style="font-family:var(--font-mono);font-size:11px">@kyndryl-design-system/shidoka-icons</code> (Shidoka Icon Library). Authored on a 32×32 grid with 2px padding; rendered via inline sprite so strokes follow <code style="font-family:var(--font-mono);font-size:11px">currentColor</code>.</p>
+</div>
+
+<div class="section">
+  <h2>Size scale · pairs with type</h2>
+  <div class="scale">
+    <div class="scale-item"><svg class="ki ki-14"><use href="#icon-dashboard"/></svg><span>14 · inline</span></div>
+    <div class="scale-item"><svg class="ki ki-16"><use href="#icon-dashboard"/></svg><span>16 · default</span></div>
+    <div class="scale-item"><svg class="ki ki-20"><use href="#icon-dashboard"/></svg><span>20 · heads</span></div>
+    <div class="scale-item"><svg class="ki ki-24"><use href="#icon-dashboard"/></svg><span>24 · toolbars</span></div>
+    <div class="scale-item"><svg class="ki ki-32"><use href="#icon-dashboard"/></svg><span>32 · feature</span></div>
+    <div class="scale-item"><svg class="ki ki-48"><use href="#icon-dashboard"/></svg><span>48 · empty state</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Navigation & product set · 17 icons</h2>
+  <div class="grid">
+    <div class="ic"><svg class="ki"><use href="#icon-dashboard"/></svg><span>dashboard</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-analytics"/></svg><span>analytics</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-network"/></svg><span>network</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-group"/></svg><span>group</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-chat-bot"/></svg><span>chat-bot</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-recommend"/></svg><span>recommend</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-lightbulb"/></svg><span>lightbulb</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-anomaly"/></svg><span>anomaly</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-document-chart"/></svg><span>document-chart</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-filter"/></svg><span>filter</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-information"/></svg><span>information</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-log-out"/></svg><span>log-out</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-checkmark-filled"/></svg><span>checkmark-filled</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-error-filled"/></svg><span>error-filled</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-warning-alt"/></svg><span>warning-alt</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-arrow-up-right"/></svg><span>arrow-up-right</span></div>
+    <div class="ic"><svg class="ki"><use href="#icon-arrow-down-right"/></svg><span>arrow-down-right</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Tonal chips · icon + surface pairing</h2>
+  <div class="chips">
+    <span class="ki-chip"><svg class="ki"><use href="#icon-dashboard"/></svg></span>
+    <span class="chip-label">.ki-chip · neutral</span>
+    <span class="ki-chip is-brand"><svg class="ki"><use href="#icon-recommend"/></svg></span>
+    <span class="chip-label">.ki-chip.is-brand · warm-red</span>
+    <span class="ki-chip is-spruce"><svg class="ki"><use href="#icon-lightbulb"/></svg></span>
+    <span class="chip-label">.ki-chip.is-spruce</span>
+  </div>
+</div>
+
+<div class="section">
+  <h2>In‑context pairings</h2>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:14px 0">
+    <button style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:6px;background:#171717;color:#fff;border:none;font:500 13px var(--font-sans);cursor:pointer">
+      <svg class="ki ki-14"><use href="#icon-lightbulb"/></svg> Investigate with AI
+    </button>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#047857">
+      <svg class="ki ki-14"><use href="#icon-arrow-up-right"/></svg> +124 WoW
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#B91C1C">
+      <svg class="ki ki-14"><use href="#icon-arrow-down-right"/></svg> −4 pts
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:#FEF3C7;color:#B45309;font-size:11px;font-weight:500">
+      <svg class="ki ki-14"><use href="#icon-warning-alt"/></svg> 30d+ unreviewed
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:#D1FAE5;color:#047857;font-size:11px;font-weight:500">
+      <svg class="ki ki-14"><use href="#icon-checkmark-filled"/></svg> Reconciled
+    </span>
+  </div>
+</div>
+
+<div class="notes">
+  <strong>Load pattern.</strong> Include <code>&lt;script src="../assets/icons/ki.js" defer&gt;&lt;/script&gt;</code> once per page — the loader fetches <code>sprite.svg</code> and injects it at <code>&lt;body&gt;</code> start so <code>&lt;use href="#icon-…"/&gt;</code> resolves without CORS quirks on <code>file://</code>. Size with <code>.ki-14</code>/<code>.ki-16</code>/<code>.ki-20</code>/<code>.ki-24</code>/<code>.ki-32</code>/<code>.ki-48</code>; color via <code>currentColor</code>.
+</div>
+</body></html>

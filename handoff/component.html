@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Component — Kyndryl CMDB Design System</title>
+<template id="__bundler_thumbnail" data-bg-color="#F2F4F5">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#F2F4F5"/>
+    <rect x="0" y="0" width="1200" height="56" fill="#FFFFFF"/>
+    <rect x="32" y="20" width="14" height="14" rx="3" fill="#FF462D"/>
+    <rect x="56" y="22" width="180" height="12" rx="2" fill="#141414"/>
+    <rect x="280" y="100" width="640" height="32" rx="4" fill="#141414"/>
+    <rect x="280" y="148" width="520" height="14" rx="2" fill="#5C5C5C"/>
+    <rect x="280" y="200" width="640" height="320" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+    <text x="600" y="720" font-family="sans-serif" font-size="14" fill="#5C5C5C" text-anchor="middle">Component detail</text>
+  </svg>
+</template>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<style>
+  :root {
+    --doc-max: 1280px;
+    --header-h: 56px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg-2);
+    color: var(--fg-2);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: var(--lh-normal);
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    height: var(--header-h);
+    background: var(--card);
+    border-bottom: 1px solid var(--border-1);
+    display: flex; align-items: center;
+    padding: 0 24px;
+    gap: 24px;
+  }
+  .topbar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700;
+    color: var(--fg-1);
+    text-decoration: none;
+  }
+  .topbar .brand .mark {
+    width: 14px; height: 14px; border-radius: 3px;
+    background: var(--k-warm-red-50);
+  }
+  .topbar .crumbs {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--fg-muted);
+    font-size: 13px;
+  }
+  .topbar .crumbs a {
+    color: var(--fg-2);
+    text-decoration: none;
+  }
+  .topbar .crumbs a:hover { color: var(--k-spruce-60); }
+  .topbar .crumbs .sep { color: var(--fg-muted); }
+  .topbar .actions {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topbar .btn {
+    height: 32px; padding: 0 12px;
+    border-radius: var(--radius-2);
+    border: 1px solid var(--border-1);
+    background: var(--card);
+    color: var(--fg-1);
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .topbar .btn:hover { border-color: var(--k-spruce-60); }
+  .topbar .btn.is-primary {
+    background: var(--k-spruce-60);
+    color: #fff;
+    border-color: var(--k-spruce-60);
+  }
+
+  /* Doc shell */
+  .shell {
+    max-width: var(--doc-max);
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-1);
+    margin-bottom: 24px;
+  }
+  .hero .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--fg-muted);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hero h1 {
+    font-family: var(--font-display, var(--font-sans));
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--fg-1);
+    letter-spacing: -0.5px;
+  }
+  .hero .summary {
+    margin: 12px 0 0;
+    color: var(--fg-2);
+    max-width: 720px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .hero .meta {
+    display: flex; flex-direction: column; gap: 6px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--fg-muted);
+    font-family: var(--font-mono, monospace);
+  }
+  .hero .meta a {
+    color: var(--k-spruce-60);
+    text-decoration: none;
+  }
+  .hero .meta a:hover { text-decoration: underline; }
+
+  /* Tag pill (mirrors index) */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    border-radius: 999px;
+    background: var(--bg-3, #F2F4F5);
+    border: 1px solid var(--border-1);
+    color: var(--fg-2);
+    font-family: var(--font-sans);
+    font-weight: 600;
+  }
+  .tag.is-agentic {
+    background: rgba(41,112,122,0.08);
+    border-color: rgba(41,112,122,0.25);
+    color: var(--k-spruce-110, #17444B);
+  }
+  .tag.is-brand {
+    background: rgba(255,70,45,0.08);
+    border-color: rgba(255,70,45,0.25);
+    color: #6B0014;
+  }
+
+  /* Layout grid */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 32px;
+  }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* Preview surface */
+  .preview {
+    background: var(--card);
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-3);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .preview .ph {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-1);
+    background: var(--bg-2);
+  }
+  .preview .ph-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--fg-muted);
+  }
+  .preview .ph-actions { display: flex; gap: 8px; }
+  .preview .ph-actions a {
+    font-size: 12px;
+    color: var(--k-spruce-60);
+    text-decoration: none;
+  }
+  .preview .ph-actions a:hover { text-decoration: underline; }
+  .preview .frame-wrap {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-1);
+  }
+  .preview iframe {
+    width: 100%; height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* Section card */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-3);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .section h2 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--fg-1);
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h2 .num {
+    font-size: 10px;
+    color: var(--fg-muted);
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 1.2px;
+  }
+  .section p { margin: 0 0 8px; color: var(--fg-2); }
+  .section p:last-child { margin-bottom: 0; }
+
+  /* Anatomy block */
+  .anatomy {
+    background: var(--bg-2);
+    border: 1px dashed var(--border-1);
+    border-radius: var(--radius-2);
+    padding: 12px 16px;
+    color: var(--fg-2);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  /* Tables */
+  table.spec {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.spec th, table.spec td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-1);
+    vertical-align: top;
+  }
+  table.spec th {
+    background: var(--bg-2);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--fg-muted);
+    font-weight: 600;
+  }
+  table.spec td.mono, table.spec td.token {
+    font-family: var(--font-mono, monospace);
+    font-size: 12px;
+    color: var(--k-spruce-110, #17444B);
+    white-space: nowrap;
+  }
+  table.spec td .req {
+    color: var(--k-warm-red-50);
+    font-weight: 600;
+    font-size: 11px;
+  }
+  table.spec tr:last-child td { border-bottom: 0; }
+
+  /* Do / Don't */
+  .dodont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .dodont { grid-template-columns: 1fr; } }
+  .dodont .col {
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-2);
+    padding: 14px 16px;
+  }
+  .dodont .col.do {
+    background: rgba(31,143,74,0.04);
+    border-color: rgba(31,143,74,0.25);
+  }
+  .dodont .col.dont {
+    background: rgba(168,0,31,0.04);
+    border-color: rgba(168,0,31,0.25);
+  }
+  .dodont h3 {
+    margin: 0 0 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+  }
+  .dodont .do h3 { color: #0D5C2E; }
+  .dodont .dont h3 { color: #6B0014; }
+  .dodont ul {
+    margin: 0; padding: 0; list-style: none;
+  }
+  .dodont li {
+    position: relative;
+    padding: 4px 0 4px 18px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--fg-2);
+  }
+  .dodont .do li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 4px;
+    color: #1F8F4A;
+    font-weight: 700;
+  }
+  .dodont .dont li::before {
+    content: '✕';
+    position: absolute; left: 0; top: 4px;
+    color: #A8001F;
+    font-weight: 700;
+  }
+
+  /* States chips */
+  .states {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .states .chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-1);
+    color: var(--fg-2);
+    font-family: var(--font-mono, monospace);
+  }
+
+  /* Edge cases */
+  .edges {
+    margin: 0; padding: 0; list-style: none;
+  }
+  .edges li {
+    padding: 8px 0 8px 16px;
+    border-left: 2px solid var(--k-spruce-60);
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    background: rgba(41,112,122,0.04);
+    padding-right: 12px;
+  }
+  .edges li:last-child { margin-bottom: 0; }
+
+  /* Right rail */
+  .rail {
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .rail-card {
+    background: var(--card);
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-3);
+    padding: 16px 18px;
+  }
+  .rail-card h3 {
+    margin: 0 0 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--fg-muted);
+    font-weight: 600;
+  }
+  .rail-card .kv {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 4px 0;
+    border-bottom: 1px dashed var(--border-1);
+  }
+  .rail-card .kv:last-of-type { border-bottom: 0; }
+  .rail-card .kv .k { color: var(--fg-muted); }
+  .rail-card .kv .v {
+    color: var(--fg-1);
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+  }
+  .rail-card a.related {
+    display: block;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border-1);
+    color: var(--fg-1);
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .rail-card a.related:last-of-type { border-bottom: 0; }
+  .rail-card a.related:hover { color: var(--k-spruce-60); }
+  .rail-card a.related .file {
+    display: block;
+    font-size: 10px;
+    font-family: var(--font-mono, monospace);
+    color: var(--fg-muted);
+    margin-top: 2px;
+  }
+  .rail-card .toc-link {
+    display: block;
+    padding: 4px 0;
+    color: var(--fg-2);
+    text-decoration: none;
+    font-size: 12px;
+    border-left: 2px solid transparent;
+    padding-left: 8px;
+    margin-left: -8px;
+  }
+  .rail-card .toc-link:hover {
+    color: var(--k-spruce-60);
+    border-left-color: var(--k-spruce-60);
+  }
+
+  /* Empty / not-found state */
+  .notfound {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--fg-muted);
+  }
+  .notfound h1 {
+    font-size: 24px;
+    color: var(--fg-1);
+    margin: 0 0 8px;
+  }
+  .notfound a {
+    color: var(--k-spruce-60);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="mark"></span>
+    <span>Kyndryl CMDB DS</span>
+  </a>
+  <nav class="crumbs">
+    <a href="index.html">Components</a>
+    <span class="sep">/</span>
+    <span id="crumb-name">…</span>
+  </nav>
+  <div class="actions">
+    <a class="btn" href="index.html">← All components</a>
+    <a class="btn is-primary" id="open-fullscreen" href="#" target="_blank">Open preview ↗</a>
+  </div>
+</header>
+
+<main class="shell" id="shell">
+  <div id="content"></div>
+</main>
+
+<script src="specs.js"></script>
+<script>
+/* =========================================================
+   Component detail page.
+   Reads ?id=<filename.html>, looks up window.SPECS[id], renders.
+   ========================================================= */
+(function () {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const spec = id && window.SPECS[id];
+  const content = document.getElementById('content');
+  const crumb = document.getElementById('crumb-name');
+  const openBtn = document.getElementById('open-fullscreen');
+
+  if (!spec) {
+    document.title = 'Component not found · Kyndryl CMDB DS';
+    crumb.textContent = 'Not found';
+    content.innerHTML = `
+      <div class="notfound">
+        <h1>Component not found</h1>
+        <p>${id ? `No spec registered for <code>${escapeHtml(id)}</code>.` : 'No component id specified.'}</p>
+        <p><a href="index.html">← Back to all components</a></p>
+      </div>`;
+    return;
+  }
+
+  document.title = spec.name + ' · Kyndryl CMDB DS';
+  crumb.textContent = spec.name;
+  openBtn.href = `../preview/${id}`;
+
+  const tagCls = ({
+    'Agentic': 'is-agentic',
+    'Live': 'is-agentic',
+    'Brand': 'is-brand',
+  })[spec.tag] || '';
+
+  const sections = [];
+
+  /* Hero */
+  sections.push(`
+    <section class="hero">
+      <div>
+        <div class="eyebrow">
+          <span>${escapeHtml(spec.tag)}</span>
+          <span class="tag ${tagCls}">${escapeHtml(spec.tag)}</span>
+        </div>
+        <h1>${escapeHtml(spec.name)}</h1>
+        <p class="summary">${escapeHtml(spec.summary || '')}</p>
+      </div>
+      <div class="meta">
+        <div>preview/${escapeHtml(id)}</div>
+        <div><a href="../preview/${id}" target="_blank">Open in new tab ↗</a></div>
+      </div>
+    </section>
+  `);
+
+  /* Layout: main column + rail */
+  const mainCol = [];
+  const railCol = [];
+
+  /* Live preview */
+  mainCol.push(`
+    <div class="preview">
+      <div class="ph">
+        <div class="ph-title">Live preview</div>
+        <div class="ph-actions">
+          <a href="../preview/${id}" target="_blank">Open in new tab ↗</a>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <iframe src="../preview/${id}" title="${escapeHtml(spec.name)} preview" loading="lazy"></iframe>
+      </div>
+    </div>
+  `);
+
+  /* Anatomy */
+  if (spec.anatomy) {
+    mainCol.push(section('01', 'Anatomy', `<div class="anatomy">${escapeHtml(spec.anatomy)}</div>`));
+  }
+
+  /* Props */
+  if (spec.props && spec.props.length) {
+    const rows = spec.props.map(p => `
+      <tr>
+        <td class="mono">${escapeHtml(p.name)}</td>
+        <td class="mono">${escapeHtml(p.type)}</td>
+        <td>${p.default === 'required' ? '<span class="req">required</span>' : escapeHtml(p.default || '—')}</td>
+        <td>${escapeHtml(p.notes || '')}</td>
+      </tr>`).join('');
+    mainCol.push(section('02', 'Props', `
+      <table class="spec">
+        <thead><tr><th>Name</th><th>Type</th><th>Default</th><th>Notes</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`));
+  }
+
+  /* Tokens */
+  if (spec.tokens && spec.tokens.length) {
+    const rows = spec.tokens.map(t => `
+      <tr>
+        <td class="token">${escapeHtml(t.name)}</td>
+        <td>${escapeHtml(t.role)}</td>
+      </tr>`).join('');
+    mainCol.push(section('03', 'Tokens used', `
+      <table class="spec">
+        <thead><tr><th>Token</th><th>Role</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`));
+  }
+
+  /* States */
+  if (spec.states && spec.states.length) {
+    const chips = spec.states.map(s => `<span class="chip">${escapeHtml(s)}</span>`).join('');
+    mainCol.push(section('04', 'Implemented states', `<div class="states">${chips}</div>
+      <p style="margin-top:12px;font-size:12px;color:var(--fg-muted)">See <a href="states-checklist.md" style="color:var(--k-spruce-60);text-decoration:none">states-checklist.md</a> for the full 8-state contract.</p>`));
+  }
+
+  /* Do / Don't */
+  if ((spec.do && spec.do.length) || (spec.dont && spec.dont.length)) {
+    mainCol.push(section('05', 'Do / Don\'t', `
+      <div class="dodont">
+        <div class="col do">
+          <h3>Do</h3>
+          <ul>${(spec.do || []).map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+        </div>
+        <div class="col dont">
+          <h3>Don't</h3>
+          <ul>${(spec.dont || []).map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+        </div>
+      </div>`));
+  }
+
+  /* Edge cases */
+  if (spec.edgeCases && spec.edgeCases.length) {
+    mainCol.push(section('06', 'Edge cases', `
+      <ul class="edges">
+        ${spec.edgeCases.map(e => `<li>${escapeHtml(e)}</li>`).join('')}
+      </ul>`));
+  }
+
+  /* Rail: meta */
+  railCol.push(`
+    <div class="rail-card">
+      <h3>Meta</h3>
+      <div class="kv"><span class="k">Tag</span><span class="v">${escapeHtml(spec.tag)}</span></div>
+      <div class="kv"><span class="k">Group</span><span class="v">${escapeHtml(spec.group)}</span></div>
+      <div class="kv"><span class="k">Source</span><span class="v">preview/${escapeHtml(id)}</span></div>
+    </div>
+  `);
+
+  /* Rail: TOC */
+  const tocItems = [];
+  if (spec.anatomy) tocItems.push('Anatomy');
+  if (spec.props) tocItems.push('Props');
+  if (spec.tokens) tocItems.push('Tokens used');
+  if (spec.states) tocItems.push('Implemented states');
+  if (spec.do || spec.dont) tocItems.push('Do / Don\'t');
+  if (spec.edgeCases) tocItems.push('Edge cases');
+  if (tocItems.length) {
+    railCol.push(`
+      <div class="rail-card">
+        <h3>On this page</h3>
+        ${tocItems.map(t => `<a class="toc-link" href="#${slug(t)}">${escapeHtml(t)}</a>`).join('')}
+      </div>`);
+  }
+
+  /* Rail: Related */
+  if (spec.related && spec.related.length) {
+    const rel = spec.related.map(f => {
+      const r = window.SPECS[f];
+      const name = r ? r.name : f;
+      return `<a class="related" href="component.html?id=${encodeURIComponent(f)}">
+        ${escapeHtml(name)}
+        <span class="file">preview/${escapeHtml(f)}</span>
+      </a>`;
+    }).join('');
+    railCol.push(`
+      <div class="rail-card">
+        <h3>Related</h3>
+        ${rel}
+      </div>`);
+  }
+
+  /* Rail: handoff docs */
+  railCol.push(`
+    <div class="rail-card">
+      <h3>Handoff docs</h3>
+      <a class="related" href="components.md">components.md<span class="file">Full component contract</span></a>
+      <a class="related" href="tokens.md">tokens.md<span class="file">Every CSS variable</span></a>
+      <a class="related" href="states-checklist.md">states-checklist.md<span class="file">8-state PR checklist</span></a>
+      <a class="related" href="README.md">README.md<span class="file">Handoff overview</span></a>
+    </div>`);
+
+  content.innerHTML = sections.join('') + `
+    <div class="layout">
+      <div>${mainCol.join('')}</div>
+      <aside class="rail">${railCol.join('')}</aside>
+    </div>`;
+
+  function section(num, title, body) {
+    return `<section class="section" id="${slug(title)}">
+      <h2><span class="num">${num}</span> ${escapeHtml(title)}</h2>
+      ${body}
+    </section>`;
+  }
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+  function slug(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+})();
+</script>
+
+</body>
+</html>

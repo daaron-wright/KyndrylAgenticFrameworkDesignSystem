@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kyndryl CMDB Design System — Developer Reference</title>
+<template id="__bundler_thumbnail" data-bg-color="#F2F4F5">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#F2F4F5"/>
+    <rect x="0" y="0" width="1200" height="56" fill="#FFFFFF"/>
+    <rect x="32" y="20" width="14" height="14" rx="3" fill="#FF462D"/>
+    <rect x="56" y="22" width="180" height="12" rx="2" fill="#141414"/>
+    <rect x="0" y="56" width="248" height="744" fill="#F2F4F5"/>
+    <rect x="248" y="56" width="1" height="744" fill="#E6E6E6"/>
+    <rect x="280" y="100" width="640" height="32" rx="4" fill="#141414"/>
+    <rect x="280" y="148" width="520" height="14" rx="2" fill="#5C5C5C"/>
+    <rect x="280" y="172" width="380" height="14" rx="2" fill="#5C5C5C"/>
+    <g transform="translate(280, 220)">
+      <rect width="200" height="120" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="220" width="200" height="120" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="440" width="200" height="120" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="660" width="200" height="120" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+    </g>
+    <g transform="translate(280, 380)">
+      <rect width="280" height="180" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="0" y="0" width="280" height="100" fill="#F2F4F5"/>
+      <rect x="300" width="280" height="180" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="300" y="0" width="280" height="100" fill="#F2F4F5"/>
+      <rect x="600" width="280" height="180" rx="8" fill="#FFFFFF" stroke="#E6E6E6"/>
+      <rect x="600" y="0" width="280" height="100" fill="#F2F4F5"/>
+    </g>
+    <text x="600" y="720" font-family="sans-serif" font-size="14" fill="#5C5C5C" text-anchor="middle">Kyndryl CMDB Design System · Developer Reference</text>
+  </svg>
+</template>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<style>
+  /* =========================================================
+     Page chrome — operator-grade, dense, doc-first.
+     Borders + tints, not shadows. Sentence case copy.
+     ========================================================= */
+  :root {
+    --doc-max: 1280px;
+    --rail-w: 248px;
+    --header-h: 56px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg-2);
+    color: var(--fg-2);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: var(--lh-normal);
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    height: var(--header-h);
+    background: #fff;
+    border-bottom: 1px solid var(--border-1);
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: 0 var(--space-6);
+  }
+  .topbar .brand {
+    display: flex; align-items: center; gap: var(--space-3);
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--fg-1);
+    font-size: 15px;
+    letter-spacing: -0.005em;
+  }
+  .topbar .brand .swatch {
+    width: 14px; height: 14px;
+    background: var(--k-warm-red-50);
+    border-radius: 3px;
+  }
+  .topbar .brand .v {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    background: var(--bg-3);
+    color: var(--fg-muted);
+    border-radius: 3px;
+    margin-left: 4px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .topbar .crumb {
+    color: var(--fg-muted);
+    font-size: 12px;
+  }
+  .topbar .right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: var(--space-3);
+    font-size: 12px;
+  }
+  .topbar .right a {
+    color: var(--fg-2);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-1);
+    background: #fff;
+  }
+  .topbar .right a:hover { background: var(--bg-2); color: var(--fg-1); }
+  .topbar .right a.primary {
+    background: var(--k-spruce-60);
+    color: #fff;
+    border-color: var(--k-spruce-60);
+  }
+  .topbar .right a.primary:hover { background: var(--k-spruce-70); }
+
+  /* Layout */
+  .shell {
+    display: grid;
+    grid-template-columns: var(--rail-w) 1fr;
+    max-width: var(--doc-max);
+    margin: 0 auto;
+  }
+  @media (max-width: 920px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { display: none; }
+  }
+
+  /* Left rail */
+  .rail {
+    position: sticky;
+    top: var(--header-h);
+    align-self: start;
+    height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+    padding: var(--space-6) var(--space-4) var(--space-6) var(--space-6);
+    border-right: 1px solid var(--border-1);
+    background: var(--bg-2);
+  }
+  .rail h4 {
+    font-family: var(--font-sans);
+    font-size: var(--t-caption);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--fg-muted);
+    font-weight: 700;
+    margin: var(--space-5) 0 var(--space-2);
+  }
+  .rail h4:first-child { margin-top: 0; }
+  .rail a {
+    display: block;
+    padding: 5px 8px;
+    margin: 1px -8px;
+    border-radius: var(--radius-sm);
+    color: var(--fg-2);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .rail a:hover { background: #fff; color: var(--fg-1); }
+  .rail a.active {
+    background: #fff;
+    color: var(--fg-1);
+    font-weight: 500;
+    box-shadow: inset 2px 0 0 var(--k-spruce-60);
+  }
+
+  /* Content column */
+  main {
+    padding: var(--space-8) var(--space-8) 96px;
+    background: var(--bg-2);
+    min-width: 0;
+  }
+  section.block {
+    background: #fff;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+  section.block.flush { padding: 0; overflow: hidden; }
+  section .head {
+    display: flex; align-items: baseline; gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  section .head h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-h1);
+    color: var(--fg-1);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  section .head .count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    padding: 2px 6px;
+    background: var(--bg-2);
+    border-radius: 3px;
+  }
+  section .head .lede {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--fg-muted);
+    max-width: 56ch;
+    line-height: 1.45;
+    text-align: right;
+  }
+  section p.intro {
+    color: var(--fg-2);
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 72ch;
+    margin: 0 0 var(--space-5);
+  }
+
+  /* Hero */
+  .hero {
+    background:
+      radial-gradient(ellipse 600px 320px at 88% 12%, rgba(255,70,45,0.06), transparent 60%),
+      radial-gradient(ellipse 600px 320px at 12% 88%, rgba(41,112,122,0.06), transparent 60%),
+      #fff;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    margin-bottom: var(--space-6);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .eyebrow {
+    font-size: var(--t-caption);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--k-spruce-60);
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--fg-1);
+    margin: 0 0 var(--space-3);
+    max-width: 24ch;
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--fg-2);
+    line-height: 1.55;
+    margin: 0 0 var(--space-5);
+    max-width: 60ch;
+  }
+  .hero .stats {
+    display: flex;
+    gap: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border-1);
+  }
+  .hero .stat .n {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--fg-1);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero .stat .lbl {
+    font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  /* Quick-links band */
+  .quicklinks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+  @media (max-width: 1024px) { .quicklinks { grid-template-columns: repeat(2, 1fr); } }
+  .ql {
+    background: #fff;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    text-decoration: none;
+    color: var(--fg-1);
+    transition: border-color 120ms ease, transform 120ms ease;
+  }
+  .ql:hover { border-color: var(--k-spruce-60); }
+  .ql .ql-icon {
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--k-ai-spruce-12);
+    color: var(--k-spruce-70);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-3);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+  .ql.is-brand .ql-icon { background: var(--k-ai-warm-red-12); color: var(--k-warm-red-70); }
+  .ql h3 {
+    margin: 0 0 4px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--fg-1);
+  }
+  .ql p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--fg-muted);
+    line-height: 1.45;
+  }
+  .ql .ql-meta {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  /* Component grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .card:hover {
+    border-color: var(--k-spruce-40);
+    box-shadow: var(--shadow-card);
+  }
+  .card .thumb {
+    aspect-ratio: 16 / 9;
+    background: #fff;
+    border-bottom: 1px solid var(--border-1);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card .thumb svg { width: 100%; height: 100%; display: block; }
+  .card .thumb.is-foundation { background: var(--bg-2); }
+  .card .thumb.is-agentic {
+    background:
+      radial-gradient(ellipse 200px 140px at 80% 20%, rgba(255,70,45,0.08), transparent 60%),
+      radial-gradient(ellipse 200px 140px at 20% 80%, rgba(41,112,122,0.08), transparent 60%),
+      #fff;
+  }
+  .card .thumb.is-template { background: var(--bg-2); }
+  .card .thumb.is-state { background: #fff; }
+  .card .thumb.is-brand {
+    background:
+      radial-gradient(ellipse 240px 160px at 50% 50%, rgba(255,70,45,0.10), transparent 65%),
+      #fff;
+  }
+  .card .body {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card .row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .card h4 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg-1);
+  }
+  .card .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--bg-2);
+    color: var(--fg-muted);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .card .tag.is-agentic { background: var(--k-ai-spruce-12); color: var(--k-spruce-70); }
+  .card .tag.is-brand { background: var(--k-ai-warm-red-12); color: var(--k-warm-red-70); }
+  .card .tag.is-template { background: var(--k-status-success-10); color: var(--k-status-success-110); }
+  .card .desc {
+    font-size: 12px;
+    color: var(--fg-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .card .footer {
+    margin-top: auto;
+    padding: 8px var(--space-4);
+    border-top: 1px solid var(--border-1);
+    background: var(--bg-2);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-muted);
+  }
+  .card .footer a {
+    color: var(--k-spruce-60);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .card .footer a:hover { color: var(--k-spruce-70); text-decoration: underline; }
+
+  /* Token preview row */
+  .token-strip {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 0;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-top: var(--space-3);
+  }
+  @media (max-width: 800px) { .token-strip { grid-template-columns: repeat(6, 1fr); } }
+  .token-strip .swatch {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: rgba(0,0,0,0.55);
+  }
+  .token-strip .swatch.dk { color: rgba(255,255,255,0.7); }
+  .token-strip .swatch span { background: rgba(255,255,255,0.85); padding: 1px 4px; border-radius: 2px; color: rgba(0,0,0,0.7); }
+  .token-strip .swatch.dk span { background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.9); }
+
+  /* Type sample */
+  .type-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 100px;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px dashed var(--border-1);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+  .type-row .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    text-align: right;
+  }
+
+  /* Docs links table */
+  .doctable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .doctable th, .doctable td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-1);
+    vertical-align: top;
+  }
+  .doctable th {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    color: var(--fg-muted);
+    background: var(--bg-2);
+  }
+  .doctable td.path {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-1);
+    white-space: nowrap;
+  }
+  .doctable td.path a { color: var(--k-spruce-60); text-decoration: none; }
+  .doctable td.path a:hover { text-decoration: underline; }
+
+  /* States grid */
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+  }
+  @media (max-width: 1000px) { .states-grid { grid-template-columns: repeat(2, 1fr); } }
+  .state-cell {
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background: #fff;
+  }
+  .state-cell .num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-muted);
+    margin-bottom: 2px;
+  }
+  .state-cell .name {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-1);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .state-cell .desc {
+    font-size: 11.5px;
+    color: var(--fg-muted);
+    line-height: 1.4;
+  }
+
+  /* Rules list */
+  .rules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--space-6);
+  }
+  @media (max-width: 800px) { .rules { grid-template-columns: 1fr; } }
+  .rules .rule {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-1);
+  }
+  .rules .rule .n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--k-warm-red-50);
+    flex-shrink: 0;
+    width: 24px;
+    font-weight: 600;
+  }
+  .rules .rule .b {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg-2);
+  }
+  .rules .rule .b strong { color: var(--fg-1); font-weight: 500; }
+
+  /* Filter bar */
+  .filterbar {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .filterbar button {
+    font: inherit;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-1);
+    background: #fff;
+    color: var(--fg-2);
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+  .filterbar button:hover { border-color: var(--k-spruce-40); color: var(--fg-1); }
+  .filterbar button.active {
+    background: var(--k-spruce-60);
+    color: #fff;
+    border-color: var(--k-spruce-60);
+  }
+  .filterbar .count-pill {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    color: var(--fg-muted);
+    font-size: 12px;
+    padding: var(--space-6);
+    margin-top: var(--space-8);
+    border-top: 1px solid var(--border-1);
+  }
+  footer code { font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="swatch"></div>
+    Kyndryl CMDB
+    <span class="crumb">/ Design system / Developer reference</span>
+    <span class="v">v1.0</span>
+  </div>
+  <div class="right">
+    <a href="../design-system-deck.html" target="_blank">Open spec deck</a>
+    <a href="README.md" target="_blank">README</a>
+    <a class="primary" href="../colors_and_type.css" download>Download tokens.css</a>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="rail">
+    <h4>Start here</h4>
+    <a href="#overview" class="active">Overview</a>
+    <a href="#quicklinks">Quick links</a>
+    <a href="#rules">Non-negotiable rules</a>
+
+    <h4>Foundations</h4>
+    <a href="#tokens">Tokens</a>
+    <a href="#type">Typography</a>
+    <a href="#color">Color</a>
+    <a href="#status">Status taxonomy</a>
+
+    <h4>Components</h4>
+    <a href="#primitives">Primitives</a>
+    <a href="#composites">Composites</a>
+    <a href="#live">Live primitives</a>
+    <a href="#templates">Templates</a>
+    <a href="#graph">Graph kit</a>
+
+    <h4>Contracts</h4>
+    <a href="#states">8-state matrix</a>
+    <a href="#docs">Docs index</a>
+  </aside>
+
+  <main>
+    <!-- ======= HERO ======= -->
+    <section class="hero" id="overview">
+      <div class="eyebrow">Developer reference · v1.0</div>
+      <h1>Tokens, components, and contracts for shipping CMDB workflows.</h1>
+      <p>The deck is the spec, the previews are the components, this site is how engineers find them. Browse 45 reference pages, copy <code>colors_and_type.css</code> into your repo, run the 8-state matrix on every PR.</p>
+      <div class="stats">
+        <div class="stat"><div class="n">45</div><div class="lbl">Reference pages</div></div>
+        <div class="stat"><div class="n">19</div><div class="lbl">Spec slides</div></div>
+        <div class="stat"><div class="n">14</div><div class="lbl">Composites</div></div>
+        <div class="stat"><div class="n">8</div><div class="lbl">States per component</div></div>
+        <div class="stat"><div class="n">17</div><div class="lbl">Shidoka icons</div></div>
+      </div>
+    </section>
+
+    <!-- ======= QUICK LINKS ======= -->
+    <section id="quicklinks" style="background: transparent; padding: 0; border: 0; margin-bottom: var(--space-6);">
+      <div class="quicklinks">
+        <a class="ql is-brand" href="../colors_and_type.css" download>
+          <div class="ql-icon">{}</div>
+          <h3>tokens.css</h3>
+          <p>Single source of truth. Copy this file. Don't fork it.</p>
+          <div class="ql-meta">colors_and_type.css · 26 KB</div>
+        </a>
+        <a class="ql" href="tokens.md" target="_blank">
+          <div class="ql-icon">T</div>
+          <h3>tokens.md</h3>
+          <p>Every variable: hex, font stack, spacing step, with use rules.</p>
+          <div class="ql-meta">handoff/tokens.md</div>
+        </a>
+        <a class="ql" href="components.md" target="_blank">
+          <div class="ql-icon">C</div>
+          <h3>components.md</h3>
+          <p>Per-composite contract. Anatomy, props, slots, do / don't.</p>
+          <div class="ql-meta">handoff/components.md</div>
+        </a>
+        <a class="ql" href="states-checklist.md" target="_blank">
+          <div class="ql-icon">8</div>
+          <h3>states-checklist.md</h3>
+          <p>The 8 mandatory states as a copy-paste PR checklist.</p>
+          <div class="ql-meta">handoff/states-checklist.md</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ======= NON-NEGOTIABLES ======= -->
+    <section class="block" id="rules">
+      <div class="head">
+        <h2>Non-negotiable rules</h2>
+        <span class="count">8</span>
+        <span class="lede">If a PR violates one of these, it gets bounced. These are the rules everything else hangs off.</span>
+      </div>
+      <div class="rules">
+        <div class="rule"><div class="n">01</div><div class="b"><strong>Tokens only.</strong> Never hardcode a hex, font name, spacing px, or radius. If you need a value not in tokens.css, file an issue.</div></div>
+        <div class="rule"><div class="n">02</div><div class="b"><strong>Severity is never color-only.</strong> Every severity / status surface pairs color with an icon and a text label.</div></div>
+        <div class="rule"><div class="n">03</div><div class="b"><strong>Sentence case for UI copy.</strong> "Change requests", not "Change Requests". UPPERCASE only on <code>.t-caption</code> eyebrows.</div></div>
+        <div class="rule"><div class="n">04</div><div class="b"><strong>No emoji.</strong> Ever. Use the Shidoka icon set.</div></div>
+        <div class="rule"><div class="n">05</div><div class="b"><strong>No invented confidence.</strong> A ConfidenceBadge always carries a rationale slot. No reason → no badge.</div></div>
+        <div class="rule"><div class="n">06</div><div class="b"><strong>All eight states.</strong> loading, empty, filtered-empty, error, stale, unauthorized, executing, success-after-action.</div></div>
+        <div class="rule"><div class="n">07</div><div class="b"><strong>Permission-aware.</strong> Every action-bearing composite accepts <code>role</code> / <code>capabilities</code>. Fallback chain: full → review → readonly.</div></div>
+        <div class="rule"><div class="n">08</div><div class="b"><strong>Agentic primitives are control points.</strong> Badges aren't decorative. They open popovers with override / teach / dispute actions.</div></div>
+      </div>
+    </section>
+
+    <!-- ======= TOKENS / FOUNDATIONS ======= -->
+    <section class="block" id="tokens">
+      <div class="head">
+        <h2>Foundations</h2>
+        <span class="count">tokens</span>
+        <span class="lede"><a href="tokens.md" style="color: var(--k-spruce-60); text-decoration: none;">Full reference →</a></span>
+      </div>
+      <p class="intro">Two brand hues with one job each. Warm Red <code>#FF462D</code> is the brand accent. Spruce <code>#29707A</code> is the interactive workhorse — primary buttons, links, focus rings, selected state.</p>
+
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-bottom: 6px;">--k-warm-red-* &nbsp;<span style="color: var(--fg-1); background: var(--k-ai-warm-red-12); padding: 1px 5px; border-radius: 3px;">Brand accent</span></div>
+      <div class="token-strip" id="ramp-warm-red"></div>
+
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin: var(--space-4) 0 6px;">--k-spruce-* &nbsp;<span style="color: var(--fg-1); background: var(--k-ai-spruce-12); padding: 1px 5px; border-radius: 3px;">Interactive</span></div>
+      <div class="token-strip" id="ramp-spruce"></div>
+
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin: var(--space-4) 0 6px;">--k-cool-gray-* &nbsp;<span style="color: var(--fg-muted);">Dashboards, charts</span></div>
+      <div class="token-strip" id="ramp-cool-gray"></div>
+
+      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin: var(--space-4) 0 6px;">--k-status-* &nbsp;<span style="color: var(--fg-muted);">RAG taxonomy — always paired with icon + label</span></div>
+      <div class="token-strip" id="ramp-status" style="grid-template-columns: repeat(5, 1fr);"></div>
+    </section>
+
+    <!-- ======= TYPE ======= -->
+    <section class="block" id="type">
+      <div class="head">
+        <h2>Typography</h2>
+        <span class="count">3 stacks</span>
+        <span class="lede">TWK Everett (display, 20px+), Roboto (body 14–18px), Geist Mono (code, IDs).</span>
+      </div>
+      <div>
+        <div class="type-row">
+          <div class="key">--t-display</div>
+          <div style="font-family: var(--font-display); font-size: 28px; line-height: 1.15; font-weight: 500; letter-spacing: -0.01em; color: var(--fg-1);">Page title, KPI hero</div>
+          <div class="meta">28 / Display</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--t-h1</div>
+          <div style="font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--fg-1);">Section heading</div>
+          <div class="meta">22 / Display</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--t-h2</div>
+          <div style="font-family: var(--font-display); font-size: 18px; font-weight: 500; color: var(--fg-1);">Card title</div>
+          <div class="meta">18 / Display</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--t-body</div>
+          <div style="font-family: var(--font-sans); font-size: 14px; color: var(--fg-2);">Default body — operational, precise, quietly authoritative.</div>
+          <div class="meta">14 / Roboto</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--t-small</div>
+          <div style="font-family: var(--font-sans); font-size: 12px; color: var(--fg-muted);">Supporting copy and helpers.</div>
+          <div class="meta">12 / Roboto</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--t-caption</div>
+          <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; color: var(--fg-muted);">EYEBROW · UPPERCASE</div>
+          <div class="meta">10 / 0.14em</div>
+        </div>
+        <div class="type-row">
+          <div class="key">--font-mono</div>
+          <div style="font-family: var(--font-mono); font-size: 13px; color: var(--fg-1);">bINC0001234 · 2025-04-28 14:32 · 87.4%</div>
+          <div class="meta">Geist Mono</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= 8 STATES ======= -->
+    <section class="block" id="states">
+      <div class="head">
+        <h2>The 8-state matrix</h2>
+        <span class="count">contract</span>
+        <span class="lede"><a href="states-checklist.md" style="color: var(--k-spruce-60); text-decoration: none;">PR checklist →</a></span>
+      </div>
+      <p class="intro">Every component renders all eight. <a href="../preview/states-matrix.html" target="_blank" style="color: var(--k-spruce-60);">See the matrix live →</a></p>
+      <div class="states-grid">
+        <div class="state-cell"><div class="num">01</div><div class="name">loading</div><div class="desc">Skeleton matching final shape. Not a spinner. <code>aria-busy="true"</code>.</div></div>
+        <div class="state-cell"><div class="num">02</div><div class="name">empty</div><div class="desc">Plain-language explanation + next-step CTA.</div></div>
+        <div class="state-cell"><div class="num">03</div><div class="name">filtered-empty</div><div class="desc">Names the active filters + Clear filters button.</div></div>
+        <div class="state-cell"><div class="num">04</div><div class="name">error</div><div class="desc">Human cause + Retry + Escalate + error ID.</div></div>
+        <div class="state-cell"><div class="num">05</div><div class="name">stale</div><div class="desc">FreshnessBadge warning + banner + Refresh. Data stays visible.</div></div>
+        <div class="state-cell"><div class="num">06</div><div class="name">unauthorized</div><div class="desc">What user can / can't see + request-access path.</div></div>
+        <div class="state-cell"><div class="num">07</div><div class="name">executing</div><div class="desc">Disabled CTAs + inline progress + cancel where safe.</div></div>
+        <div class="state-cell"><div class="num">08</div><div class="name">success-after-action</div><div class="desc">Confirmation surface + Undo (if reversible) + audit entry.</div></div>
+      </div>
+    </section>
+
+    <!-- ======= COMPONENT GRID ======= -->
+    <section class="block" id="primitives">
+      <div class="head">
+        <h2>All preview pages</h2>
+        <span class="count" id="visible-count">45</span>
+        <span class="lede">Click any card to open the live preview. Filter by group below.</span>
+      </div>
+
+      <div class="filterbar" id="filterbar">
+        <button data-filter="all" class="active">All</button>
+        <button data-filter="primitive">Primitives</button>
+        <button data-filter="component">Components</button>
+        <button data-filter="composite">Composites</button>
+        <button data-filter="agentic">Agentic</button>
+        <button data-filter="template">Templates</button>
+        <button data-filter="state">States</button>
+        <button data-filter="brand">Brand</button>
+        <button data-filter="foundation">Foundations</button>
+        <span class="count-pill" id="count-pill"></span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ======= DOCS INDEX ======= -->
+    <section class="block" id="docs">
+      <div class="head">
+        <h2>Docs index</h2>
+        <span class="count">5</span>
+      </div>
+      <table class="doctable">
+        <thead>
+          <tr><th style="width: 30%;">File</th><th>Purpose</th><th style="width: 22%;">When to look here</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="path"><a href="README.md">handoff/README.md</a></td><td>Entry doc. Implementation order, stack assumptions, code-review conventions.</td><td>First load.</td></tr>
+          <tr><td class="path"><a href="tokens.md">handoff/tokens.md</a></td><td>Every CSS variable: hex, font stack, spacing, radius, motion, with use rules.</td><td>Theming, mapping to Shidoka.</td></tr>
+          <tr><td class="path"><a href="components.md">handoff/components.md</a></td><td>Per-composite contract. Anatomy, props, slots, do/don't, edge cases.</td><td>Building a component.</td></tr>
+          <tr><td class="path"><a href="states-checklist.md">handoff/states-checklist.md</a></td><td>The 8-state matrix as a copy-paste PR contract.</td><td>Before / during code review.</td></tr>
+          <tr><td class="path"><a href="../colors_and_type.css">colors_and_type.css</a></td><td>The single source of truth. Copy into your repo.</td><td>Setup. Treat as read-only.</td></tr>
+          <tr><td class="path"><a href="../design-system-deck.html">design-system-deck.html</a></td><td>The narrative spec. 19 slides covering principles, taxonomy, themes.</td><td>Onboarding. Stakeholder review.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Kyndryl CMDB Design System · v1.0 · Built on <code>@kyndryl-design-system/shidoka-foundation</code> · Brand accent <code>#FF462D</code> · Interactive <code>#29707A</code>
+</footer>
+
+<script>
+/* =========================================================
+   Token strips — render the ramps from the live CSS vars.
+   ========================================================= */
+function strip(id, base, stops) {
+  const el = document.getElementById(id);
+  const cs = getComputedStyle(document.documentElement);
+  stops.forEach(s => {
+    const varName = `--${base}-${s}`;
+    const hex = cs.getPropertyValue(varName).trim();
+    const stop = parseInt(s, 10);
+    const dark = stop >= 50;
+    const div = document.createElement('div');
+    div.className = 'swatch' + (dark ? ' dk' : '');
+    div.style.background = hex || '#ccc';
+    div.innerHTML = `<span>${stop}</span>`;
+    div.title = `${varName} · ${hex}`;
+    el.appendChild(div);
+  });
+}
+strip('ramp-warm-red', 'k-warm-red', [10,20,30,40,50,60,70,80,90,100,110]);
+strip('ramp-spruce', 'k-spruce', [10,20,30,40,50,60,70,80,90,100]);
+strip('ramp-cool-gray', 'k-cool-gray', [10,20,30,40,50,60,70,80,90]);
+
+/* Status strip uses solid + label */
+(function statusStrip() {
+  const el = document.getElementById('ramp-status');
+  const items = [
+    { name: 'Critical', v: '--k-status-critical-100' },
+    { name: 'Error', v: '--k-status-error-100' },
+    { name: 'Warning', v: '--k-status-warning-100' },
+    { name: 'Success', v: '--k-status-success-100' },
+    { name: 'Info', v: '--k-spruce-60' },
+  ];
+  const cs = getComputedStyle(document.documentElement);
+  items.forEach(it => {
+    const hex = cs.getPropertyValue(it.v).trim();
+    const div = document.createElement('div');
+    div.className = 'swatch dk';
+    div.style.background = hex;
+    div.innerHTML = `<span>${it.name}</span>`;
+    div.title = `${it.v} · ${hex}`;
+    el.appendChild(div);
+  });
+})();
+
+/* =========================================================
+   Component grid — registry + filter
+   ========================================================= */
+const PREVIEWS = [
+  // Foundations
+  { f: 'type-display.html', t: 'Display type', d: 'TWK Everett scale.', g: 'foundation', tag: 'Type' },
+  { f: 'type-body.html', t: 'Body type', d: 'Roboto + Geist Mono.', g: 'foundation', tag: 'Type' },
+  { f: 'colors-brand.html', t: 'Brand color', d: 'Warm Red + Spruce ramps.', g: 'foundation', tag: 'Color' },
+  { f: 'colors-slate.html', t: 'Neutrals', d: 'Dark Stone, Cool Gray, Warm Gray.', g: 'foundation', tag: 'Color' },
+  { f: 'colors-status.html', t: 'Status taxonomy', d: 'RAG stops 10/20/100/110.', g: 'foundation', tag: 'Color' },
+  { f: 'colors-severity.html', t: 'Severity scale', d: 'Critical → OK aliases.', g: 'foundation', tag: 'Color' },
+  { f: 'colors-chart.html', t: 'Chart palette', d: 'Categorical 10-slot, order-locked.', g: 'foundation', tag: 'Color' },
+  { f: 'spacing-scale.html', t: 'Spacing scale', d: '4pt base · 4 → 64.', g: 'foundation', tag: 'Spacing' },
+  { f: 'spacing-radii.html', t: 'Radii', d: '2 / 4 / 8 / 16.', g: 'foundation', tag: 'Spacing' },
+  { f: 'spacing-elevation.html', t: 'Elevation', d: 'Borders + tint, not shadow.', g: 'foundation', tag: 'Spacing' },
+
+  // Primitives
+  { f: 'primitives-confidence.html', t: 'ConfidenceBadge', d: 'Agent confidence with rationale.', g: 'primitive,agentic', tag: 'Agentic' },
+  { f: 'primitives-freshness.html', t: 'FreshnessBadge', d: 'Data age + stale threshold.', g: 'primitive,agentic', tag: 'Agentic' },
+  { f: 'primitives-delta.html', t: 'DeltaIndicator', d: 'Period-over-period change.', g: 'primitive,agentic', tag: 'Agentic' },
+  { f: 'primitives-source.html', t: 'SourceAttribution', d: 'Provenance footer.', g: 'primitive,agentic', tag: 'Agentic' },
+  { f: 'primitives-status.html', t: 'StatusBadge', d: 'Lifecycle state chip.', g: 'primitive', tag: 'Primitive' },
+
+  // Components
+  { f: 'components-badges.html', t: 'Badges', d: 'SeverityPill + status chips.', g: 'component', tag: 'Component' },
+  { f: 'components-buttons.html', t: 'Buttons', d: 'Primary / secondary / ghost.', g: 'component', tag: 'Component' },
+  { f: 'components-kpi.html', t: 'KPI tiles', d: 'Number + delta + freshness.', g: 'component', tag: 'Component' },
+  { f: 'components-gauge.html', t: 'Trust score gauge', d: 'Semi-circle with RAG bands.', g: 'component', tag: 'Component' },
+  { f: 'components-table.html', t: 'Data table', d: 'Dense, tabular-nums, severity rows.', g: 'component', tag: 'Component' },
+  { f: 'components-status-banner.html', t: 'Status banner', d: 'Surface-level banner card.', g: 'component', tag: 'Component' },
+  { f: 'components-recommendation.html', t: 'Recommendation card', d: 'Title + rationale + 3-way CTA.', g: 'component', tag: 'Component' },
+  { f: 'components-execution.html', t: 'Execution timeline', d: 'In-flight + completed variants.', g: 'component', tag: 'Component' },
+
+  // Composites
+  { f: 'composite-chat.html', t: 'Chat (composite)', d: 'Stream + AgentStatusBar + tool calls.', g: 'composite,agentic', tag: 'Composite' },
+  { f: 'composite-exec-summary.html', t: 'Executive summary', d: 'Narrative + sources + KPIs.', g: 'composite', tag: 'Composite' },
+  { f: 'composite-impact-rollup.html', t: 'Impact rollup', d: 'CIs → apps → processes → BUs.', g: 'composite', tag: 'Composite' },
+  { f: 'composite-scenario.html', t: 'Scenario projection', d: '"If we run this" before/after.', g: 'composite', tag: 'Composite' },
+
+  // Agentic / live
+  { f: 'agentic-states.html', t: 'Agentic states', d: 'Six live interaction primitives.', g: 'agentic', tag: 'Live' },
+  { f: 'agentic-flow.html', t: 'Agentic flow', d: 'Composed live run end-to-end.', g: 'agentic', tag: 'Live' },
+  { f: 'agentic-states-deck.html', t: 'Agentic deck', d: 'States as reference deck.', g: 'agentic', tag: 'Live' },
+  { f: 'agentic-inbox.html', t: '"Learned from you" inbox', d: 'Override audit trail.', g: 'agentic', tag: 'Agentic' },
+  { f: 'ai-launch-button.html', t: 'AI launch button', d: 'Entry point to agentic surfaces.', g: 'agentic', tag: 'Agentic' },
+  { f: 'ai-modal-chat.html', t: 'AI modal chat', d: 'Modal-form chat with tool calls.', g: 'agentic', tag: 'Agentic' },
+  { f: 'ai-loader.html', t: 'AI loader', d: 'Drifting dot-field + blob morph.', g: 'agentic', tag: 'Agentic' },
+  { f: 'ai-chat-history.html', t: 'AI chat history', d: 'Past conversations rail.', g: 'agentic', tag: 'Agentic' },
+  { f: 'ai-feedback-sources.html', t: 'AI feedback / sources', d: 'Inline rate + provenance.', g: 'agentic', tag: 'Agentic' },
+
+  // Graph
+  { f: 'dag-graph-kit.html', t: 'DAG & graph kit', d: '9 node types · 8 states · 4 layouts.', g: 'composite', tag: 'Graph' },
+
+  // Templates
+  { f: 'template-dashboard.html', t: 'Dashboard', d: 'KpiGrid + 2-col composite area.', g: 'template', tag: 'Template' },
+  { f: 'template-triage.html', t: 'Triage', d: 'Filter rail + finding list + drawer.', g: 'template', tag: 'Template' },
+  { f: 'template-investigation.html', t: 'Investigation', d: 'Graph centerpiece + inspector.', g: 'template', tag: 'Template' },
+  { f: 'template-review.html', t: 'Review queue', d: 'Access / change / correction.', g: 'template', tag: 'Template' },
+  { f: 'template-conversation.html', t: 'Conversation', d: 'Full-height chat surface.', g: 'template', tag: 'Template' },
+
+  // States
+  { f: 'states-matrix.html', t: 'States matrix', d: 'All 8 states for every component.', g: 'state', tag: 'States' },
+
+  // Brand
+  { f: 'brand-logo.html', t: 'Brand logo', d: 'Kyndryl wordmark + clear-space.', g: 'brand', tag: 'Brand' },
+  { f: 'brand-icons.html', t: 'Icon library', d: '17 Shidoka symbols.', g: 'brand', tag: 'Brand' },
+];
+
+const TAG_CLASS = {
+  'Agentic': 'is-agentic',
+  'Live': 'is-agentic',
+  'Brand': 'is-brand',
+  'Template': 'is-template',
+};
+
+const THUMB_CLASS = {
+  'Type': 'is-foundation', 'Color': 'is-foundation', 'Spacing': 'is-foundation',
+  'Brand': 'is-brand', 'Template': 'is-template', 'States': 'is-state',
+  'Agentic': 'is-agentic', 'Live': 'is-agentic',
+};
+
+/* Stylized SVG thumbnails per preview file. Each returns SVG markup for a 16:9 viewBox. */
+function thumb(f, tag) {
+  const W = 320, H = 180;
+  const wrap = (inner) => `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${inner}</svg>`;
+  switch (f) {
+    case 'type-display.html':
+      return wrap(`<text x="20" y="78" font-family="serif" font-size="56" font-weight="500" fill="#141414" letter-spacing="-1">Aa</text><rect x="20" y="100" width="180" height="6" fill="#141414"/><rect x="20" y="120" width="120" height="4" fill="#5C5C5C"/><rect x="20" y="138" width="80" height="3" fill="#A8A8A8"/>`);
+    case 'type-body.html':
+      return wrap(`<rect x="20" y="28" width="240" height="6" fill="#141414"/><rect x="20" y="46" width="280" height="4" fill="#3D3D3D"/><rect x="20" y="60" width="260" height="4" fill="#3D3D3D"/><rect x="20" y="74" width="200" height="4" fill="#3D3D3D"/><rect x="20" y="100" width="180" height="3" fill="#5C5C5C"/><rect x="20" y="112" width="220" height="3" fill="#5C5C5C"/><text x="20" y="155" font-family="monospace" font-size="11" fill="#29707A">bINC0001234 · 87%</text>`);
+    case 'colors-brand.html':
+      return wrap(`${[...Array(10)].map((_,i)=>`<rect x="${20+i*28}" y="40" width="26" height="40" fill="${['#FFE8E0','#FFB8A3','#FF8766','#FF6647','#FF462D','#E63A22','#B82915','#8A1E0D','#5C1408','#2E0A04'][i]}"/>`).join('')}${[...Array(10)].map((_,i)=>`<rect x="${20+i*28}" y="100" width="26" height="40" fill="${['#E8F2F4','#BEDDE2','#91C4CC','#5BA2AE','#3D8590','#29707A','#1F5A63','#17444B','#0F2E33','#07191C'][i]}"/>`).join('')}`);
+    case 'colors-slate.html':
+      return wrap(`${[...Array(9)].map((_,i)=>`<rect x="${20+i*32}" y="60" width="30" height="60" fill="${['#F5F5F5','#E6E6E6','#CFCFCF','#A8A8A8','#808080','#5C5C5C','#3D3D3D','#242424','#141414'][i]}"/>`).join('')}`);
+    case 'colors-status.html':
+    case 'colors-severity.html':
+      return wrap(`<rect x="20" y="50" width="56" height="80" fill="#A8001F"/><rect x="84" y="50" width="56" height="80" fill="#D62E2E"/><rect x="148" y="50" width="56" height="80" fill="#E68A00"/><rect x="212" y="50" width="56" height="80" fill="#1F8F4A"/><rect x="276" y="50" width="24" height="80" fill="#29707A"/>`);
+    case 'colors-chart.html':
+      return wrap(`${['#29707A','#FF462D','#3E8AC2','#8A4FBF','#E68A00','#5C6A73','#5BA2AE','#FF8766','#1F5580','#B82915'].map((c,i)=>`<rect x="${20+i*28}" y="${110-((i*7)%60)}" width="20" height="${30+((i*7)%60)}" fill="${c}"/>`).join('')}<line x1="20" y1="140" x2="300" y2="140" stroke="#E6E6E6"/>`);
+    case 'spacing-scale.html':
+      return wrap(`${[4,8,12,16,20,24,32,40,48].map((s,i)=>`<rect x="${24+i*32}" y="${140-s*1.6}" width="20" height="${s*1.6}" fill="#29707A" opacity="${0.3+i*0.07}"/>`).join('')}`);
+    case 'spacing-radii.html':
+      return wrap(`<rect x="40" y="50" width="50" height="50" rx="2" fill="#29707A"/><rect x="110" y="50" width="50" height="50" rx="4" fill="#29707A"/><rect x="180" y="50" width="50" height="50" rx="8" fill="#29707A"/><rect x="250" y="50" width="50" height="50" rx="16" fill="#29707A"/>`);
+    case 'spacing-elevation.html':
+      return wrap(`<rect x="40" y="50" width="64" height="80" fill="#fff" stroke="#E6E6E6"/><rect x="124" y="50" width="64" height="80" fill="#fff" stroke="#E6E6E6" filter="url(#s1)"/><rect x="208" y="50" width="64" height="80" fill="#fff" filter="url(#s2)"/><defs><filter id="s1"><feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.08"/></filter><filter id="s2"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/></filter></defs>`);
+    case 'primitives-confidence.html':
+      return wrap(`<rect x="60" y="70" width="200" height="40" rx="20" fill="#fff" stroke="#29707A"/><circle cx="85" cy="90" r="6" fill="#29707A"/><text x="100" y="95" font-family="sans-serif" font-size="14" fill="#141414" font-weight="500">87% confidence</text><text x="220" y="95" font-family="sans-serif" font-size="12" fill="#5C5C5C">•••</text>`);
+    case 'primitives-freshness.html':
+      return wrap(`<rect x="60" y="70" width="200" height="40" rx="20" fill="#FEF3CF" stroke="#FCE38F"/><circle cx="85" cy="90" r="5" fill="#E68A00"/><text x="100" y="95" font-family="sans-serif" font-size="13" fill="#7A4800">Last verified 14d ago</text>`);
+    case 'primitives-delta.html':
+      return wrap(`<text x="40" y="100" font-family="serif" font-size="36" font-weight="500" fill="#141414">62%</text><polygon points="140,80 156,90 140,100" fill="#1F8F4A"/><text x="160" y="95" font-family="sans-serif" font-size="14" fill="#1F8F4A" font-weight="500">+3.4%</text><text x="160" y="115" font-family="sans-serif" font-size="11" fill="#5C5C5C">vs last week</text>`);
+    case 'primitives-source.html':
+      return wrap(`<rect x="20" y="40" width="280" height="80" rx="6" fill="#fff" stroke="#E6E6E6"/><rect x="20" y="120" width="280" height="20" fill="#F5F5F5"/><circle cx="36" cy="130" r="5" fill="#29707A"/><text x="48" y="134" font-family="monospace" font-size="10" fill="#5C5C5C">CMDB.discovery · 2025-04-28 · 87%</text>`);
+    case 'primitives-status.html':
+      return wrap(`<rect x="40" y="60" width="80" height="24" rx="12" fill="#E0F2E8"/><circle cx="56" cy="72" r="4" fill="#1F8F4A"/><text x="68" y="76" font-size="11" fill="#0D5C2E">Healthy</text><rect x="130" y="60" width="80" height="24" rx="12" fill="#FEF3CF"/><circle cx="146" cy="72" r="4" fill="#E68A00"/><text x="158" y="76" font-size="11" fill="#7A4800">Pending</text><rect x="40" y="100" width="90" height="24" rx="12" fill="#E8F2F4"/><circle cx="56" cy="112" r="4" fill="#29707A"/><text x="68" y="116" font-size="11" fill="#17444B">Approved</text><rect x="140" y="100" width="80" height="24" rx="12" fill="#F5F5F5"/><circle cx="156" cy="112" r="4" fill="#5C5C5C"/><text x="168" y="116" font-size="11" fill="#3D3D3D">Rejected</text>`);
+    case 'components-badges.html':
+      return wrap(`<rect x="30" y="60" width="70" height="20" rx="10" fill="#F9E3E8" stroke="#F0B4C0"/><text x="65" y="74" font-size="9" fill="#6B0014" text-anchor="middle" font-weight="700" letter-spacing="1">CRITICAL</text><rect x="110" y="60" width="60" height="20" rx="10" fill="#FEF3CF" stroke="#FCE38F"/><text x="140" y="74" font-size="9" fill="#7A4800" text-anchor="middle" font-weight="700" letter-spacing="1">HIGH</text><rect x="180" y="60" width="70" height="20" rx="10" fill="#F2F4F5" stroke="#E1E5E8"/><text x="215" y="74" font-size="9" fill="#3A434B" text-anchor="middle" font-weight="700" letter-spacing="1">MEDIUM</text><rect x="30" y="100" width="50" height="20" rx="10" fill="#E0F2E8" stroke="#A8DDBF"/><text x="55" y="114" font-size="9" fill="#0D5C2E" text-anchor="middle" font-weight="700" letter-spacing="1">LOW</text>`);
+    case 'components-buttons.html':
+      return wrap(`<rect x="40" y="70" width="90" height="36" rx="4" fill="#29707A"/><text x="85" y="92" font-size="13" fill="#fff" text-anchor="middle">Primary</text><rect x="140" y="70" width="100" height="36" rx="4" fill="#fff" stroke="#E6E6E6"/><text x="190" y="92" font-size="13" fill="#141414" text-anchor="middle">Secondary</text><text x="260" y="92" font-size="13" fill="#29707A">Ghost</text>`);
+    case 'components-kpi.html':
+      return wrap(`<rect x="20" y="40" width="130" height="100" rx="8" fill="#fff" stroke="#E6E6E6"/><text x="32" y="62" font-size="9" fill="#5C5C5C" letter-spacing="1.4">TRUST SCORE</text><text x="32" y="100" font-family="serif" font-size="32" font-weight="500" fill="#141414">62%</text><text x="32" y="124" font-size="11" fill="#1F8F4A">+3.4 ↗</text><rect x="170" y="40" width="130" height="100" rx="8" fill="#fff" stroke="#E6E6E6"/><text x="182" y="62" font-size="9" fill="#5C5C5C" letter-spacing="1.4">STALE CIs</text><text x="182" y="100" font-family="serif" font-size="32" font-weight="500" fill="#141414">147</text>`);
+    case 'components-gauge.html':
+      return wrap(`<path d="M 60 130 A 100 100 0 0 1 260 130" fill="none" stroke="#F5F5F5" stroke-width="20"/><path d="M 60 130 A 100 100 0 0 1 200 50" fill="none" stroke="#29707A" stroke-width="20"/><text x="160" y="120" font-family="serif" font-size="36" font-weight="500" fill="#141414" text-anchor="middle">62</text>`);
+    case 'components-table.html':
+      return wrap(`<rect x="20" y="30" width="280" height="20" fill="#F2F4F5"/>${[0,1,2,3,4].map(i=>`<rect x="20" y="${50+i*22}" width="280" height="22" fill="#fff" stroke="#F5F5F5"/><circle cx="34" cy="${61+i*22}" r="4" fill="${['#A8001F','#E68A00','#1F8F4A','#5C5C5C','#E68A00'][i]}"/><rect x="48" y="${57+i*22}" width="80" height="8" fill="#3D3D3D"/><rect x="160" y="${57+i*22}" width="60" height="8" fill="#5C5C5C"/><rect x="240" y="${57+i*22}" width="50" height="8" fill="#5C5C5C"/>`).join('')}`);
+    case 'components-status-banner.html':
+      return wrap(`<rect x="20" y="50" width="280" height="80" rx="8" fill="#FEF3CF" stroke="#FCE38F"/><circle cx="44" cy="76" r="8" fill="#E68A00"/><rect x="64" y="68" width="160" height="8" fill="#7A4800"/><rect x="64" y="84" width="220" height="6" fill="#7A4800" opacity="0.7"/><rect x="64" y="100" width="180" height="6" fill="#7A4800" opacity="0.7"/>`);
+    case 'components-recommendation.html':
+      return wrap(`<rect x="20" y="30" width="280" height="120" rx="8" fill="#fff" stroke="#29707A" stroke-opacity="0.3"/><rect x="32" y="44" width="180" height="10" fill="#141414"/><rect x="32" y="62" width="240" height="6" fill="#5C5C5C"/><rect x="32" y="76" width="220" height="6" fill="#5C5C5C"/><rect x="32" y="110" width="80" height="28" rx="4" fill="#29707A"/><rect x="120" y="110" width="100" height="28" rx="4" fill="#fff" stroke="#E6E6E6"/><rect x="228" y="110" width="60" height="28" rx="4" fill="#fff" stroke="#E6E6E6"/>`);
+    case 'components-execution.html':
+      return wrap(`<line x1="40" y1="40" x2="40" y2="150" stroke="#E6E6E6" stroke-width="2"/><circle cx="40" cy="50" r="6" fill="#1F8F4A"/><circle cx="40" cy="90" r="6" fill="#29707A"/><circle cx="40" cy="130" r="6" fill="#fff" stroke="#A8A8A8" stroke-width="2"/><rect x="56" y="46" width="200" height="8" fill="#141414"/><rect x="56" y="86" width="160" height="8" fill="#141414"/><rect x="56" y="126" width="140" height="8" fill="#A8A8A8"/>`);
+    case 'composite-chat.html':
+    case 'ai-modal-chat.html':
+    case 'ai-chat-history.html':
+    case 'template-conversation.html':
+      return wrap(`<rect x="20" y="30" width="180" height="40" rx="8" fill="#F2F4F5"/><rect x="32" y="44" width="120" height="6" fill="#3D3D3D"/><rect x="32" y="58" width="80" height="6" fill="#5C5C5C"/><rect x="120" y="84" width="180" height="50" rx="8" fill="#fff" stroke="#29707A" stroke-opacity="0.3"/><rect x="132" y="98" width="140" height="6" fill="#3D3D3D"/><rect x="132" y="112" width="100" height="6" fill="#5C5C5C"/><rect x="132" y="124" width="120" height="4" fill="#A8A8A8"/>`);
+    case 'composite-exec-summary.html':
+      return wrap(`<rect x="20" y="30" width="280" height="120" rx="8" fill="#fff" stroke="#E6E6E6"/><rect x="32" y="44" width="160" height="10" fill="#141414"/><rect x="32" y="64" width="240" height="5" fill="#5C5C5C"/><rect x="32" y="74" width="220" height="5" fill="#5C5C5C"/><rect x="32" y="84" width="200" height="5" fill="#5C5C5C"/><rect x="32" y="106" width="60" height="32" rx="4" fill="#F2F4F5"/><rect x="100" y="106" width="60" height="32" rx="4" fill="#F2F4F5"/><rect x="168" y="106" width="60" height="32" rx="4" fill="#F2F4F5"/>`);
+    case 'composite-impact-rollup.html':
+      return wrap(`<g stroke="#E6E6E6" stroke-width="1.5" fill="none"><path d="M 40 90 L 100 50"/><path d="M 40 90 L 100 90"/><path d="M 40 90 L 100 130"/><path d="M 100 50 L 160 30"/><path d="M 100 50 L 160 70"/><path d="M 100 90 L 160 90"/><path d="M 100 130 L 160 110"/><path d="M 100 130 L 160 150"/></g><circle cx="40" cy="90" r="10" fill="#FF462D"/><circle cx="100" cy="50" r="7" fill="#29707A"/><circle cx="100" cy="90" r="7" fill="#29707A"/><circle cx="100" cy="130" r="7" fill="#29707A"/>${[30,70,90,110,150].map(y=>`<circle cx="160" cy="${y}" r="5" fill="#A8A8A8"/>`).join('')}`);
+    case 'composite-scenario.html':
+      return wrap(`<rect x="20" y="40" width="120" height="100" rx="8" fill="#F5F5F5"/><text x="80" y="80" font-family="serif" font-size="24" fill="#141414" text-anchor="middle">62%</text><text x="80" y="100" font-size="10" fill="#5C5C5C" text-anchor="middle">BEFORE</text><text x="155" y="92" font-size="20" fill="#29707A" text-anchor="middle">→</text><rect x="180" y="40" width="120" height="100" rx="8" fill="#E8F2F4" stroke="#29707A" stroke-opacity="0.3"/><text x="240" y="80" font-family="serif" font-size="24" fill="#29707A" text-anchor="middle">81%</text><text x="240" y="100" font-size="10" fill="#17444B" text-anchor="middle">AFTER</text>`);
+    case 'agentic-states.html':
+    case 'agentic-states-deck.html':
+      return wrap(`<rect x="20" y="30" width="280" height="22" rx="11" fill="#fff" stroke="#29707A" stroke-opacity="0.4"/><circle cx="38" cy="41" r="4" fill="#29707A"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle><text x="50" y="45" font-size="11" fill="#141414">Agent thinking · step 3 of 7</text><rect x="20" y="64" width="280" height="34" rx="6" fill="#FEF3CF" stroke="#FCE38F"/><text x="32" y="84" font-size="11" fill="#7A4800" font-weight="500">Input required: pick a tie-break</text><rect x="20" y="106" width="200" height="40" rx="6" fill="#fff" stroke="#29707A" stroke-opacity="0.3"/><text x="32" y="124" font-family="monospace" font-size="10" fill="#29707A">graph.read(scope: "stale CIs")</text><text x="32" y="138" font-size="10" fill="#5C5C5C">Approve · Cancel</text>`);
+    case 'agentic-flow.html':
+      return wrap(`<rect x="20" y="20" width="280" height="14" rx="7" fill="#E8F2F4"/><circle cx="32" cy="27" r="3" fill="#29707A"/>${[0,1,2,3].map(i=>`<rect x="20" y="${48+i*30}" width="280" height="22" rx="6" fill="#fff" stroke="#E6E6E6"/><circle cx="34" cy="${59+i*30}" r="3" fill="${['#1F8F4A','#1F8F4A','#29707A','#A8A8A8'][i]}"/><rect x="46" y="${56+i*30}" width="${180-i*20}" height="6" fill="#3D3D3D"/>`).join('')}`);
+    case 'agentic-inbox.html':
+      return wrap(`<rect x="20" y="30" width="280" height="22" fill="#F2F4F5"/><text x="32" y="45" font-size="10" fill="#5C5C5C" letter-spacing="1.4">LEARNED FROM YOU · 14</text>${[0,1,2,3].map(i=>`<rect x="20" y="${60+i*22}" width="280" height="22" fill="#fff" stroke="#F5F5F5"/><circle cx="34" cy="${71+i*22}" r="3" fill="#29707A"/><rect x="46" y="${67+i*22}" width="${140-i*15}" height="5" fill="#3D3D3D"/><rect x="46" y="${76+i*22}" width="${100-i*10}" height="3" fill="#A8A8A8"/>`).join('')}`);
+    case 'ai-launch-button.html':
+      return wrap(`<rect x="100" y="60" width="120" height="40" rx="20" fill="#fff" stroke="#29707A" stroke-width="1.5"/><circle cx="120" cy="80" r="5" fill="#29707A"><animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/></circle><text x="138" y="84" font-size="12" fill="#141414" font-weight="500">Ask agent</text>`);
+    case 'ai-loader.html':
+      return wrap(`<defs><radialGradient id="g1"><stop offset="0%" stop-color="#FF462D" stop-opacity="0.4"/><stop offset="100%" stop-color="#FF462D" stop-opacity="0"/></radialGradient><radialGradient id="g2"><stop offset="0%" stop-color="#29707A" stop-opacity="0.4"/><stop offset="100%" stop-color="#29707A" stop-opacity="0"/></radialGradient></defs><circle cx="120" cy="90" r="60" fill="url(#g1)"/><circle cx="200" cy="90" r="60" fill="url(#g2)"/>${[...Array(20)].map((_,i)=>`<circle cx="${40+(i*13)%240}" cy="${30+((i*23)%120)}" r="1.5" fill="#29707A" opacity="0.4"/>`).join('')}`);
+    case 'ai-feedback-sources.html':
+      return wrap(`<rect x="20" y="30" width="280" height="60" rx="8" fill="#fff" stroke="#E6E6E6"/><rect x="32" y="44" width="220" height="6" fill="#3D3D3D"/><rect x="32" y="58" width="180" height="6" fill="#5C5C5C"/><rect x="32" y="72" width="140" height="4" fill="#A8A8A8"/><rect x="20" y="100" width="100" height="40" rx="6" fill="#F2F4F5"/><circle cx="40" cy="120" r="6" fill="none" stroke="#29707A"/><text x="55" y="124" font-size="10" fill="#3A434B">Sources · 3</text><rect x="130" y="100" width="80" height="40" rx="6" fill="#F2F4F5"/><text x="170" y="124" font-size="14" fill="#1F8F4A" text-anchor="middle">▲</text>`);
+    case 'dag-graph-kit.html':
+    case 'template-investigation.html':
+      return wrap(`<g stroke="#29707A" stroke-width="1.5" fill="none" stroke-opacity="0.5"><path d="M 60 90 L 130 50"/><path d="M 60 90 L 130 130"/><path d="M 130 50 L 200 90"/><path d="M 130 130 L 200 90"/><path d="M 200 90 L 270 90"/></g><rect x="40" y="78" width="40" height="24" rx="4" fill="#fff" stroke="#29707A"/><rect x="110" y="38" width="40" height="24" rx="4" fill="#fff" stroke="#29707A"/><rect x="110" y="118" width="40" height="24" rx="4" fill="#fff" stroke="#FF462D" stroke-width="1.5"/><circle cx="220" cy="90" r="14" fill="#29707A"/><rect x="250" y="78" width="40" height="24" rx="4" fill="#1F8F4A"/>`);
+    case 'template-dashboard.html':
+      return wrap(`<rect x="0" y="0" width="320" height="20" fill="#fff" stroke="#E6E6E6"/><rect x="0" y="20" width="60" height="160" fill="#F2F4F5"/>${[0,1,2,3].map(i=>`<rect x="${72+i*60}" y="32" width="52" height="48" rx="4" fill="#fff" stroke="#E6E6E6"/>`).join('')}<rect x="72" y="92" width="120" height="80" rx="4" fill="#fff" stroke="#E6E6E6"/><rect x="200" y="92" width="112" height="80" rx="4" fill="#fff" stroke="#E6E6E6"/>`);
+    case 'template-triage.html':
+      return wrap(`<rect x="0" y="0" width="80" height="180" fill="#F2F4F5"/>${[0,1,2,3,4].map(i=>`<rect x="6" y="${20+i*28}" width="68" height="22" rx="3" fill="${i===0?'#fff':'transparent'}"/>`).join('')}${[0,1,2,3].map(i=>`<rect x="92" y="${20+i*38}" width="160" height="32" rx="4" fill="#fff" stroke="#E6E6E6"/><rect x="92" y="${20+i*38}" width="3" height="32" fill="${['#A8001F','#E68A00','#1F8F4A','#5C5C5C'][i]}"/>`).join('')}<rect x="260" y="20" width="60" height="160" fill="#fff" stroke="#E6E6E6"/>`);
+    case 'template-review.html':
+      return wrap(`<rect x="0" y="0" width="320" height="24" fill="#fff" stroke="#E6E6E6"/>${[0,1,2,3,4,5].map(i=>`<rect x="20" y="${36+i*22}" width="280" height="22" fill="#fff" stroke="#F5F5F5"/><circle cx="34" cy="${47+i*22}" r="4" fill="${['#E68A00','#1F8F4A','#E68A00','#5C5C5C','#29707A','#1F8F4A'][i]}"/><rect x="48" y="${43+i*22}" width="${120-(i%3)*15}" height="6" fill="#3D3D3D"/><rect x="180" y="${43+i*22}" width="60" height="6" fill="#5C5C5C"/>`).join('')}`);
+    case 'states-matrix.html':
+      return wrap(`${[0,1,2,3].map(r=>[0,1].map(c=>`<rect x="${20+c*150}" y="${24+r*38}" width="140" height="32" rx="4" fill="#fff" stroke="#E6E6E6"/><circle cx="${36+c*150}" cy="${40+r*38}" r="3" fill="${['#A8A8A8','#5C5C5C','#1F8F4A','#A8001F','#E68A00','#5C5C5C','#29707A','#1F8F4A'][r*2+c]}"/><text x="${48+c*150}" y="${44+r*38}" font-family="monospace" font-size="9" fill="#3D3D3D">${['loading','empty','filtered','error','stale','unauth','executing','success'][r*2+c]}</text>`).join('')).join('')}`);
+    case 'brand-logo.html':
+      return wrap(`<rect x="40" y="60" width="240" height="60" fill="#fff" stroke="#E6E6E6" stroke-dasharray="4 4"/><text x="160" y="100" font-family="sans-serif" font-size="28" font-weight="700" fill="#FF462D" text-anchor="middle">kyndryl</text>`);
+    case 'brand-icons.html':
+      return wrap(`${[...Array(12)].map((_,i)=>{const x=20+(i%6)*48,y=40+Math.floor(i/6)*60;return `<rect x="${x}" y="${y}" width="40" height="40" rx="6" fill="#F2F4F5"/><circle cx="${x+20}" cy="${y+20}" r="${8-(i%3)}" fill="none" stroke="#29707A" stroke-width="1.5"/>`;}).join('')}`);
+    default:
+      return wrap(`<rect x="40" y="40" width="240" height="100" rx="8" fill="#fff" stroke="#E6E6E6"/><circle cx="80" cy="76" r="14" fill="#F2F4F5"/><rect x="106" y="68" width="140" height="6" fill="#141414"/><rect x="106" y="82" width="100" height="5" fill="#5C5C5C"/><rect x="56" y="106" width="200" height="4" fill="#A8A8A8"/><rect x="56" y="118" width="160" height="4" fill="#A8A8A8"/>`);
+  }
+}
+
+const grid = document.getElementById('grid');
+PREVIEWS.forEach(p => {
+  const a = document.createElement('a');
+  a.className = 'card';
+  a.href = `component.html?id=${encodeURIComponent(p.f)}`;
+  a.dataset.groups = p.g;
+  const tagCls = TAG_CLASS[p.tag] || '';
+  const thumbCls = THUMB_CLASS[p.tag] || '';
+  a.innerHTML = `
+    <div class="thumb ${thumbCls}">${thumb(p.f, p.tag)}</div>
+    <div class="body">
+      <div class="row1">
+        <h4>${p.t}</h4>
+        <span class="tag ${tagCls}">${p.tag}</span>
+      </div>
+      <p class="desc">${p.d}</p>
+    </div>
+    <div class="footer">
+      <span>preview/${p.f}</span>
+      <span>Open →</span>
+    </div>
+  `;
+  grid.appendChild(a);
+});
+
+/* Filter */
+const fb = document.getElementById('filterbar');
+const cp = document.getElementById('count-pill');
+const vc = document.getElementById('visible-count');
+
+function applyFilter(group) {
+  const cards = grid.querySelectorAll('.card');
+  let n = 0;
+  cards.forEach(c => {
+    const groups = c.dataset.groups.split(',');
+    const show = group === 'all' || groups.includes(group);
+    c.style.display = show ? '' : 'none';
+    if (show) n++;
+  });
+  cp.textContent = `${n} of ${PREVIEWS.length}`;
+  vc.textContent = n;
+}
+applyFilter('all');
+
+fb.addEventListener('click', e => {
+  const b = e.target.closest('button[data-filter]');
+  if (!b) return;
+  fb.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  applyFilter(b.dataset.filter);
+});
+
+/* Active rail link tracking */
+const railLinks = document.querySelectorAll('.rail a');
+const sections = [...document.querySelectorAll('main section[id]')];
+function updateRail() {
+  const top = window.scrollY + 80;
+  let active = sections[0]?.id;
+  for (const s of sections) {
+    if (s.offsetTop <= top) active = s.id;
+  }
+  railLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === `#${active}`);
+  });
+}
+window.addEventListener('scroll', updateRail, { passive: true });
+updateRail();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px;background:#fff;font-family:var(--font-sans);color:var(--fg-1)}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .cell{display:flex;flex-direction:column;gap:6px;align-items:flex-start;position:relative}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:9999px;font-size:11px;font-weight:600;border:1px solid}
+  .c-1{background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE}
+  .c-2{background:#F1F5F9;color:#475569;border-color:#E2E8F0}
+  .c-3{background:#FEF3C7;color:#B45309;border-color:#FDE68A}
+  .lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted)}
+  .hdr{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+  .hdr .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .hdr .hint{font-size:11px;color:var(--fg-muted)}
+  .hint b{color:var(--fg-2);font-weight:600}
+</style></head><body>
+
+<div class="hdr">
+  <span class="t">ConfidenceBadge · agentic</span>
+  <span class="hint">Click a badge · <b>override</b>, <b>ask for evidence</b>, <b>snooze</b>, or <b>teach the agent</b></span>
+</div>
+
+<div class="row">
+  <!-- 98% -->
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button" style="--agentic-accent:#1D4ED8">
+      <span class="badge c-1">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span class="agentic-label">98% confidence</span>
+        <span class="agentic-chev" aria-hidden="true">•••</span>
+      </span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agent decision</span><span class="ap-meta">score 0.98</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-act="override" data-toast="Override queued · agent re-scoring now">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          Override confidence<span class="ap-sub">Set your own value for this item</span>
+        </button>
+        <button type="button" class="ap-action" data-act="evidence" data-toast="Asked agent for additional evidence">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01M12 7a2.5 2.5 0 1 1 2.5 2.5c-1 .5-2 1.5-2 3"/></svg>
+          Ask for more evidence<span class="ap-sub">Agent will re-derive with extra sources</span>
+        </button>
+        <button type="button" class="ap-action" data-act="snooze" data-toast="Snoozed for 24h">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Snooze for 24h<span class="ap-sub">Hide from triage, keep score</span>
+        </button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="teach">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v16"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg>
+          Teach the agent<span class="ap-sub">Adjusts future scoring for similar items</span>
+        </button>
+      </div>
+      <div class="ap-confirm" data-for="teach" hidden>
+        <p>Teaching the agent will affect how <b>all</b> similar items are scored going forward. Continue?</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary" data-toast="Taught the agent · added to inbox">Yes, teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">value ≥ 0.9 · high confidence</span>
+  </div>
+
+  <!-- 82% -->
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="badge c-1"><span class="agentic-label">82% confidence</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agent decision</span><span class="ap-meta">score 0.82</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Override applied">Override confidence</button>
+        <button type="button" class="ap-action" data-toast="Evidence requested">Ask for more evidence</button>
+        <button type="button" class="ap-action" data-toast="Snoozed">Snooze for 24h</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="teach">Teach the agent</button>
+      </div>
+      <div class="ap-confirm" data-for="teach" hidden>
+        <p>Future scoring for similar items will shift. Continue?</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary">Yes, teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">value 0.7–0.9</span>
+  </div>
+
+  <!-- 64% -->
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button" style="--agentic-accent:#B45309">
+      <span class="badge c-3"><span class="agentic-label">64% confidence</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agent decision</span><span class="ap-meta">score 0.64 · caution</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Override applied">Override confidence</button>
+        <button type="button" class="ap-action" data-toast="Evidence requested · 3 sources queued">Ask for more evidence</button>
+        <button type="button" class="ap-action" data-toast="Snoozed">Snooze for 24h</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="teach">Teach the agent</button>
+      </div>
+      <div class="ap-confirm" data-for="teach" hidden>
+        <p>This will adjust future scoring for items with similar traits. Continue?</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary">Yes, teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">value 0.5–0.7 · caution</span>
+  </div>
+
+  <!-- 41% -->
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="badge c-2"><span class="agentic-label">41% confidence</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">Agent decision</span><span class="ap-meta">score 0.41 · advisory</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Override applied">Override confidence</button>
+        <button type="button" class="ap-action" data-toast="Evidence requested">Ask for more evidence</button>
+        <button type="button" class="ap-action" data-toast="Snoozed">Snooze for 24h</button>
+        <div class="ap-divider"></div>
+        <button type="button" class="ap-action is-destructive" data-act="teach">Teach the agent</button>
+      </div>
+      <div class="ap-confirm" data-for="teach" hidden>
+        <p>Future scoring will shift. Continue?</p>
+        <div class="ap-confirm-row">
+          <button type="button">Cancel</button>
+          <button type="button" class="ap-primary">Yes, teach</button>
+        </div>
+      </div>
+    </div>
+    <span class="lbl">value &lt; 0.5 · advisory</span>
+  </div>
+
+  <!-- null -->
+  <div class="cell">
+    <span class="agentic" tabindex="0" aria-haspopup="true" aria-expanded="false" role="button">
+      <span class="badge c-2"><span class="agentic-label">— no confidence</span><span class="agentic-chev" aria-hidden="true">•••</span></span>
+    </span>
+    <div class="agentic-pop" role="menu">
+      <header><span class="ap-title">No score yet</span><span class="ap-meta">value null</span></header>
+      <div class="ap-actions">
+        <button type="button" class="ap-action" data-toast="Agent triggered · scoring now">
+          <svg class="ap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          Run agent scoring<span class="ap-sub">Derive a confidence value now</span>
+        </button>
+        <button type="button" class="ap-action" data-toast="Set to manual tracking">Mark as manually tracked</button>
+      </div>
+    </div>
+    <span class="lbl">value null</span>
+  </div>
+</div>
+
+<script src="agentic.js"></script>
+</body></html>

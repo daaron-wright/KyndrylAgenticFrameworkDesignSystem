@@ -1,0 +1,355 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>AI Loader</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:32px;background:var(--bg-2);font-family:var(--font-sans);color:var(--fg-1)}
+  .wrap{max-width:1080px;display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+  .card{background:#fff;border:1px solid var(--border-1);border-radius:var(--radius-lg);padding:22px 24px}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;color:#8A4FBF;font-weight:600;margin-bottom:6px}
+  .eyebrow svg{width:12px;height:12px}
+  h2{font-family:var(--font-display);font-size:20px;font-weight:500;margin:0 0 4px}
+  .sub{font-size:12px;color:var(--fg-muted);margin-bottom:16px}
+  .kicker{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;margin:18px 0 10px}
+
+  /* === AI LOADER (ring) ===
+     White core + thick rim composed of two arc-gradients
+     (Warm Red 50 + Spruce 60). Rotation gives the chase. */
+  .ai-loader{
+    --size:64px; --thick:6px;
+    width:var(--size);height:var(--size);border-radius:999px;
+    background:
+      conic-gradient(from 0deg,
+        var(--k-warm-red-50) 0deg,
+        var(--k-spruce-60) 180deg,
+        var(--k-warm-red-50) 360deg);
+    -webkit-mask:radial-gradient(circle, transparent calc(50% - var(--thick) - 1px), #000 calc(50% - var(--thick)));
+    mask:radial-gradient(circle, transparent calc(50% - var(--thick) - 1px), #000 calc(50% - var(--thick)));
+    animation:ai-spin 3s linear infinite;
+    display:inline-block;vertical-align:middle;
+  }
+  .ai-loader.sm{--size:16px;--thick:2px}
+  .ai-loader.md{--size:32px;--thick:3.5px}
+  .ai-loader.xl{--size:96px;--thick:9px}
+  @keyframes ai-spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){ .ai-loader{animation-duration:6s} }
+
+  .matrix{display:flex;flex-direction:column;gap:18px;align-items:center;border:1px dashed #C9A8E6;border-radius:8px;padding:24px}
+
+  /* === INLINE / INPUT LOADER ===
+     Used inside text inputs, suggestion chips while AI is thinking.
+     Gradient border + lozenge shape. */
+  .ai-input{
+    display:flex;align-items:center;gap:10px;
+    border-radius:8px;
+    background:
+      linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(90deg, var(--k-spruce-60), var(--k-warm-red-50)) border-box;
+    border:1.5px solid transparent;
+    padding:8px 12px 8px 14px;font-size:13px;color:var(--fg-muted);
+    position:relative;overflow:hidden;
+  }
+  .ai-input::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg, transparent 0%, rgba(255,70,45,.08) 50%, transparent 100%);
+    transform:translateX(-100%);
+    animation:ai-sweep 3.5s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes ai-sweep{50%,100%{transform:translateX(100%)}}
+
+  .ai-input .send{
+    margin-left:auto;width:30px;height:30px;border:1px solid var(--border-1);border-radius:6px;
+    background:#fff;display:flex;align-items:center;justify-content:center;color:var(--fg-muted)
+  }
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-1);
+    border-radius:999px;padding:5px 10px 5px 10px;
+    background:linear-gradient(#fff,#fff) padding-box, linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50)) border-box;
+    border:1px solid transparent;
+  }
+  .chip .x{color:var(--fg-muted);font-size:10px;cursor:pointer}
+
+  /* === RESPONSE-LOAD (skeleton) ===
+     Tinted skeleton bars used while a multi-line answer streams in. */
+  .resp-load{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start}
+  .resp-load .dot{width:14px;height:14px;border-radius:999px;background:var(--k-warm-red-50);margin-top:6px}
+  .resp-load .bars{display:flex;flex-direction:column;gap:8px}
+  .resp-load .bar{
+    height:14px;border-radius:7px;
+    background:linear-gradient(90deg, rgba(255,70,45,.20) 0%, rgba(41,112,122,.18) 50%, rgba(255,70,45,.05) 100%);
+    background-size:300% 100%;
+    animation:ai-shimmer 3.5s linear infinite;
+  }
+  .resp-load .bar:nth-child(1){width:62%}
+  .resp-load .bar:nth-child(2){width:88%}
+  .resp-load .bar:nth-child(3){width:74%}
+  @keyframes ai-shimmer{0%{background-position:300% 0}100%{background-position:0 0}}
+
+  .specs{font-size:12px;color:var(--fg-2);line-height:1.6}
+  .specs code{font-family:var(--font-mono);font-size:10.5px;background:var(--bg-3);padding:1px 5px;border-radius:3px}
+  .specs ul{margin:6px 0 0;padding-left:18px}
+
+  .lozenges{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+
+  /* === PANEL RENDER LOADER ===
+     Large blocking loader for full-panel renderings (e.g. "Sketching it out",
+     "Creating image"). A soft dot grid where clusters ripple in/out
+     across the panel — multiple regions, staggered, slow. */
+  .panel-load{
+    position:relative;width:100%;aspect-ratio:1/1;
+    border-radius:18px;background:var(--bg-3);
+    border:1px solid var(--border-1);
+    overflow:hidden;
+  }
+  .panel-load .label{
+    position:absolute;top:18px;left:20px;
+    font-size:13.5px;color:var(--fg-2);font-weight:500;
+    letter-spacing:.01em;
+    z-index:2;
+  }
+  .panel-load .label::after{
+    content:"";display:inline-block;width:1px;height:1em;
+    background:var(--fg-2);margin-left:2px;vertical-align:-2px;
+    animation:panel-caret 1.1s steps(2) infinite;
+  }
+  @keyframes panel-caret{50%{opacity:0}}
+
+  .panel-load .grid{
+    position:absolute;inset:-20%;
+    background-image:radial-gradient(circle, var(--fg-muted) 1.1px, transparent 1.6px);
+    background-size:14px 14px;
+    opacity:.55;
+    -webkit-mask:
+      radial-gradient(circle at var(--cx1,70%) var(--cy1,28%), #000 0, transparent 30%),
+      radial-gradient(circle at var(--cx2,30%) var(--cy2,68%), #000 0, transparent 34%),
+      radial-gradient(circle at var(--cx3,78%) var(--cy3,78%), #000 0, transparent 22%);
+    mask:
+      radial-gradient(circle at var(--cx1,70%) var(--cy1,28%), #000 0, transparent 30%),
+      radial-gradient(circle at var(--cx2,30%) var(--cy2,68%), #000 0, transparent 34%),
+      radial-gradient(circle at var(--cx3,78%) var(--cy3,78%), #000 0, transparent 22%);
+    animation:
+      panel-drift 6s linear infinite,
+      panel-morph-a 9s ease-in-out infinite,
+      panel-morph-b 11s ease-in-out infinite -2s,
+      panel-morph-c 13s ease-in-out infinite -5s;
+  }
+  /* drift the entire dot field — continuous translation by one cell so it loops seamlessly */
+  @keyframes panel-drift{
+    0%   {background-position: 0 0}
+    100% {background-position: 14px 14px}
+  }
+  /* morph each cluster centre independently — three coupled CSS vars */
+  @property --cx1{syntax:"<percentage>";inherits:false;initial-value:70%}
+  @property --cy1{syntax:"<percentage>";inherits:false;initial-value:28%}
+  @property --cx2{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @property --cy2{syntax:"<percentage>";inherits:false;initial-value:68%}
+  @property --cx3{syntax:"<percentage>";inherits:false;initial-value:78%}
+  @property --cy3{syntax:"<percentage>";inherits:false;initial-value:78%}
+  @keyframes panel-morph-a{
+    0%   {--cx1:70%; --cy1:28%}
+    25%  {--cx1:42%; --cy1:18%}
+    50%  {--cx1:24%; --cy1:32%}
+    75%  {--cx1:48%; --cy1:46%}
+    100% {--cx1:70%; --cy1:28%}
+  }
+  @keyframes panel-morph-b{
+    0%   {--cx2:30%; --cy2:68%}
+    33%  {--cx2:62%; --cy2:54%}
+    66%  {--cx2:74%; --cy2:74%}
+    100% {--cx2:30%; --cy2:68%}
+  }
+  @keyframes panel-morph-c{
+    0%   {--cx3:78%; --cy3:78%}
+    40%  {--cx3:18%; --cy3:82%}
+    70%  {--cx3:36%; --cy3:60%}
+    100% {--cx3:78%; --cy3:78%}
+  }
+
+  /* second layer — Warm Red blob, larger, slow morph + drift */
+  .panel-load .grid.tint{
+    opacity:.85;
+    background-image:radial-gradient(circle, var(--k-warm-red-50) 1.3px, transparent 1.7px);
+    -webkit-mask:radial-gradient(circle at var(--tx,30%) var(--ty,60%), #000 0, transparent 24%);
+    mask:radial-gradient(circle at var(--tx,30%) var(--ty,60%), #000 0, transparent 24%);
+    mix-blend-mode:multiply;
+    animation:
+      panel-drift 6s linear infinite,
+      panel-tint-morph 10s ease-in-out infinite,
+      panel-tint-fade 10s ease-in-out infinite;
+  }
+  @property --tx{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @property --ty{syntax:"<percentage>";inherits:false;initial-value:60%}
+  @keyframes panel-tint-morph{
+    0%   {--tx:28%; --ty:62%}
+    30%  {--tx:52%; --ty:44%}
+    55%  {--tx:68%; --ty:38%}
+    80%  {--tx:46%; --ty:70%}
+    100% {--tx:28%; --ty:62%}
+  }
+  @keyframes panel-tint-fade{
+    0%,100% {opacity:.05}
+    20%,80% {opacity:.55}
+    50%     {opacity:.75}
+  }
+
+  /* third layer — Spruce blob, opposite phase */
+  .panel-load .grid.spruce{
+    background-image:radial-gradient(circle, var(--k-spruce-60) 1.3px, transparent 1.7px);
+    -webkit-mask:radial-gradient(circle at var(--sx,72%) var(--sy,30%), #000 0, transparent 20%);
+    mask:radial-gradient(circle at var(--sx,72%) var(--sy,30%), #000 0, transparent 20%);
+    mix-blend-mode:multiply;
+    animation:
+      panel-drift 6s linear infinite -3s,
+      panel-spruce-morph 12s ease-in-out infinite,
+      panel-spruce-fade 12s ease-in-out infinite -4s;
+  }
+  @property --sx{syntax:"<percentage>";inherits:false;initial-value:72%}
+  @property --sy{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @keyframes panel-spruce-morph{
+    0%   {--sx:72%; --sy:30%}
+    25%  {--sx:24%; --sy:24%}
+    55%  {--sx:18%; --sy:78%}
+    80%  {--sx:60%; --sy:74%}
+    100% {--sx:72%; --sy:30%}
+  }
+  @keyframes panel-spruce-fade{
+    0%,100% {opacity:.10}
+    25%,75% {opacity:.55}
+    50%     {opacity:.75}
+  }
+
+  .panel-load.sm{max-width:240px}
+  .panel-load.md{max-width:360px}
+
+  @media (prefers-reduced-motion: reduce){
+    .panel-load .grid,
+    .panel-load .grid.tint,
+    .panel-load .grid.spruce{animation-duration:18s, 30s, 30s, 30s}
+  }
+</style>
+</head><body>
+
+<div class="wrap">
+
+  <!-- BASE -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      AI Loader · Base
+    </div>
+    <h2>AI Loader</h2>
+    <div class="sub">Spinning ring composed of two opposite arcs — Warm Red 50 and Spruce 60. Used whenever the agent is actively thinking.</div>
+
+    <div class="matrix">
+      <div class="ai-loader xl"></div>
+      <div class="ai-loader"></div>
+      <div class="ai-loader md"></div>
+      <div class="ai-loader sm"></div>
+    </div>
+
+    <div class="kicker">Sizes</div>
+    <div class="specs">
+      <ul>
+        <li><code>.sm</code> 16px — inside chips, inline labels</li>
+        <li><code>.md</code> 32px — input fields, table rows</li>
+        <li><code>.ai-loader</code> 64px — page-level / panel</li>
+        <li><code>.xl</code> 96px — full-screen blocking</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- IN CONTEXT -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      AI Loader · In Context
+    </div>
+    <h2>Loading patterns</h2>
+    <div class="sub">Three places the loader appears: input field, suggested chips, and streaming response.</div>
+
+    <div class="kicker">Suggested-prompt chips (loading)</div>
+    <div class="chips">
+      <span class="chip">Cloud Services <span class="x">×</span></span>
+      <span class="chip">CMDB Drift Q3 <span class="x">×</span></span>
+      <span class="chip">Hybrid IT Mod <span class="x">×</span></span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-muted)">
+        <span class="ai-loader sm"></span> Generating more…
+      </span>
+    </div>
+
+    <div class="kicker">Composer (AI thinking)</div>
+    <div class="lozenges">
+      <div class="ai-input">
+        <span style="opacity:.7">Type your message…</span>
+        <span class="ai-loader sm" style="margin-left:auto"></span>
+        <button class="send" aria-label="send">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="kicker">Response load (streaming)</div>
+    <div class="resp-load">
+      <div class="dot"></div>
+      <div class="bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Never show a generic spinner inside an AI surface — always this ring.</li>
+        <li>If the wait exceeds 4s, swap to the streaming skeleton above with a status line.</li>
+        <li>Reduced-motion clients: rotation slows to 6s instead of stopping.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PANEL RENDER -->
+  <section class="card" style="grid-column:1/-1">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      AI Loader · Panel render
+    </div>
+    <h2>Panel render</h2>
+    <div class="sub">For full-panel generative work — sketching a graph, drafting a diagram, rendering an image. A soft dot grid where Warm Red and Spruce clusters drift across the canvas. Always paired with a status label ("Sketching it out", "Creating image", etc.).</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+      <div class="panel-load">
+        <span class="label">Sketching it out</span>
+        <div class="grid"></div>
+        <div class="grid tint"></div>
+        <div class="grid spruce"></div>
+      </div>
+      <div class="panel-load">
+        <span class="label">Creating image</span>
+        <div class="grid"></div>
+        <div class="grid tint"></div>
+        <div class="grid spruce"></div>
+      </div>
+      <div class="panel-load">
+        <span class="label">Drafting topology</span>
+        <div class="grid"></div>
+        <div class="grid tint"></div>
+        <div class="grid spruce"></div>
+      </div>
+    </div>
+
+    <div class="kicker">Rules</div>
+    <div class="specs">
+      <ul>
+        <li>Use only when the AI is generating something <strong>visual and bounded</strong> — never as a generic page loader.</li>
+        <li>Status label is required, top-left, with a blinking caret. Update the label as the agent moves through stages.</li>
+        <li>Three drift layers (neutral · Warm Red · Spruce) at 5.5 / 7 / 8.5s — slow on purpose. Never speed them up.</li>
+        <li>Reduced-motion clients: drift slows to 14–20s but never stops.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body></html>

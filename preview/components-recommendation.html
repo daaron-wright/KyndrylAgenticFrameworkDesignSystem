@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F2F4F5}
+.card{max-width:660px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:16px}
+.head{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.icon{width:32px;height:32px;border-radius:8px;background:#E8F2F4;color:#1F5A63;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.title{font-size:14px;font-weight:600;color:#141414;margin:0 0 3px}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.b{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600;border:1px solid}
+.conf{background:#E8F2F4;color:#1F5A63;border-color:#BEDDE2}
+.lift{background:#E0F2E8;color:#0D5C2E;border-color:#A8DDBF}
+.reason{font-size:12px;color:#334155;line-height:1.55;margin:10px 0 12px;padding:10px 12px;background:#F2F4F5;border-left:2px solid #29707A;border-radius:0 6px 6px 0}
+.reason strong{color:#141414;font-weight:600}
+.sig{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);margin:12px 0 6px}
+.sigs{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.sig-row{display:flex;gap:8px;font-size:11px;color:#475569;align-items:center}
+.dot{width:6px;height:6px;border-radius:50%;background:#E68A00;flex-shrink:0}
+.actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid #F1F5F9}
+button{height:32px;padding:0 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:inherit}
+.ex{background:#171717;color:#fff}
+.rev{background:#fff;color:#171717;border:1px solid #E2E8F0}
+.dis{background:transparent;color:#64748B}
+.attrib{font-size:10px;color:var(--fg-subtle);margin-left:auto;align-self:center;font-style:italic}
+</style></head><body>
+<div class="card">
+  <div class="head">
+    <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div style="flex:1">
+      <h3 class="title">Retire 47 stale CIs in payments-svc cluster</h3>
+      <div class="meta">
+        <span class="b conf">92% confidence</span>
+        <span class="b lift">+5.1 pts trust lift</span>
+      </div>
+    </div>
+  </div>
+  <div class="reason"><strong>Agent reason · </strong>None of these 47 CIs have appeared in discovery scans for 90+ days and no active incidents reference them. Retiring now lifts Payments domain trust from 58% to 63% and removes 47 orphaned nodes from the graph.</div>
+  <div class="sig">Signals</div>
+  <div class="sigs">
+    <div class="sig-row"><span class="dot"></span>No discovery heartbeat 94d avg</div>
+    <div class="sig-row"><span class="dot" style="background:#64748B"></span>0 open incidents reference these CIs</div>
+    <div class="sig-row"><span class="dot" style="background:#1F8F4A"></span>Upstream apps show Healthy status</div>
+  </div>
+  <div class="actions">
+    <button class="ex">Execute</button>
+    <button class="rev">Send for review</button>
+    <button class="dis">Dismiss</button>
+    <span class="attrib">Powered by agentic AI · 3m ago</span>
+  </div>
+</div>
+</body></html>

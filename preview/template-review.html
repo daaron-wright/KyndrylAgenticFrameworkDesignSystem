@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC;font-family:var(--font-sans)}
+.t{max-width:900px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px}
+.slot{border:1.5px dashed #CBD5E1;border-radius:6px;padding:10px;background:#F8FAFC;color:#64748B;font-family:var(--font-mono);font-size:10px;min-height:34px;display:flex;align-items:center}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--border-1);margin-bottom:10px}
+.hdr h2{margin:0;font-size:14px;font-weight:600}
+.hdr span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);font-weight:700}
+.col{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:1fr 320px;gap:10px}
+</style></head><body>
+<div class="t">
+  <div class="hdr"><h2>ReviewQueueTemplate</h2><span>Access Review · Change Requests · Correction Requests share this</span></div>
+  <div class="col">
+    <div class="slot">FilterBar · state · owner · age · risk</div>
+    <div class="row">
+      <div class="col">
+        <div class="slot" style="min-height:52px">QueueRow · Pending · bCRQ-3102 · owner · reason</div>
+        <div class="slot" style="min-height:52px">QueueRow · Approved · bCRQ-3085 · audit link</div>
+        <div class="slot" style="min-height:52px">QueueRow · Executed · bCRQ-3072 · +2.1 pts</div>
+      </div>
+      <div class="col">
+        <div class="slot" style="min-height:40px">InspectorDrawer · selected row</div>
+        <div class="slot" style="min-height:50px">decisionForm · reason (required) · approver</div>
+        <div class="slot" style="min-height:40px">actionBar · Approve · Reject · Defer</div>
+        <div class="slot" style="min-height:40px">auditTrail</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

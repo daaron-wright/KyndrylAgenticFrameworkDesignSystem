@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 40px; background: #fff; display: flex; align-items: center; justify-content: center; min-height: 220px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-sans); border: 1px solid; }
+  .pill .dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+  .pill .extra { font-weight: 500; letter-spacing: 0; text-transform: none; color: inherit; opacity: 0.75; margin-left: 4px; }
+  .CRITICAL { color: var(--sev-critical-fg); background: var(--sev-critical-bg); border-color: var(--sev-critical-border); }
+  .HIGH     { color: var(--sev-high-fg);     background: var(--sev-high-bg);     border-color: var(--sev-high-border); }
+  .MEDIUM   { color: var(--sev-medium-fg);   background: var(--sev-medium-bg);   border-color: var(--sev-medium-border); }
+  .LOW      { color: var(--sev-low-fg);      background: var(--sev-low-bg);      border-color: var(--sev-low-border); }
+</style>
+</head>
+<body>
+<span id="pill" class="pill CRITICAL"><span class="dot"></span><span id="lab">CRITICAL</span><span class="extra" id="extra"></span></span>
+<script>
+  const p = new URLSearchParams(location.search);
+  const sev = (p.get("severity") || "CRITICAL").toUpperCase();
+  const label = p.get("label") || "";
+  const pill = document.getElementById("pill");
+  pill.className = "pill " + sev;
+  document.getElementById("lab").textContent = sev;
+  document.getElementById("extra").textContent = label ? "· " + label : "";
+</script>
+</body></html>

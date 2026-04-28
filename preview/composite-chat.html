@@ -1,0 +1,279 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>ChatMessage &amp; SnapshotCard</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:var(--bg-2);font-family:var(--font-sans);color:var(--fg-1);font-size:13px}
+  .wrap{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  .card{background:#fff;border:1px solid var(--border-1);border-radius:var(--radius-lg);padding:18px 22px}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;color:#8A4FBF;font-weight:600;margin-bottom:6px}
+  .eyebrow svg{width:12px;height:12px}
+  h2{font-family:var(--font-display);font-size:19px;font-weight:500;margin:0 0 4px}
+  .sub{font-size:12px;color:var(--fg-muted);margin-bottom:14px}
+  .kicker{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;margin:14px 0 10px}
+
+  /* === STREAM (light variant for inline embeds) === */
+  .stream{display:flex;flex-direction:column;gap:14px;max-width:680px}
+  .msg{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+  .msg.user{grid-template-columns:1fr;justify-items:end}
+
+  .av{width:18px;height:18px;border-radius:999px;background:var(--k-warm-red-50);margin-top:6px;flex-shrink:0}
+
+  /* AI bubble — gradient border, light fill */
+  .bubble{
+    border-radius:10px;padding:11px 14px;font-size:13px;line-height:1.55;color:var(--fg-1);
+    background:
+      linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.25) 0%, rgba(255,70,45,.25) 100%) border-box;
+    border:1px solid transparent;
+  }
+  .bubble strong{color:var(--fg-1);font-weight:600}
+  .bubble code, .bubble .t-mono{
+    font-family:var(--font-mono);font-size:11.5px;background:var(--bg-3);
+    padding:1px 6px;border-radius:3px;color:var(--fg-1);
+  }
+  .bubble .hl{
+    color:var(--fg-1);font-weight:600;
+    background:rgba(255,70,45,.10);padding:0 4px;border-radius:3px;
+    cursor:pointer;border-bottom:1px dashed var(--k-warm-red-50)
+  }
+  .bubble ol{margin:6px 0 0;padding-left:18px}
+  .bubble ol li{margin:4px 0}
+  .bubble ol ol{padding-left:14px;margin-top:2px}
+
+  /* User bubble — solid warm red gradient, right aligned */
+  .msg.user .bubble{
+    background:linear-gradient(135deg, var(--k-warm-red-60), var(--k-warm-red-50));
+    border:none;color:#fff;font-weight:500;max-width:380px;
+  }
+
+  /* === SnapshotCard (highlight-link bound) === */
+  .snap{
+    margin-top:10px;
+    background:linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.25), rgba(255,70,45,.25)) border-box;
+    border:1px solid transparent;border-radius:8px;
+    padding:10px 12px;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;
+    cursor:pointer;transition:box-shadow 150ms;
+  }
+  .snap:hover{box-shadow:0 4px 14px rgba(15,23,42,.07)}
+  .snap.highlight{
+    background:linear-gradient(135deg, rgba(41,112,122,.10), rgba(255,70,45,.10)) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.25), rgba(255,70,45,.25)) border-box;
+  }
+  .snap .ico{width:32px;height:32px;border-radius:6px;background:rgba(255,70,45,.08);color:var(--k-warm-red-50);display:flex;align-items:center;justify-content:center}
+  .snap .ico svg{width:16px;height:16px}
+  .snap .t{font-size:12.5px;font-weight:600;color:var(--fg-1);margin:0}
+  .snap .s{font-size:10.5px;color:var(--fg-muted);margin:1px 0 0;font-family:var(--font-mono)}
+  .snap .arr{font-size:11px;color:var(--k-spruce-60);font-weight:600}
+
+  /* Footer action row + feedback panel mirror ai-feedback-sources */
+  .actions{display:inline-flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .ico-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 8px;border:1px solid var(--border-1);border-radius:6px;
+    background:#fff;color:var(--fg-2);font-size:11px;cursor:pointer
+  }
+  .ico-btn svg{width:12px;height:12px}
+  .ico-btn:hover{background:var(--bg-3)}
+
+  /* Spec table — anatomy diff */
+  .anatomy{
+    display:grid;grid-template-columns:140px 1fr 1fr;gap:8px 14px;font-size:11.5px;
+    border:1px dashed #C9A8E6;border-radius:8px;padding:14px;
+  }
+  .anatomy .h{font-weight:700;color:var(--fg-1);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}
+  .anatomy .lab{color:var(--fg-muted)}
+  .anatomy code{font-family:var(--font-mono);font-size:10.5px;background:var(--bg-3);padding:1px 5px;border-radius:3px;color:var(--fg-1)}
+
+  .specs{font-size:12px;color:var(--fg-2);line-height:1.6}
+  .specs ul{margin:4px 0 0;padding-left:18px}
+  .specs strong{color:var(--fg-1)}
+
+  /* === AgentStatusBar (inline header above stream) === */
+  .asb{
+    display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:12px;
+    margin-bottom:14px;max-width:680px;
+    background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05)) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+    border:1px solid transparent;
+  }
+  .asb .dot{width:6px;height:6px;border-radius:50%;background:var(--k-spruce-60);animation:asb-p 1.4s ease-in-out infinite;flex-shrink:0}
+  @keyframes asb-p{0%,100%{box-shadow:0 0 0 0 rgba(41,112,122,.5)}50%{box-shadow:0 0 0 5px rgba(41,112,122,0)}}
+  .asb .label{font-weight:600;color:var(--fg-1)}
+  .asb .meta{color:var(--fg-muted);font-family:var(--font-mono);font-size:10.5px}
+  .asb .controls{margin-left:auto;display:inline-flex;gap:4px}
+  .asb .ab{height:22px;padding:0 8px;border:1px solid var(--border-1);background:#fff;border-radius:4px;font-size:10.5px;font-weight:500;color:var(--fg-2);cursor:pointer;font-family:inherit}
+  .asb .ab.danger{color:var(--k-warm-red-60)}
+
+  /* === ToolCallCard (inline) === */
+  .tcc{margin-left:32px;border-radius:10px;overflow:hidden;font-size:12px;
+    background:linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;
+    border:1px solid transparent;
+  }
+  .tcc-head{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 12px}
+  .tcc-icon{width:22px;height:22px;border-radius:5px;background:#E0F2E8;color:#0D5C2E;display:flex;align-items:center;justify-content:center}
+  .tcc-icon svg{width:11px;height:11px}
+  .tcc-title{font-weight:600;color:var(--fg-1);font-size:12px}
+  .tcc-title .tool{font-family:var(--font-mono);color:var(--k-spruce-70);font-weight:500}
+  .tcc-meta{font-size:10.5px;color:var(--fg-muted);margin-top:1px;font-family:var(--font-mono)}
+  .tcc-status{font-size:10.5px;font-weight:600;color:#0D5C2E;display:inline-flex;align-items:center;gap:5px}
+  .tcc-status .sd{width:6px;height:6px;border-radius:50%;background:#10B981}
+
+  /* event tag */
+  .ev{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--fg-muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em;font-weight:600;padding-left:32px}
+  .ev::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--fg-muted)}
+</style>
+</head><body>
+
+<div class="wrap">
+
+  <!-- LIVE EXAMPLE -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      ChatMessage &amp; SnapshotCard
+    </div>
+    <h2>ChatMessage · SnapshotCard</h2>
+    <div class="sub">The two CMDB chat primitives, refreshed against the Shidoka AI vocabulary. Every AI bubble uses the gradient border, every user bubble uses the warm-red fill, and every embedded card carries the Bridge AI mark. Inline AG-UI states (AgentStatusBar above, ToolCallCard between messages) show the agent's live work without breaking the rhythm.</div>
+
+    <!-- AgentStatusBar -->
+    <div class="asb">
+      <span class="dot"></span>
+      <span class="label">Investigating · payments domain trust</span>
+      <span class="meta">step 2 of 3 · 4.2s</span>
+      <div class="controls">
+        <button class="ab">Pause</button>
+        <button class="ab">Inject correction</button>
+        <button class="ab danger">Cancel</button>
+      </div>
+    </div>
+
+    <div class="stream">
+      <!-- USER -->
+      <div class="msg user">
+        <div class="bubble">Why did payments trust drop overnight?</div>
+      </div>
+
+      <!-- INLINE TOOL CALL (between user message and AI response) -->
+      <span class="ev">tool.completed · cmdb.query</span>
+      <div class="tcc">
+        <div class="tcc-head">
+          <div class="tcc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div>
+            <div class="tcc-title">Returned <span class="tool">cmdb.query</span> &middot; 22 rows</div>
+            <div class="tcc-meta">230ms &middot; 22 orphaned CIs &middot; window 02:00–04:00</div>
+          </div>
+          <div class="tcc-status"><span class="sd"></span>OK</div>
+        </div>
+      </div>
+
+      <!-- AI -->
+      <div class="msg">
+        <div class="av"></div>
+        <div>
+          <div class="bubble">
+            Between 02:00 and 04:00 the discovery scan flagged
+            <span class="hl" data-key="orphans">22 new orphaned CIs</span>
+            in <code>payments-svc</code>. These pushed domain trust from <strong>62% → 58%</strong>.
+            The upstream app <span class="hl" data-key="app">checkout-api</span> is Degraded as a consequence.
+          </div>
+
+          <div class="snap highlight" data-key="orphans">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+            <div><p class="t">22 orphaned CIs · payments-svc</p><p class="s">First seen 02:14 · no upstream owner</p></div>
+            <span class="arr">Inspect →</span>
+          </div>
+
+          <div class="snap" data-key="app">
+            <div class="ico" style="background:rgba(41,112,122,.08);color:var(--k-spruce-60)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+            <div><p class="t">checkout-api · Degraded</p><p class="s">1 of 6 downstream CIs impacted</p></div>
+            <span class="arr">Open graph →</span>
+          </div>
+
+          <div class="actions">
+            <button class="ico-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button>
+            <button class="ico-btn" aria-label="Regenerate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/></svg></button>
+            <button class="ico-btn" aria-label="Thumbs up"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13h6v14H5a1 1 0 0 1-1-1V14a1 1 0 0 1 1-1Z"/><path d="M11 13l4-9a1 1 0 0 1 .9-.5 3 3 0 0 1 3 3v6h7.5a2 2 0 0 1 1.97 2.34l-1.83 11A2 2 0 0 1 24.58 27H11V13Z"/></svg></button>
+            <button class="ico-btn" aria-label="Thumbs down"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M27 19h-6V5h6a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1Z"/><path d="M21 19l-4 9a1 1 0 0 1-.9.5 3 3 0 0 1-3-3v-6H5.6a2 2 0 0 1-1.97-2.34l1.83-11A2 2 0 0 1 7.42 5H21V19Z"/></svg></button>
+            <button class="ico-btn">Sources used (4) <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANATOMY -->
+  <section class="card">
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg>
+      Anatomy
+    </div>
+
+    <div class="anatomy">
+      <div class="h">Slot</div><div class="h">User message</div><div class="h">AI message</div>
+
+      <div class="lab">Avatar</div>
+      <div>None — bubble alone, right-aligned</div>
+      <div>14px Warm Red 50 dot, top-aligned</div>
+
+      <div class="lab">Background</div>
+      <div><code>linear-gradient(135deg, warm-red-60, warm-red-50)</code></div>
+      <div><code>#fff</code> + <code>1px gradient border</code> (spruce-60 ↔ warm-red-50, 25% α)</div>
+
+      <div class="lab">Foreground</div>
+      <div><code>#fff</code>, weight 500</div>
+      <div><code>fg-1</code>, weight 400</div>
+
+      <div class="lab">Radius</div>
+      <div>10px</div>
+      <div>10px</div>
+
+      <div class="lab">Max width</div>
+      <div>380px</div>
+      <div>100% of column</div>
+
+      <div class="lab">Allowed children</div>
+      <div>Plain text only</div>
+      <div>Markdown · <code>HighlightLink</code> · <code>SnapshotCard</code> · feedback row</div>
+    </div>
+
+    <div class="kicker">HighlightLink × SnapshotCard pairing</div>
+    <div class="specs">
+      <ul>
+        <li>Every <code>HighlightLink</code> in the bubble carries a <code>data-key</code>; matching <code>SnapshotCard</code>s nest below.</li>
+        <li>Hover/focus on a HighlightLink sets <code>.snap.highlight</code> on the matching card — gradient softens to a 10%-α tint to confirm the link.</li>
+        <li>If no SnapshotCard binds to a HighlightLink, the link is a dead-end and should be removed.</li>
+      </ul>
+    </div>
+
+    <div class="kicker">SnapshotCard variants</div>
+    <div class="specs">
+      <ul>
+        <li><strong>Default</strong> · 25%-α gradient border, neutral icon chip.</li>
+        <li><strong>Highlighted</strong> · 10%-α gradient tint behind the same 25%-α gradient border as default. Triggered by HighlightLink focus — no solid outline.</li>
+        <li><strong>Severity</strong> · icon chip swaps to status taxonomy (Healthy / Degraded / Impacted) — never the bubble border.</li>
+      </ul>
+    </div>
+
+    <div class="kicker">Feedback row (footer)</div>
+    <div class="specs">
+      Always trails the AI bubble (never the user bubble). Order is locked: Copy → Regenerate → Thumbs-up → Thumbs-down → Sources used (n). Full spec lives in the <em>Feedback &amp; Sources</em> component.
+    </div>
+  </section>
+
+</div>
+<script>
+  // Wire HighlightLink ↔ SnapshotCard
+  document.querySelectorAll('.bubble .hl').forEach(hl=>{
+    const k = hl.dataset.key;
+    const tgt = document.querySelector(`.snap[data-key="${k}"]`);
+    const enter = ()=>{
+      document.querySelectorAll('.snap').forEach(s=>s.classList.remove('highlight'));
+      tgt && tgt.classList.add('highlight');
+    };
+    hl.addEventListener('mouseenter', enter);
+    hl.addEventListener('focus', enter);
+  });
+</script>
+</body></html>

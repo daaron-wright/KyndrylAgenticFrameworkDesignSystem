@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 48px; background: #fff; display: flex; align-items: center; justify-content: center; gap: 18px; min-height: 220px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-family: var(--font-sans); font-size: 12px; border: 1px solid var(--border-1); background: var(--bg-2); color: var(--fg-2); }
+  .badge .v { font-weight: 500; color: var(--fg-1); border-bottom: 1px dotted currentColor; }
+  .badge .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--k-status-success-100); }
+  .badge.warn { background: var(--k-status-warning-10); color: var(--k-status-warning-110); border-color: var(--k-status-warning-20); }
+  .badge.warn .dot { background: var(--k-status-warning-100); }
+  .badge.warn .v { color: var(--k-status-warning-110); }
+  .meta { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); }
+</style>
+</head>
+<body>
+<span id="b" class="badge"><span class="dot"></span><span class="v" id="v">3d ago</span><span>verified</span></span>
+<span class="meta" id="meta"></span>
+<script>
+  const p = new URLSearchParams(location.search);
+  const age = Number(p.get("ageDays") ?? 3);
+  const thr = Number(p.get("threshold") ?? 7);
+  const v = age === 0 ? "Today" : age + "d ago";
+  document.getElementById("v").textContent = v;
+  document.getElementById("meta").textContent = "threshold: " + thr + "d · " + (age > thr ? "STALE" : "fresh");
+  if (age > thr) document.getElementById("b").classList.add("warn");
+</script>
+</body></html>

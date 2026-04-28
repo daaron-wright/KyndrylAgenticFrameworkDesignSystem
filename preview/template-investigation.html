@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC;font-family:var(--font-sans)}
+.t{max-width:900px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px;display:grid;grid-template-columns:200px 1fr 280px;gap:10px}
+.slot{border:1.5px dashed #CBD5E1;border-radius:6px;padding:10px;background:#F8FAFC;color:#64748B;font-family:var(--font-mono);font-size:10px}
+.slot.solid{background:#fff;border:1px solid var(--border-1);color:var(--fg-1)}
+.hdr{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--border-1)}
+.hdr h2{margin:0;font-size:14px;font-weight:600}
+.hdr span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);font-weight:700}
+.col{display:flex;flex-direction:column;gap:8px}
+</style></head><body>
+<div class="t">
+  <div class="hdr"><h2>InvestigationTemplate</h2><span>GraphControlRail · GraphCanvas · GraphInspector</span></div>
+  <div class="col">
+    <div class="slot">filters · domain · BU · status</div>
+    <div class="slot">lensPicker · Full ▾</div>
+    <div class="slot">searchInput</div>
+    <div class="slot">legend</div>
+  </div>
+  <div class="slot solid" style="min-height:260px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#E2E8F0 1px,transparent 1px);background-size:20px 20px">GraphCanvas · ReactFlow</div>
+  <div class="col">
+    <div class="slot">lineageBreadcrumb</div>
+    <div class="slot">selection metadata</div>
+    <div class="slot">upstream · downstream lists</div>
+    <div class="slot">ImpactRollup</div>
+    <div class="slot">actionBar</div>
+  </div>
+</div>
+</body></html>

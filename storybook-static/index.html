@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kyndryl Agentic Framework · Design System</title>
+<link rel="icon" type="image/png" href="../assets/kyndryl-logo.png">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="sb.css">
+</head>
+<body>
+<div id="sb-root">
+  <aside id="sb-sidebar" aria-label="Story navigation">
+    <div class="sb-brand">
+      <img src="../assets/kyndryl-logo.png" alt="Kyndryl" class="sb-brand-logo">
+      <div class="sb-brand-text">
+        <div class="sb-brand-eyebrow">DESIGN SYSTEM</div>
+        <div class="sb-brand-title">Agentic Framework</div>
+      </div>
+    </div>
+    <div class="sb-search-wrap">
+      <svg class="sb-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="sb-search" type="search" placeholder="Search stories…" autocomplete="off" spellcheck="false">
+      <kbd class="sb-search-kbd">/</kbd>
+    </div>
+    <nav id="sb-tree" aria-label="Stories"></nav>
+    <footer class="sb-sidebar-footer">
+      <a href="../README.md" class="sb-sidebar-link">README</a>
+      <span class="sb-sidebar-dot">·</span>
+      <a href="../Kyndryl CMDB DS - Developer Reference.html" class="sb-sidebar-link">Dev reference</a>
+    </footer>
+  </aside>
+
+  <main id="sb-main">
+    <header id="sb-toolbar" aria-label="Story toolbar">
+      <div class="sb-toolbar-left">
+        <button id="sb-tab-canvas" class="sb-tab is-active" data-tab="canvas">Canvas</button>
+        <button id="sb-tab-docs"   class="sb-tab" data-tab="docs">Docs</button>
+        <span class="sb-toolbar-sep" aria-hidden="true"></span>
+        <button id="sb-zoom-out"   class="sb-tool-btn" title="Zoom out" aria-label="Zoom out">−</button>
+        <span id="sb-zoom-readout" class="sb-tool-readout">100%</span>
+        <button id="sb-zoom-in"    class="sb-tool-btn" title="Zoom in"  aria-label="Zoom in">+</button>
+        <button id="sb-zoom-reset" class="sb-tool-btn" title="Reset zoom" aria-label="Reset zoom">⤺</button>
+        <span class="sb-toolbar-sep" aria-hidden="true"></span>
+        <button id="sb-bg-toggle"  class="sb-tool-btn" title="Toggle background" aria-label="Toggle background"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="none" stroke="currentColor"/><path d="M8 1.5v13M1.5 8h13" stroke="currentColor" fill="none"/></svg></button>
+        <button id="sb-grid-toggle" class="sb-tool-btn" title="Toggle grid" aria-label="Toggle grid"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><rect x="2" y="2" width="3" height="3"/><rect x="6.5" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/><rect x="2" y="6.5" width="3" height="3"/><rect x="6.5" y="6.5" width="3" height="3"/><rect x="11" y="6.5" width="3" height="3"/><rect x="2" y="11" width="3" height="3"/><rect x="6.5" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/></svg></button>
+      </div>
+      <div class="sb-toolbar-right">
+        <button id="sb-theme-toggle" class="sb-tool-btn" title="Toggle theme" aria-label="Toggle theme">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <span id="sb-theme-readout">Light</span>
+        </button>
+        <button id="sb-fullscreen" class="sb-tool-btn" title="Open in new tab" aria-label="Open in new tab">↗</button>
+      </div>
+    </header>
+
+    <section id="sb-stage" class="sb-stage">
+      <div id="sb-canvas-wrap" class="sb-canvas-wrap" data-bg="dotted">
+        <div id="sb-canvas-scaler">
+          <iframe id="sb-canvas" title="Story canvas" src="about:blank" loading="lazy"></iframe>
+        </div>
+      </div>
+      <div id="sb-docs" class="sb-docs" hidden></div>
+    </section>
+
+    <aside id="sb-addons" aria-label="Addon panel">
+      <header class="sb-addons-tabs">
+        <button class="sb-addon-tab is-active" data-addon="controls">Controls</button>
+        <button class="sb-addon-tab" data-addon="actions">Actions</button>
+        <button class="sb-addon-tab" data-addon="a11y">A11y</button>
+        <button class="sb-addon-tab" data-addon="source">Source</button>
+        <button id="sb-addons-collapse" class="sb-addon-collapse" title="Collapse panel" aria-label="Collapse addon panel">⌄</button>
+      </header>
+      <div id="sb-addon-controls" class="sb-addon-pane is-active"></div>
+      <div id="sb-addon-actions"  class="sb-addon-pane"></div>
+      <div id="sb-addon-a11y"     class="sb-addon-pane"></div>
+      <div id="sb-addon-source"   class="sb-addon-pane"></div>
+    </aside>
+  </main>
+</div>
+
+<script src="stories.js"></script>
+<script src="sb.js"></script>
+</body>
+</html>

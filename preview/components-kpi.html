@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:16px;background:#F8FAFC}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:660px}
+.kpi{background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden}
+.warn{padding:6px 12px;background:#FEF3C7;border-bottom:1px solid #FDE68A;font-size:10px;color:#B45309;display:flex;align-items:center;gap:6px;font-weight:500}
+.body{padding:14px 16px}
+.lbl{font-size:11px;color:var(--fg-muted);margin:0 0 4px}
+.val{font-size:22px;font-weight:700;letter-spacing:-.015em;color:#0F172A;margin:0}
+.delta{font-size:11px;font-weight:500;margin-top:4px;display:flex;align-items:center;gap:4px}
+.up{color:#047857}.down{color:#B91C1C}.flat{color:var(--fg-muted)}
+.sub{font-size:10px;color:var(--fg-muted);margin-top:2px}
+svg{width:12px;height:12px}
+</style></head><body>
+<div class="grid">
+  <div class="kpi"><div class="body">
+    <p class="lbl">Total CIs tracked</p><p class="val">4,812</p>
+    <p class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17l10-10M17 7v10H7"/></svg>+124 WoW</p>
+    <p class="sub">Discovered across 38 applications</p>
+  </div></div>
+  <div class="kpi">
+    <div class="warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>Investigate with AI</div>
+    <div class="body">
+      <p class="lbl">Stale CIs</p><p class="val">312</p>
+      <p class="delta down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 7l10 10M7 17h10V7"/></svg>+28 vs last week</p>
+      <p class="sub">Not verified in 30d+</p>
+    </div>
+  </div>
+  <div class="kpi"><div class="body">
+    <p class="lbl">Trust score</p><p class="val">62%</p>
+    <p class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17l10-10M17 7v10H7"/></svg>+1.4 pts YoY</p>
+    <p class="sub">Target 95% · gap 33 pts</p>
+  </div></div>
+</div>
+</body></html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 48px; background: #fff; display: flex; align-items: center; justify-content: center; min-height: 220px; }
+  .b { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-family: var(--font-sans); font-size: 12px; font-weight: 500; border: 1px solid; }
+  .b .dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+  .Pending  { color: var(--wf-pending);  background: var(--k-status-warning-10); border-color: var(--k-status-warning-20); }
+  .Approved { color: var(--wf-approved); background: var(--k-spruce-10); border-color: var(--k-spruce-20); }
+  .Executed { color: var(--wf-executed); background: var(--k-spruce-10); border-color: var(--k-spruce-20); }
+  .Rejected { color: var(--fg-muted);    background: var(--bg-2); border-color: var(--border-1); }
+  .Healthy  { color: var(--status-healthy);  background: var(--k-status-success-10); border-color: var(--k-status-success-20); }
+  .Degraded { color: var(--status-degraded); background: var(--k-status-warning-10); border-color: var(--k-status-warning-20); }
+  .Impacted { color: var(--status-impacted); background: var(--k-status-error-10); border-color: var(--k-status-error-20); }
+  .Unknown  { color: var(--fg-muted); background: var(--bg-2); border-color: var(--border-1); }
+</style>
+</head>
+<body>
+<span id="b" class="b Approved"><span class="dot"></span><span id="lab">Approved</span></span>
+<script>
+  const p = new URLSearchParams(location.search);
+  const s = p.get("status") || "Approved";
+  document.getElementById("b").className = "b " + s;
+  document.getElementById("lab").textContent = s;
+</script>
+</body></html>

@@ -1,0 +1,2080 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Kyndryl CMDB Design System · deck</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  /* ===== deck shell ===== */
+  html,body{margin:0;padding:0;background:#000;font-family:var(--font-sans);color:var(--fg-1)}
+  deck-stage{display:block}
+  section{
+    width:1920px;height:1080px;background:#fff;
+    display:grid;grid-template-rows:auto 1fr auto;
+    padding:64px 96px 56px;box-sizing:border-box;
+    position:relative;overflow:hidden;
+  }
+  /* Allow the middle (body) row of every slide to scroll internally when content exceeds slide height */
+  section > :nth-child(2){min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;padding-right:8px}
+  section > :nth-child(2)::-webkit-scrollbar{width:10px}
+  section > :nth-child(2)::-webkit-scrollbar-track{background:transparent}
+  section > :nth-child(2)::-webkit-scrollbar-thumb{background:rgba(15,23,42,.18);border-radius:99px;border:2px solid #fff}
+  section > :nth-child(2)::-webkit-scrollbar-thumb:hover{background:rgba(15,23,42,.32)}
+  .hd{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .hd .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--k-spruce-70);font-weight:700;font-family:var(--font-mono)}
+  .hd .eyebrow .gl{width:14px;height:14px;display:inline-block;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat}
+  .hd .ix{margin-left:auto;font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);letter-spacing:.06em}
+  h1{font-family:var(--font-display);font-size:64px;font-weight:500;letter-spacing:-.015em;margin:0 0 14px;color:var(--fg-1);line-height:1.05}
+  h2{font-family:var(--font-display);font-size:42px;font-weight:500;letter-spacing:-.012em;margin:0 0 12px;color:var(--fg-1);line-height:1.1}
+  h3{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-.005em;margin:0 0 10px;color:var(--fg-1);line-height:1.2}
+  .lede{font-size:22px;line-height:1.45;color:var(--fg-2);max-width:1500px;margin:0 0 28px;text-wrap:pretty}
+  .ft{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);border-top:1px solid var(--border-1);padding-top:16px;letter-spacing:.06em}
+  .ft .l{display:inline-flex;align-items:center;gap:10px}
+  .ft .l .gl{width:13px;height:13px;display:inline-block;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat}
+
+  /* body grids */
+  .body{display:grid;gap:32px;align-content:start}
+  .body.split{grid-template-columns:1fr 1fr;align-items:start;gap:48px}
+  .body.split-3070{grid-template-columns:1.4fr 1fr;align-items:start;gap:48px}
+
+  /* shared */
+  .demo{background:#fff;border-radius:14px;padding:28px;border:1px solid var(--border-1);box-shadow:0 1px 0 rgba(15,23,42,.02), 0 12px 36px -18px rgba(15,23,42,.18)}
+  .rules{font-size:18px;color:var(--fg-2);line-height:1.55}
+  .rules .kicker{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);font-weight:700;font-family:var(--font-mono);margin-bottom:14px}
+  .rules ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;text-wrap:pretty}
+  .rules ul li::marker{color:var(--k-spruce-60)}
+  .rules strong{color:var(--fg-1)}
+  .rules code{font-family:var(--font-mono);font-size:.92em;background:var(--bg-3);padding:1px 6px;border-radius:3px;color:var(--fg-1)}
+  code.t{font-family:var(--font-mono);font-size:14px;background:var(--bg-3);padding:2px 7px;border-radius:4px;color:var(--fg-1)}
+
+  /* AI gradient edge */
+  .ai-edge{background:#fff padding-box, linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;border:1px solid transparent}
+
+  @keyframes asb-pulse{0%,100%{box-shadow:0 0 0 0 rgba(41,112,122,.55)}50%{box-shadow:0 0 0 6px rgba(41,112,122,0)}}
+
+  /* ============================================================
+     SLIDE 01 · COVER
+     ============================================================ */
+  .cover{padding:96px 120px;background:#fff;display:flex;flex-direction:column;justify-content:space-between}
+  .cover .stamp{display:inline-flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .cover .stamp .gl{width:24px;height:24px;display:inline-block;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat}
+  .cover h1.big{font-family:var(--font-display);font-size:144px;line-height:.92;letter-spacing:-.025em;font-weight:500;margin:0;max-width:1600px;text-wrap:balance}
+  .cover h1.big em{font-style:normal;background:linear-gradient(135deg, var(--k-spruce-60) 30%, var(--k-warm-red-50) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .deck-lede{font-size:26px;line-height:1.45;color:var(--fg-2);max-width:1300px;margin:32px 0 0;text-wrap:pretty}
+  .cover .meta-row{display:flex;justify-content:space-between;align-items:end;font-family:var(--font-mono);font-size:14px;color:var(--fg-muted);letter-spacing:.06em}
+
+  /* ============================================================
+     SLIDE 02 · ARCHITECTURE
+     ============================================================ */
+  .arch{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:8px}
+  .arch .layer{background:#fff;border:1px solid var(--border-1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px;min-height:380px}
+  .arch .layer .num{font-family:var(--font-mono);font-size:13px;color:var(--fg-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  .arch .layer .name{font-family:var(--font-display);font-size:24px;font-weight:500;color:var(--fg-1);line-height:1.1}
+  .arch .layer .desc{font-size:14px;color:var(--fg-2);line-height:1.5}
+  .arch .layer ul{margin:auto 0 0;padding:14px 0 0;border-top:1px solid var(--bg-3);font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);list-style:none;display:flex;flex-direction:column;gap:5px}
+  .arch .layer.l1{background:linear-gradient(180deg, #fff, #FAFCFC);border-color:#D7E6E9}
+  .arch .layer.l1 .num{color:var(--k-spruce-70)}
+  .arch .layer.l5{background:linear-gradient(180deg, #fff, #FFF8F6);border-color:#F5D8D0}
+  .arch .layer.l5 .num{color:var(--k-warm-red-60)}
+  .arch .arrow{position:absolute;font-family:var(--font-mono);font-size:11px;color:var(--fg-muted)}
+
+  /* ============================================================
+     SLIDE 03 · BRAND DNA
+     ============================================================ */
+  .brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+  .brand-card{border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-height:680px;color:#fff;padding:48px;position:relative;justify-content:space-between}
+  .brand-card.warm{background:var(--k-warm-red-50)}
+  .brand-card.spruce{background:var(--k-spruce-60)}
+  .brand-card .eyebrow{font-family:var(--font-mono);font-size:14px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;opacity:.85}
+  .brand-card .swatch{font-family:var(--font-display);font-size:108px;line-height:1;font-weight:500;letter-spacing:-.02em}
+  .brand-card .role{font-family:var(--font-display);font-size:32px;font-weight:500;letter-spacing:-.01em;line-height:1.2;margin-top:8px}
+  .brand-card .vals{display:flex;gap:24px;font-family:var(--font-mono);font-size:14px;opacity:.85;flex-wrap:wrap}
+  .brand-card .vals span{display:block}
+  .brand-card .vals b{display:block;font-weight:400;opacity:.7;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+  .brand-card .uses{font-size:16px;line-height:1.55;opacity:.95}
+  .brand-card .uses b{display:block;font-weight:500;opacity:.7;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+
+  /* ============================================================
+     SLIDE 04 · COLOR PALETTE RAMPS
+     ============================================================ */
+  .ramps{display:flex;flex-direction:column;gap:24px}
+  .ramp{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:center}
+  .ramp-label{font-family:var(--font-mono);font-size:13px;color:var(--fg-2);letter-spacing:.06em}
+  .ramp-label b{display:block;font-family:var(--font-display);font-size:20px;color:var(--fg-1);font-weight:500;letter-spacing:-.005em;margin-bottom:4px}
+  .ramp-stops{display:grid;grid-template-columns:repeat(11,1fr);gap:6px}
+  .stop{height:78px;border-radius:6px;display:flex;flex-direction:column;justify-content:flex-end;padding:8px 9px;font-family:var(--font-mono);font-size:10px;color:#fff;line-height:1.2}
+  .stop.lt{color:var(--fg-1)}
+  .stop b{font-weight:400;opacity:.65;display:block;font-size:9px;letter-spacing:.06em}
+  .stop span{font-size:11px;opacity:.95}
+
+  /* ============================================================
+     SLIDE 05 · STATUS / RAG
+     ============================================================ */
+  .rag{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+  .rag .cell{border-radius:10px;border:1px solid;padding:22px;display:flex;flex-direction:column;gap:14px;min-height:280px}
+  .rag .cell .name{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-.005em}
+  .rag .cell .pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:5px 10px;border-radius:99px;align-self:flex-start}
+  .rag .cell .pill .dot{width:7px;height:7px;border-radius:50%}
+  .rag .cell .stops{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:auto}
+  .rag .cell .stops div{height:32px;border-radius:4px;font-family:var(--font-mono);font-size:9px;display:flex;align-items:flex-end;padding:3px 5px;color:rgba(255,255,255,.85)}
+  .rag .cell .stops div.lt{color:rgba(20,20,20,.55)}
+  .rag .crit{background:#FFE5E5;border-color:#F5BAB8}.rag .crit .name{color:#7A0E0E}.rag .crit .pill{background:#7A0E0E;color:#fff}.rag .crit .pill .dot{background:#FF8888}
+  .rag .err{background:#FFEBEB;border-color:#F8C7C2}.rag .err .name{color:#A1100F}.rag .err .pill{background:#D62E2E;color:#fff}.rag .err .pill .dot{background:#FFB7B0}
+  .rag .warn{background:#FEF7E6;border-color:#F8DC8E}.rag .warn .name{color:#7A4800}.rag .warn .pill{background:#B45309;color:#fff}.rag .warn .pill .dot{background:#FED7AA}
+  .rag .ok{background:#ECFDF5;border-color:#A7F3D0}.rag .ok .name{color:#0D5C2E}.rag .ok .pill{background:#10B981;color:#fff}.rag .ok .pill .dot{background:#A7F3D0}
+  .rag .info{background:#ECF5FB;border-color:#BCD8EE}.rag .info .name{color:#0E4A7A}.rag .info .pill{background:#1769B5;color:#fff}.rag .info .pill .dot{background:#9EC6E6}
+
+  /* ============================================================
+     SLIDE 06 · AI TINTS + CHARTS
+     ============================================================ */
+  .ai-tints{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ai-tints .swatch-card{border-radius:10px;border:1px solid var(--border-1);background:#fff;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:160px}
+  .ai-tints .label{font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);letter-spacing:.06em}
+  .ai-tints .label b{color:var(--fg-1);font-weight:500;font-size:14px;display:block;margin-bottom:2px;font-family:var(--font-display);letter-spacing:-.005em}
+  .ai-tints .row-tints{display:flex;gap:6px}
+  .ai-tints .row-tints div{flex:1;height:48px;border-radius:6px;display:flex;align-items:flex-end;justify-content:center;padding:5px;font-family:var(--font-mono);font-size:9px;color:var(--fg-muted)}
+  .ai-tints .ex{font-size:13px;color:var(--fg-2);line-height:1.5}
+  .ai-tints .ex code{font-family:var(--font-mono);font-size:11px}
+  .chart-pal{display:flex;flex-direction:column;gap:14px}
+  .chart-pal .row{display:flex;gap:5px}
+  .chart-pal .row div{flex:1;height:40px;border-radius:5px;display:flex;align-items:flex-end;padding:5px;font-family:var(--font-mono);font-size:9px;color:#fff}
+  .chart-pal .row div.lt{color:var(--fg-1)}
+  .chart-pal .row .label-cell{flex:0 0 200px;background:transparent !important;color:var(--fg-2) !important;align-items:center;font-family:var(--font-mono);font-size:13px}
+  .chart-pal .row .label-cell b{color:var(--fg-1);font-family:var(--font-display);font-size:15px;font-weight:500;margin-right:8px}
+
+  /* ============================================================
+     SLIDE 07 · TYPE
+     ============================================================ */
+  .type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+  .type-fam{padding:28px;border:1px solid var(--border-1);border-radius:12px;display:flex;flex-direction:column;gap:14px;min-height:680px}
+  .type-fam .name{font-family:var(--font-display);font-size:32px;font-weight:500;letter-spacing:-.01em;line-height:1.1}
+  .type-fam .role{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--k-spruce-70);font-weight:700}
+  .type-fam .specimen-display{font-family:var(--font-display);font-size:84px;font-weight:500;letter-spacing:-.02em;line-height:.95;color:var(--fg-1)}
+  .type-fam .specimen-body{font-family:var(--font-sans);font-size:60px;font-weight:400;letter-spacing:-.005em;line-height:1;color:var(--fg-1)}
+  .type-fam .specimen-mono{font-family:var(--font-mono);font-size:54px;font-weight:400;letter-spacing:-.01em;line-height:1;color:var(--fg-1)}
+  .type-fam .scale{margin-top:auto;padding-top:14px;border-top:1px solid var(--bg-3);display:flex;flex-direction:column;gap:6px}
+  .type-fam .scale-row{display:grid;grid-template-columns:90px 1fr;align-items:baseline;gap:10px;font-size:14px;color:var(--fg-2);line-height:1.4}
+  .type-fam .scale-row code{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);background:var(--bg-3);padding:2px 6px;border-radius:3px}
+  .type-fam .role-list{font-size:13px;color:var(--fg-2);line-height:1.55}
+  .type-fam .role-list b{color:var(--fg-1);font-weight:500}
+
+  /* ============================================================
+     SLIDE 08 · SPACING + RADII
+     ============================================================ */
+  .space-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px}
+  .space-scale{display:flex;flex-direction:column;gap:6px}
+  .space-row{display:grid;grid-template-columns:60px 60px 1fr 60px;gap:14px;align-items:center;font-family:var(--font-mono);font-size:13px;color:var(--fg-2);padding:5px 0}
+  .space-row .num{color:var(--fg-1);font-weight:500;font-size:15px}
+  .space-row .px{color:var(--fg-muted)}
+  .space-row .vis{height:14px;background:var(--k-spruce-20);border-radius:2px}
+  .space-row .alias{color:var(--fg-muted);font-size:11px;text-align:right}
+  .radii-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .radii-card{padding:20px;border:1px solid var(--border-1);background:var(--bg-2);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-height:140px;position:relative}
+  .radii-card .shape{width:90px;height:60px;background:var(--k-spruce-60)}
+  .radii-card .name{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--fg-1)}
+  .radii-card .meta{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted)}
+  .radii-card.r-sm .shape,.radii-card.r-sm{border-radius:4px}.radii-card.r-sm .shape{border-radius:4px}
+  .radii-card.r-md .shape,.radii-card.r-md{border-radius:8px}.radii-card.r-md .shape{border-radius:8px}
+  .radii-card.r-lg .shape,.radii-card.r-lg{border-radius:16px}.radii-card.r-lg .shape{border-radius:16px}
+  .radii-card.r-pill{border-radius:8px}.radii-card.r-pill .shape{border-radius:99px;width:120px;height:36px}
+
+  /* ============================================================
+     SLIDE 09 · ELEVATION + MOTION
+     ============================================================ */
+  .elev-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px}
+  .elev-card{background:#fff;height:140px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:18px;font-family:var(--font-mono);font-size:13px;color:var(--fg-1)}
+  .elev-card b{font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-.005em}
+  .elev-card span{color:var(--fg-muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+  .elev-flat{border:1px solid var(--border-1)}
+  .elev-card.shadow-sm{box-shadow:0 1px 0 rgba(15,23,42,.04), 0 4px 14px -8px rgba(15,23,42,.18);border:1px solid var(--border-1)}
+  .elev-card.shadow-md{box-shadow:0 6px 22px -10px rgba(15,23,42,.18);border:1px solid var(--border-1)}
+  .elev-card.shadow-lg{box-shadow:0 24px 60px -24px rgba(15,23,42,.32);border:1px solid var(--border-1)}
+
+  /* AI Loader — bicolor ring, two opposite arcs in a mask */
+  @keyframes ai-spin{to{transform:rotate(360deg)}}
+  .ailoader{
+    --size:64px;--thick:5px;
+    display:inline-block;width:var(--size);height:var(--size);border-radius:999px;flex-shrink:0;vertical-align:middle;
+    background:conic-gradient(from 0deg, var(--k-warm-red-50) 0deg, var(--k-spruce-60) 180deg, var(--k-warm-red-50) 360deg);
+    -webkit-mask:radial-gradient(circle, transparent calc(50% - var(--thick) - 1px), #000 calc(50% - var(--thick)));
+    mask:radial-gradient(circle, transparent calc(50% - var(--thick) - 1px), #000 calc(50% - var(--thick)));
+    animation:ai-spin 3s linear infinite;
+  }
+  .ailoader.sm{--size:16px;--thick:2px}
+  .ailoader.md{--size:32px;--thick:3.5px}
+  .ailoader.lg{--size:64px;--thick:5px}
+  .ailoader.xl{--size:96px;--thick:9px}
+  @media (prefers-reduced-motion: reduce){.ailoader{animation-duration:6s}}
+
+  /* size strip */
+  .ail-sizes{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .ail-size{background:#fff;border:1px solid var(--border-1);border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:200px;justify-content:space-between}
+  .ail-size .stage{flex:1;display:flex;align-items:center;justify-content:center;width:100%}
+  .ail-size .meta{text-align:center;display:flex;flex-direction:column;gap:4px;width:100%}
+  .ail-size .meta .px{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.005em}
+  .ail-size .meta .cls{font-family:var(--font-mono);font-size:11px;color:var(--k-spruce-70);font-weight:500}
+  .ail-size .meta .use{font-size:12px;color:var(--fg-2);line-height:1.4}
+
+  /* in-context cards */
+  .ail-ctx{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .ail-ctx .card{background:#fff;border:1px solid var(--border-1);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .ail-ctx .card h4{margin:0;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-muted)}
+  .ail-ctx .card .desc{font-size:12px;color:var(--fg-2);line-height:1.5}
+  .ail-ctx .card .demo{background:var(--bg-2);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:128px;justify-content:center}
+
+  .ail-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .ail-chips .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--border-1);border-radius:99px;font-size:11px;color:var(--fg-1)}
+  .ail-chips .chip .x{color:var(--fg-muted);font-size:11px;line-height:1}
+  .ail-chips .chip.gen{background:var(--k-ai-spruce-12);border-color:transparent;color:var(--k-spruce-70);font-family:var(--font-mono);font-size:10px;font-weight:500}
+
+  .ail-input{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:10px 12px;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28));background-origin:border-box;background-clip:padding-box,border-box;border:1px solid transparent}
+  .ail-input .ph{flex:1;font-size:12px;color:var(--fg-muted)}
+  .ail-input .send{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em}
+
+  .ail-stream{display:flex;flex-direction:column;gap:6px}
+  .ail-stream .head{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--k-spruce-70);font-weight:500}
+  .ail-stream .skel{display:flex;flex-direction:column;gap:4px}
+  .ail-stream .ln{height:6px;border-radius:99px;background:linear-gradient(90deg, var(--bg-3) 0%, #E5E7EB 35%, var(--bg-3) 70%);background-size:300% 100%;animation:ail-shim 1.6s linear infinite}
+  .ail-stream .ln:nth-child(1){width:90%}
+  .ail-stream .ln:nth-child(2){width:75%}
+  .ail-stream .ln:nth-child(3){width:55%}
+  @keyframes ail-shim{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+  /* rules + panel render side-by-side */
+  .ail-bottom{display:grid;grid-template-columns:1fr;gap:18px}
+  .ail-rules{background:#fff;border:1px solid var(--border-1);border-radius:12px;padding:18px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .ail-rules .rule{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:flex-start;font-size:12px;color:var(--fg-2);line-height:1.5}
+  .ail-rules .rule .num{font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--k-spruce-70);background:var(--k-ai-spruce-12);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .ail-rules .rule strong{color:var(--fg-1);font-weight:600}
+
+  /* PANEL-RENDER · drifting dot-grid (sketching / generating / drafting) */
+  .ail-panels{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .panel-load{position:relative;width:100%;aspect-ratio:1.45/1;border-radius:12px;background:var(--bg-3);border:1px solid var(--border-1);overflow:hidden}
+  .panel-load .label{position:absolute;top:14px;left:16px;font-family:var(--font-mono);font-size:11px;color:var(--fg-2);font-weight:500;letter-spacing:.02em;z-index:2}
+  .panel-load .label::after{content:"";display:inline-block;width:1px;height:1em;background:var(--fg-2);margin-left:2px;vertical-align:-2px;animation:panel-caret 1.1s steps(2) infinite}
+  @keyframes panel-caret{50%{opacity:0}}
+  .panel-load .pmeta{position:absolute;bottom:12px;left:16px;right:16px;font-family:var(--font-mono);font-size:10px;color:var(--fg-muted);letter-spacing:.04em;z-index:2;display:flex;justify-content:space-between}
+
+  .panel-load .grid{
+    position:absolute;inset:-20%;
+    background-image:radial-gradient(circle, var(--fg-muted) 1.1px, transparent 1.6px);
+    background-size:14px 14px;opacity:.55;
+    -webkit-mask:
+      radial-gradient(circle at var(--cx1,70%) var(--cy1,28%), #000 0, transparent 30%),
+      radial-gradient(circle at var(--cx2,30%) var(--cy2,68%), #000 0, transparent 34%),
+      radial-gradient(circle at var(--cx3,78%) var(--cy3,78%), #000 0, transparent 22%);
+    mask:
+      radial-gradient(circle at var(--cx1,70%) var(--cy1,28%), #000 0, transparent 30%),
+      radial-gradient(circle at var(--cx2,30%) var(--cy2,68%), #000 0, transparent 34%),
+      radial-gradient(circle at var(--cx3,78%) var(--cy3,78%), #000 0, transparent 22%);
+    animation:panel-drift 6s linear infinite, panel-morph-a 9s ease-in-out infinite, panel-morph-b 11s ease-in-out infinite -2s, panel-morph-c 13s ease-in-out infinite -5s;
+  }
+  @keyframes panel-drift{0%{background-position:0 0}100%{background-position:14px 14px}}
+  @property --cx1{syntax:"<percentage>";inherits:false;initial-value:70%}
+  @property --cy1{syntax:"<percentage>";inherits:false;initial-value:28%}
+  @property --cx2{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @property --cy2{syntax:"<percentage>";inherits:false;initial-value:68%}
+  @property --cx3{syntax:"<percentage>";inherits:false;initial-value:78%}
+  @property --cy3{syntax:"<percentage>";inherits:false;initial-value:78%}
+  @keyframes panel-morph-a{0%{--cx1:70%;--cy1:28%}25%{--cx1:42%;--cy1:18%}50%{--cx1:24%;--cy1:32%}75%{--cx1:48%;--cy1:46%}100%{--cx1:70%;--cy1:28%}}
+  @keyframes panel-morph-b{0%{--cx2:30%;--cy2:68%}33%{--cx2:62%;--cy2:54%}66%{--cx2:74%;--cy2:74%}100%{--cx2:30%;--cy2:68%}}
+  @keyframes panel-morph-c{0%{--cx3:78%;--cy3:78%}40%{--cx3:18%;--cy3:82%}70%{--cx3:36%;--cy3:60%}100%{--cx3:78%;--cy3:78%}}
+
+  .panel-load .grid.tint{
+    opacity:.85;
+    background-image:radial-gradient(circle, var(--k-warm-red-50) 1.3px, transparent 1.7px);
+    -webkit-mask:radial-gradient(circle at var(--tx,30%) var(--ty,60%), #000 0, transparent 24%);
+    mask:radial-gradient(circle at var(--tx,30%) var(--ty,60%), #000 0, transparent 24%);
+    mix-blend-mode:multiply;
+    animation:panel-drift 6s linear infinite, panel-tint-morph 10s ease-in-out infinite, panel-tint-fade 10s ease-in-out infinite;
+  }
+  @property --tx{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @property --ty{syntax:"<percentage>";inherits:false;initial-value:60%}
+  @keyframes panel-tint-morph{0%{--tx:28%;--ty:62%}30%{--tx:52%;--ty:44%}55%{--tx:68%;--ty:38%}80%{--tx:46%;--ty:70%}100%{--tx:28%;--ty:62%}}
+  @keyframes panel-tint-fade{0%,100%{opacity:.05}20%,80%{opacity:.55}50%{opacity:.75}}
+
+  .panel-load .grid.spruce{
+    background-image:radial-gradient(circle, var(--k-spruce-60) 1.3px, transparent 1.7px);
+    -webkit-mask:radial-gradient(circle at var(--sx,72%) var(--sy,30%), #000 0, transparent 20%);
+    mask:radial-gradient(circle at var(--sx,72%) var(--sy,30%), #000 0, transparent 20%);
+    mix-blend-mode:multiply;
+    animation:panel-drift 6s linear infinite -3s, panel-spruce-morph 12s ease-in-out infinite, panel-spruce-fade 12s ease-in-out infinite -4s;
+  }
+  @property --sx{syntax:"<percentage>";inherits:false;initial-value:72%}
+  @property --sy{syntax:"<percentage>";inherits:false;initial-value:30%}
+  @keyframes panel-spruce-morph{0%{--sx:72%;--sy:30%}25%{--sx:24%;--sy:24%}55%{--sx:18%;--sy:78%}80%{--sx:60%;--sy:74%}100%{--sx:72%;--sy:30%}}
+  @keyframes panel-spruce-fade{0%,100%{opacity:.10}25%,75%{opacity:.55}50%{opacity:.75}}
+
+  @media (prefers-reduced-motion: reduce){
+    .panel-load .grid,.panel-load .grid.tint,.panel-load .grid.spruce{animation-duration:18s,30s,30s,30s}
+  }
+
+  /* states caption row */
+  .ail-states-caption{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .ail-states-caption .cap{font-size:12px;color:var(--fg-2);line-height:1.5}
+  .ail-states-caption .cap b{color:var(--fg-1);font-weight:600;font-family:var(--font-display);font-size:14px;display:block;letter-spacing:-.005em;margin-bottom:2px}
+
+  /* ============================================================
+     SLIDE 10 · ICONOGRAPHY
+     ============================================================ */
+  .icons-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:14px}
+  .icon-tile{aspect-ratio:1;background:#fff;border:1px solid var(--border-1);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--fg-2);padding:10px}
+  .icon-tile svg{width:32px;height:32px;color:var(--fg-1)}
+  .icon-tile .iname{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted);letter-spacing:.04em;text-align:center;line-height:1.2}
+
+  /* ============================================================
+     SLIDE 11 · VOICE
+     ============================================================ */
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;height:100%}
+  .voice-col{display:flex;flex-direction:column;gap:18px}
+  .voice-col h3{margin-bottom:6px}
+  .voice-col h3 .tag{display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:4px;margin-right:10px;vertical-align:middle}
+  .voice-col h3 .tag.do{background:#ECFDF5;color:#0D5C2E}
+  .voice-col h3 .tag.dont{background:#FFEBEB;color:#A1100F}
+  .voice-quote{padding:16px 20px;background:var(--bg-2);border-left:3px solid var(--k-spruce-60);font-size:18px;line-height:1.55;color:var(--fg-1);font-family:var(--font-display);font-weight:400;letter-spacing:-.005em}
+  .voice-quote.bad{border-left-color:#D62E2E;background:#FEF5F4;color:#5C5C5C;text-decoration:line-through;text-decoration-color:rgba(214,46,46,.3)}
+  .voice-quote .src{display:block;font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:6px;text-decoration:none}
+  .voice-quote.bad .src{color:#A1100F;text-decoration:none}
+
+  /* ============================================================
+     SLIDE 12 · AGENTIC PRIMITIVES
+     ============================================================ */
+  .agentic-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+  .ag-row{display:flex;flex-direction:column;gap:12px;padding:24px;border:1px solid var(--border-1);border-radius:12px;background:#fff}
+  .ag-row .head{display:flex;align-items:center;gap:12px}
+  .ag-row .head .name{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.005em}
+  .ag-row .head .glyph{width:30px;height:30px;border-radius:8px;background:var(--k-ai-spruce-12);color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center}
+  .ag-row .head .glyph svg{width:16px;height:16px}
+  .ag-row .demo-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .ag-row .actions{font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);line-height:1.7}
+  .ag-row .actions b{color:var(--fg-1);font-weight:500;font-family:var(--font-sans);font-size:14px}
+  .ag-row .actions span{display:inline-block;background:var(--bg-3);padding:2px 8px;border-radius:4px;margin-right:5px;color:var(--fg-2)}
+
+  /* mini badges */
+  .badge{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer}
+  .badge .v{position:relative}
+  .badge .v::after{content:"";position:absolute;left:0;right:0;bottom:-2px;border-bottom:1px dotted currentColor;opacity:.55}
+  .badge .ddd{font-size:14px;letter-spacing:1px;opacity:.6}
+  .conf{background:#ECFDF5;color:#0D5C2E;border:1px solid #A7F3D0}
+  .conf.med{background:#FEF7E6;color:#7A4800;border-color:#FED7AA}
+  .fresh{background:#ECF5FB;color:#0E4A7A;border:1px solid #BCD8EE}
+  .fresh.stale{background:#FEF7E6;color:#7A4800;border-color:#FED7AA}
+  .delta{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:13px;font-weight:600}
+  .delta.up{color:#0D5C2E}.delta.dn{color:#A1100F}
+  .stat{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:99px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .stat.hi{background:#FFEBEB;color:#A1100F}
+  .stat.med{background:#FEF7E6;color:#7A4800}
+  .source{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--k-spruce-70);font-weight:500;border-bottom:1px dotted var(--k-spruce-60)}
+
+  /* ============================================================
+     SLIDE 13 · COMPOSITES — POSTURE
+     ============================================================ */
+  .posture-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:start}
+  .posture-left{display:grid;grid-template-rows:auto auto;gap:20px}
+  .kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .kpi-tile{background:#fff;border:1px solid var(--border-1);border-radius:10px;padding:22px;display:flex;flex-direction:column;gap:8px;min-height:160px}
+  .kpi-tile .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .kpi-tile .num{font-family:var(--font-display);font-size:48px;font-weight:500;line-height:1;letter-spacing:-.02em;color:var(--fg-1);font-variant-numeric:tabular-nums}
+  .kpi-tile .meta{font-size:13px;color:var(--fg-2);line-height:1.4;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto}
+
+  /* Trust-score hero — gauge centred, number stacked below */
+  .gauge{background:#fff;border-radius:10px;border:1px solid var(--border-1);padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center}
+  .gauge .gauge-viz{position:relative;width:340px;height:200px;display:flex;align-items:center;justify-content:center}
+  .gauge .gauge-viz svg{width:100%;height:100%;display:block}
+  .gauge .gauge-readout{position:absolute;left:0;right:0;bottom:18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .gauge .num{font-family:var(--font-display);font-size:72px;font-weight:500;letter-spacing:-.025em;line-height:.9;color:var(--fg-1);font-variant-numeric:tabular-nums;display:inline-flex;align-items:baseline}
+  .gauge .pct{font-family:var(--font-display);font-size:32px;color:var(--fg-muted);font-weight:400;margin-left:4px;line-height:1}
+  .gauge .gauge-meta{display:flex;flex-direction:column;gap:14px;align-self:center}
+  .gauge .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .gauge .gauge-title{font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.01em;line-height:1.15;color:var(--fg-1);margin:0}
+  .gauge .gauge-sub{font-size:14px;color:var(--fg-2);line-height:1.5;max-width:280px}
+  .gauge .gauge-deltas{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .gauge .gauge-deltas .delta{height:24px;padding:0 9px;border-radius:5px;background:var(--bg-2);font-family:var(--font-mono);font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .gauge .gauge-deltas .delta svg{width:11px;height:11px}
+
+  .finding-card{background:#fff;border:1px solid var(--border-1);border-left:4px solid;border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:8px}
+  .finding-card.crit{border-left-color:#D62E2E;background:#FFFBFB}
+  .finding-card.warn{border-left-color:#B45309;background:#FFFCF6}
+  .finding-card .title{font-family:var(--font-display);font-size:18px;font-weight:500}
+  .finding-card .meta{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted)}
+  .finding-card .body{font-size:14px;color:var(--fg-2);line-height:1.5}
+  .finding-card .ctas{display:flex;gap:8px;margin-top:auto}
+  .finding-card .ctas .btn{height:30px;padding:0 11px;border:1px solid var(--border-1);border-radius:5px;background:#fff;font-size:12px;font-weight:500;font-family:inherit;color:var(--fg-2);cursor:pointer}
+  .finding-card .ctas .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+
+  /* ============================================================
+     SLIDE 14 · COMPOSITES — ACTION + GRAPH
+     ============================================================ */
+  .recco{background:#fff padding-box, linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;border:1px solid transparent;border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px}
+  .recco .head{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--k-spruce-70);font-weight:700}
+  .recco h4{font-family:var(--font-display);font-size:24px;font-weight:500;letter-spacing:-.005em;margin:0;line-height:1.2}
+  .recco .body{font-size:15px;color:var(--fg-2);line-height:1.55}
+  .recco .body b{color:var(--fg-1)}
+  .recco .rationale{font-size:13px;color:var(--fg-muted);background:var(--bg-2);padding:12px 14px;border-radius:6px;line-height:1.5;font-style:italic}
+  .recco .impact-row{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:12px;color:var(--fg-2)}
+  .recco .impact-row b{font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--fg-1);font-style:normal}
+  .recco .ctas{display:flex;gap:8px;margin-top:8px;border-top:1px solid var(--bg-3);padding-top:14px}
+  .recco .ctas .btn{height:34px;padding:0 14px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border-1);background:#fff;color:var(--fg-2)}
+  .recco .ctas .btn.prim{background:var(--k-spruce-60);color:#fff;border-color:var(--k-spruce-60)}
+  .recco .ctas .btn.danger{color:var(--k-warm-red-60);border-color:var(--k-warm-red-50)}
+
+  .graph{background:var(--bg-2);border:1px solid var(--border-1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px;height:100%}
+  .graph svg{width:100%;flex:1;border-radius:8px;background:#fff;border:1px solid var(--border-1)}
+  .rf-canvas{background:#FAFBFC !important}
+  .rf-edge-impacted{animation:rf-dash 1.4s linear infinite}
+  @keyframes rf-dash{to{stroke-dashoffset:-20}}
+  @media (prefers-reduced-motion: reduce){.rf-edge-impacted{animation:none}}
+  .graph .legend{display:flex;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--fg-2)}
+  .graph .legend .sw{display:inline-flex;align-items:center;gap:6px}
+  .graph .legend .sw .d{width:10px;height:10px;border-radius:50%}
+
+  /* ============================================================
+     SLIDE 15 · TEMPLATES
+     ============================================================ */
+  .tpl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+  .tpl-card{background:#fff;border:1px solid var(--border-1);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;min-height:480px}
+  .tpl-card .num{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .tpl-card .name{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:-.008em;line-height:1.1}
+  .tpl-card .desc{font-size:13px;color:var(--fg-2);line-height:1.5}
+  .tpl-card .wire{flex:1;background:var(--bg-2);border:1px solid var(--border-1);border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:220px}
+  .tpl-card .wire .top{height:14px;background:var(--k-spruce-60);border-radius:2px;opacity:.85}
+  .tpl-card .wire .row{height:9px;background:var(--k-cool-gray-30);border-radius:2px;opacity:.7}
+  .tpl-card .wire .row.s{width:60%}
+  .tpl-card .wire .row.m{width:80%}
+  .tpl-card .wire .row.tall{height:60px;background:#fff;border:1px solid var(--border-1);opacity:1}
+  .tpl-card .wire.investigation{background:#fff;justify-content:center;align-items:center;position:relative;overflow:hidden}
+  .tpl-card .wire.investigation svg{width:100%;height:100%}
+  .tpl-card .wire.review{display:grid;grid-template-rows:auto 1fr;gap:5px}
+  .tpl-card .wire.review .grid-rows{display:flex;flex-direction:column;gap:4px}
+  .tpl-card .wire.review .grid-rows>div{height:20px;background:#fff;border:1px solid var(--border-1);border-radius:3px}
+  .tpl-card .wire.conv{padding:14px}
+  .tpl-card .wire.conv .msg{padding:8px 10px;background:#fff;border:1px solid var(--border-1);border-radius:6px;height:auto;display:flex;flex-direction:column;gap:4px}
+  .tpl-card .wire.conv .msg .l{height:6px;background:var(--k-cool-gray-20);border-radius:2px}
+  .tpl-card .wire.conv .msg .l.s{width:50%}
+  .tpl-card .uses{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);line-height:1.6;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ============================================================
+     SLIDE 16 · AGENTIC INTERACTION STATES
+     ============================================================ */
+  .ais-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ais-cell{background:#fff padding-box, linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;border:1px solid transparent;border-radius:12px;padding:20px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;column-gap:14px;row-gap:10px;min-height:0}
+  .ais-cell.amber{background:#FFFCF6 padding-box, #F8DC8E border-box}
+  .ais-cell .glyph{grid-row:1;grid-column:1;width:32px;height:32px;border-radius:8px;background:var(--k-ai-spruce-12);color:var(--k-spruce-70);display:flex;align-items:center;justify-content:center}
+  .ais-cell.amber .glyph{background:#FEF7E6;color:#B45309}
+  .ais-cell .glyph svg{width:16px;height:16px}
+  .ais-cell .head{grid-row:1;grid-column:2;display:flex;flex-direction:column;gap:3px;justify-content:center}
+  .ais-cell .head .h{font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-.005em;line-height:1.1}
+  .ais-cell .head .ev{font-family:var(--font-mono);font-size:10px;color:var(--k-spruce-70);font-weight:500;letter-spacing:.04em}
+  .ais-cell.amber .head .ev{color:#7A4800}
+  .ais-cell .demo{grid-row:2;grid-column:1 / span 2;background:var(--bg-2);border:1px solid var(--border-1);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--fg-2);min-height:90px}
+  .ais-cell .foot{grid-row:3;grid-column:1 / span 2;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .ais-cell .foot .desc{font-size:12px;color:var(--fg-2);line-height:1.5;flex:1}
+  .ais-cell .pin{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--bg-3);color:var(--fg-2);white-space:nowrap;flex-shrink:0}
+  .ais-cell .pin.block{background:#FFEBEB;color:#A1100F}
+  .ais-cell .pin.amber{background:#FEF7E6;color:#7A4800}
+
+  /* mini-demo helpers */
+  .ais-cell .demo .row{display:flex;align-items:center;gap:8px}
+  .ais-cell .demo .dot{width:6px;height:6px;border-radius:50%;background:#29707A;flex-shrink:0;animation:asb-pulse 1.4s ease-in-out infinite}
+  .ais-cell .demo .lbl{font-family:var(--font-mono);font-size:11px;color:var(--fg-1);font-weight:500}
+  .ais-cell .demo .ctl{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted);background:#fff;border:1px solid var(--border-1);padding:2px 6px;border-radius:4px}
+  .ais-cell .demo .stream{font-family:var(--font-mono);font-size:11px;color:var(--fg-2);font-style:italic}
+  .ais-cell .demo .stream::after{content:"▌";color:var(--k-spruce-60);animation:asb-blink 1s steps(2) infinite;margin-left:2px}
+  @keyframes asb-blink{50%{opacity:0}}
+  .ais-cell .demo .tool{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--border-1);border-radius:6px;padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--fg-1)}
+  .ais-cell .demo .tool .arg{color:var(--k-spruce-70);border-bottom:1px dashed var(--k-spruce-60);padding-bottom:1px}
+  .ais-cell .demo .tool .stat{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 6px;border-radius:4px;background:#FEF7E6;color:#7A4800}
+  .ais-cell .demo .step{display:flex;align-items:center;gap:8px;font-size:11px;font-family:var(--font-mono);color:var(--fg-2)}
+  .ais-cell .demo .step .ix{width:16px;height:16px;border-radius:50%;background:#fff;border:1.5px solid var(--border-1);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--fg-muted);font-weight:700;flex-shrink:0}
+  .ais-cell .demo .step.done .ix{background:#10B981;border-color:#10B981;color:#fff}
+  .ais-cell .demo .step.active .ix{background:#fff;border-color:#29707A;color:#29707A}
+  .ais-cell .demo .step.active .ix::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;border:2px solid #29707A;opacity:.4;animation:asb-pulse 1.4s ease-in-out infinite}
+  .ais-cell .demo .step.active{color:var(--fg-1);font-weight:600}
+  .ais-cell .demo .step .ix{position:relative}
+  .ais-cell .demo .ask{background:#FEF7E6;border:1px solid #F8DC8E;border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+  .ais-cell .demo .ask .q{font-size:11px;color:#7A4800;font-weight:500}
+  .ais-cell .demo .ask .opts{display:flex;gap:5px;flex-wrap:wrap}
+  .ais-cell .demo .ask .opts .opt{font-family:var(--font-mono);font-size:9px;padding:3px 7px;border-radius:4px;background:#fff;border:1px solid #F8DC8E;color:#7A4800;font-weight:500}
+  .ais-cell .demo .handoff{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--fg-2)}
+  .ais-cell .demo .handoff .who{background:#fff;border:1px solid var(--border-1);padding:4px 8px;border-radius:5px;display:flex;flex-direction:column;gap:1px}
+  .ais-cell .demo .handoff .who b{font-size:11px;color:var(--fg-1);font-weight:600}
+  .ais-cell .demo .handoff .who span{font-size:9px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em}
+  .ais-cell .demo .handoff .arrow{color:var(--k-spruce-60);font-weight:700}
+  .ais-cell .demo .handoff .reason{font-size:9px;text-transform:uppercase;letter-spacing:.06em;background:var(--k-ai-spruce-12);color:var(--k-spruce-70);padding:3px 7px;border-radius:4px;font-weight:700}
+  .ais-cell .demo .toast{background:var(--fg-1);color:#fff;border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:11px;font-family:var(--font-mono)}
+  .ais-cell .demo .toast .diff{display:flex;gap:4px;align-items:center}
+  .ais-cell .demo .toast .old{text-decoration:line-through;opacity:.55}
+  .ais-cell .demo .toast .new{color:#A7F3D0;font-weight:600}
+  .ais-cell .demo .toast .undo{margin-left:auto;color:#A7F3D0;border-bottom:1px dotted currentColor;font-weight:500;cursor:pointer}
+
+  /* ============================================================
+     SLIDE 17 · STATES MATRIX
+     ============================================================ */
+  .states-table{width:100%;border-collapse:collapse;font-size:16px;font-family:inherit;table-layout:fixed}
+  .states-table thead th{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-muted);font-weight:700;text-align:left;padding:14px 16px;border-bottom:2px solid var(--border-1)}
+  .states-table tbody td{padding:16px;border-bottom:1px solid var(--bg-3);vertical-align:top;line-height:1.5}
+  .states-table tbody tr:nth-child(even) td{background:rgba(248,250,252,.45)}
+  .states-table td b{font-weight:600;color:var(--fg-1);font-family:var(--font-display);font-size:18px;letter-spacing:-.005em}
+  .states-table td.ev{font-family:var(--font-mono);font-size:13px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em}
+  .states-table td .pat{display:inline-block;padding:3px 8px;border-radius:4px;background:var(--bg-3);font-family:var(--font-mono);font-size:12px;color:var(--fg-1);margin-right:6px}
+
+  /* ============================================================
+     SLIDE 18 · OUTRO
+     ============================================================ */
+  .outro{padding:96px 120px;background:#fff;display:flex;flex-direction:column;justify-content:space-between}
+  .outro .stamp{display:inline-flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-muted);font-weight:700}
+  .outro .stamp .gl{width:24px;height:24px;display:inline-block;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.2 9.8 22 12 14.2 14.2 12 22 9.8 14.2 2 12 9.8 9.8 Z M19 3 L19.8 5.2 22 6 19.8 6.8 19 9 18.2 6.8 16 6 18.2 5.2 Z'/></svg>") center/contain no-repeat}
+  .outro h1.big{font-family:var(--font-display);font-size:108px;line-height:.95;letter-spacing:-.02em;font-weight:500;margin:0;max-width:1500px;text-wrap:balance}
+  .outro h1.big em{font-style:normal;background:linear-gradient(135deg, var(--k-spruce-60), var(--k-warm-red-50));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .outro .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;font-family:var(--font-mono);font-size:14px;color:var(--fg-2);border-top:1px solid var(--border-1);padding-top:32px}
+  .outro .summary b{display:block;font-family:var(--font-display);font-size:48px;font-weight:500;letter-spacing:-.02em;color:var(--fg-1);margin-bottom:6px;line-height:1}
+  .outro .summary span{display:block;font-size:13px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .outro .meta-row{display:flex;justify-content:space-between;align-items:end;font-family:var(--font-mono);font-size:14px;color:var(--fg-muted);letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ============ 1 · COVER ============ -->
+  <section class="cover" data-screen-label="01 Cover">
+    <div class="stamp"><span class="gl"></span>Kyndryl · CMDB Data Quality · Design system v1.0</div>
+    <div>
+      <h1 class="big">A system for <em>evidence-first</em> agentic operations.</h1>
+      <p class="deck-lede">Aligned to Shidoka. Tuned for SREs. Every number has a reason. Every recommendation has provenance. Every action shows its blast radius before it runs. The agent is a colleague — not a magic button — and the design system makes that legible at every layer.</p>
+    </div>
+    <div class="meta-row">
+      <span>5 layers · 30+ primitives · 6 live states · 5 templates</span>
+      <span>k-cmdb-ds · April 2026</span>
+      <span>Vol. 01 — overview</span>
+    </div>
+  </section>
+
+  <!-- ============ 2 · ARCHITECTURE ============ -->
+  <section data-screen-label="02 Architecture">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Architecture</span>
+      <span class="ix">02 / 19</span>
+    </div>
+    <div>
+      <h1>Five layers, one contract.</h1>
+      <p class="lede">Foundations are tokens. Primitives wrap shadcn with opinionated props. Composites are the centre of gravity — built once, reused everywhere. Templates are the page shells. The states matrix is non-negotiable: every composite ships eight states or it doesn't ship.</p>
+
+      <div class="arch">
+        <div class="layer l1">
+          <div class="num">Layer 01</div>
+          <div class="name">Foundations</div>
+          <div class="desc">Color, type, space, radius, elevation, motion, iconography. Shidoka-native tokens with short aliases for legacy markup.</div>
+          <ul><li>colors_and_type.css</li><li>--k-* tokens</li><li>RAG taxonomy</li></ul>
+        </div>
+        <div class="layer">
+          <div class="num">Layer 02</div>
+          <div class="name">Primitives</div>
+          <div class="desc">~30 shadcn elements + 6 semantic primitives with override / teach / dispute affordances. Every badge is a control point.</div>
+          <ul><li>SeverityPill</li><li>ConfidenceBadge</li><li>FreshnessBadge</li><li>DeltaIndicator</li></ul>
+        </div>
+        <div class="layer">
+          <div class="num">Layer 03</div>
+          <div class="name">Composites</div>
+          <div class="desc">Posture · Triage · Action · Graph · Chat · Workflow. The reusable surfaces that operators actually look at all day.</div>
+          <ul><li>KpiGrid · TrustGauge</li><li>FindingCard · Inspector</li><li>RecommendationCard</li><li>ChatMessage · Snapshot</li></ul>
+        </div>
+        <div class="layer">
+          <div class="num">Layer 04</div>
+          <div class="name">Templates</div>
+          <div class="desc">Five page shells plus the AppShell. New pages are composed, not designed. Permission-aware fallback chain baked in.</div>
+          <ul><li>Dashboard</li><li>Triage</li><li>Investigation</li><li>Review queue · Conversation</li></ul>
+        </div>
+        <div class="layer l5">
+          <div class="num">Layer 05</div>
+          <div class="name">States matrix</div>
+          <div class="desc">Loading, empty, filtered-empty, error, stale, unauthorized, executing, success-after-action. Eight states, no exceptions.</div>
+          <ul><li>states-matrix.html</li><li>RBAC fallback</li><li>Skeleton-shaped loaders</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>foundations · primitives · composites · templates · states</span></div>
+  </section>
+
+  <!-- ============ 3 · BRAND DNA ============ -->
+  <section data-screen-label="03 Brand DNA">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Brand · 1 of 4</span>
+      <span class="ix">03 / 19</span>
+    </div>
+    <div>
+      <h1>Two hues. Different jobs.</h1>
+      <p class="lede">Warm Red is the brand moment — logo, destructive attention, accent. Spruce is the interactive workhorse — primary CTAs, links, focus rings, the primary chart slot. They never compete. The neutral working surface is Cool Gray; Dark Stone carries text; Warm Gray is reserved for marketing.</p>
+
+      <div class="brand-grid">
+        <div class="brand-card warm">
+          <div>
+            <div class="eyebrow">Brand · accent</div>
+            <div class="swatch" style="margin-top:14px">Warm Red</div>
+            <div class="role">Brand moments &amp; destructive attention.</div>
+          </div>
+          <div class="uses"><b>Where it lives</b>Logo · primary brand surface · destructive button · severity-critical accents · highlighted-row outline · second chart slot. Never the primary CTA.</div>
+          <div class="vals">
+            <span><b>Hex</b>#FF462D</span>
+            <span><b>Token</b>--k-warm-red-50</span>
+            <span><b>Alias</b>--kyn-accent</span>
+            <span><b>Ramp</b>10 → 110</span>
+          </div>
+        </div>
+
+        <div class="brand-card spruce">
+          <div>
+            <div class="eyebrow">Interactive · workhorse</div>
+            <div class="swatch" style="margin-top:14px">Spruce</div>
+            <div class="role">The colour the user clicks all day.</div>
+          </div>
+          <div class="uses"><b>Where it lives</b>Primary buttons · links · focus rings · selected state · active timeline marker · primary chart slot · AI gradient anchor. The default interactive answer.</div>
+          <div class="vals">
+            <span><b>Hex</b>#29707A</span>
+            <span><b>Token</b>--k-spruce-60</span>
+            <span><b>Alias</b>--kyn-primary · --primary</span>
+            <span><b>Ramp</b>10 → 100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>brand · accent (warm-red-50) · interactive (spruce-60)</span></div>
+  </section>
+
+  <!-- ============ 4 · COLOR RAMPS ============ -->
+  <section data-screen-label="04 Color ramps">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Color · 2 of 4</span>
+      <span class="ix">04 / 19</span>
+    </div>
+    <div>
+      <h1>Five ramps, one logic.</h1>
+      <p class="lede">Stops follow Shidoka's pattern: 10 (background tint) · 20 (border) · 50 (default for brand colours) · 60 (default interactive for spruce) · 70/80 (hover/pressed) · 90/100 (text on light). Every ramp ends at black for accessible text contrast.</p>
+
+      <div class="ramps">
+        <div class="ramp">
+          <div class="ramp-label"><b>Warm Red</b>brand · accent</div>
+          <div class="ramp-stops">
+            <div class="stop lt" style="background:#FFE8E0"><b>10</b><span>FFE8E0</span></div>
+            <div class="stop lt" style="background:#FFB8A3"><b>20</b><span>FFB8A3</span></div>
+            <div class="stop lt" style="background:#FF8766"><b>30</b><span>FF8766</span></div>
+            <div class="stop" style="background:#FF6647"><b>40</b><span>FF6647</span></div>
+            <div class="stop" style="background:#FF462D"><b>50 ·</b><span>FF462D</span></div>
+            <div class="stop" style="background:#E63A22"><b>60</b><span>E63A22</span></div>
+            <div class="stop" style="background:#B82915"><b>70</b><span>B82915</span></div>
+            <div class="stop" style="background:#8A1E0D"><b>80</b><span>8A1E0D</span></div>
+            <div class="stop" style="background:#5C1408"><b>90</b><span>5C1408</span></div>
+            <div class="stop" style="background:#2E0A04"><b>100</b><span>2E0A04</span></div>
+            <div class="stop" style="background:#1A0602"><b>110</b><span>1A0602</span></div>
+          </div>
+        </div>
+
+        <div class="ramp">
+          <div class="ramp-label"><b>Spruce</b>interactive</div>
+          <div class="ramp-stops">
+            <div class="stop lt" style="background:#E8F2F4"><b>10</b><span>E8F2F4</span></div>
+            <div class="stop lt" style="background:#BEDDE2"><b>20</b><span>BEDDE2</span></div>
+            <div class="stop lt" style="background:#91C4CC"><b>30</b><span>91C4CC</span></div>
+            <div class="stop" style="background:#5BA2AE"><b>40</b><span>5BA2AE</span></div>
+            <div class="stop" style="background:#3D8590"><b>50</b><span>3D8590</span></div>
+            <div class="stop" style="background:#29707A"><b>60 ·</b><span>29707A</span></div>
+            <div class="stop" style="background:#1F5A63"><b>70</b><span>1F5A63</span></div>
+            <div class="stop" style="background:#17444B"><b>80</b><span>17444B</span></div>
+            <div class="stop" style="background:#0F2E33"><b>90</b><span>0F2E33</span></div>
+            <div class="stop" style="background:#07191C"><b>100</b><span>07191C</span></div>
+            <div class="stop" style="background:#000;opacity:0;pointer-events:none"></div>
+          </div>
+        </div>
+
+        <div class="ramp">
+          <div class="ramp-label"><b>Dark Stone</b>text · UI default</div>
+          <div class="ramp-stops">
+            <div class="stop lt" style="background:#F5F5F5"><b>10</b><span>F5F5F5</span></div>
+            <div class="stop lt" style="background:#E6E6E6"><b>20</b><span>E6E6E6</span></div>
+            <div class="stop lt" style="background:#CFCFCF"><b>30</b><span>CFCFCF</span></div>
+            <div class="stop lt" style="background:#A8A8A8"><b>40</b><span>A8A8A8</span></div>
+            <div class="stop" style="background:#808080"><b>50</b><span>808080</span></div>
+            <div class="stop" style="background:#5C5C5C"><b>60</b><span>5C5C5C</span></div>
+            <div class="stop" style="background:#3D3D3D"><b>70</b><span>3D3D3D</span></div>
+            <div class="stop" style="background:#242424"><b>80</b><span>242424</span></div>
+            <div class="stop" style="background:#141414"><b>90 ·</b><span>141414</span></div>
+            <div class="stop" style="background:#000"><b>100</b><span>000000</span></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+          </div>
+        </div>
+
+        <div class="ramp">
+          <div class="ramp-label"><b>Cool Gray</b>dashboard chrome</div>
+          <div class="ramp-stops">
+            <div class="stop lt" style="background:#F2F4F5"><b>10</b><span>F2F4F5</span></div>
+            <div class="stop lt" style="background:#E1E5E8"><b>20</b><span>E1E5E8</span></div>
+            <div class="stop lt" style="background:#C1C8CD"><b>30</b><span>C1C8CD</span></div>
+            <div class="stop lt" style="background:#98A3AB"><b>40</b><span>98A3AB</span></div>
+            <div class="stop" style="background:#6B7780"><b>50</b><span>6B7780</span></div>
+            <div class="stop" style="background:#4F5A63"><b>60</b><span>4F5A63</span></div>
+            <div class="stop" style="background:#3A434B"><b>70</b><span>3A434B</span></div>
+            <div class="stop" style="background:#252B31"><b>80</b><span>252B31</span></div>
+            <div class="stop" style="background:#161A1E"><b>90</b><span>161A1E</span></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+          </div>
+        </div>
+
+        <div class="ramp">
+          <div class="ramp-label"><b>Warm Gray</b>marketing only</div>
+          <div class="ramp-stops">
+            <div class="stop lt" style="background:#F5F3F0"><b>10</b><span>F5F3F0</span></div>
+            <div class="stop lt" style="background:#E7E3DD"><b>20</b><span>E7E3DD</span></div>
+            <div class="stop lt" style="background:#CFC8BD"><b>30</b><span>CFC8BD</span></div>
+            <div class="stop" style="background:#857E73"><b>50</b><span>857E73</span></div>
+            <div class="stop" style="background:#40382D"><b>70</b><span>40382D</span></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+            <div class="stop" style="background:#000;opacity:0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>color · 5 ramps · stops 10/20/50/60/70/90 · Shidoka-native</span></div>
+  </section>
+
+  <!-- ============ 5 · STATUS / RAG ============ -->
+  <section data-screen-label="05 Status & RAG">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Color · 3 of 4</span>
+      <span class="ix">05 / 19</span>
+    </div>
+    <div>
+      <h1>Status taxonomy is canonical.</h1>
+      <p class="lede">Five status hues with four stops each: 10 (background) · 20 (border) · 100 (solid) · 110 (text on light). Severity is <strong>never</strong> communicated by colour alone — always pair with an icon or a label. Critical and Error are both rose-family; Critical is darker and reserved for blast-radius warnings.</p>
+
+      <div class="rag">
+        <div class="cell crit">
+          <div class="pill"><span class="dot"></span>Critical</div>
+          <div class="name">Service-impacting</div>
+          <div style="font-size:13px;color:#5C1408;line-height:1.5">Blast-radius alarms. Customer impact certain or imminent. Pairs with the <code class="t">octagon</code> glyph.</div>
+          <div class="stops">
+            <div style="background:#FFE5E5" class="lt">10</div>
+            <div style="background:#F5BAB8" class="lt">20</div>
+            <div style="background:#7A0E0E">100</div>
+            <div style="background:#3D0606">110</div>
+          </div>
+        </div>
+        <div class="cell err">
+          <div class="pill"><span class="dot"></span>Error</div>
+          <div class="name">Failure / blocked</div>
+          <div style="font-size:13px;color:#7A140E;line-height:1.5">Step failed, action rejected, validation error. Pairs with the <code class="t">error-filled</code> glyph and a retry path.</div>
+          <div class="stops">
+            <div style="background:#FFEBEB" class="lt">10</div>
+            <div style="background:#F8C7C2" class="lt">20</div>
+            <div style="background:#D62E2E">100</div>
+            <div style="background:#A1100F">110</div>
+          </div>
+        </div>
+        <div class="cell warn">
+          <div class="pill"><span class="dot"></span>Warning</div>
+          <div class="name">Drift / stale</div>
+          <div style="font-size:13px;color:#5C3700;line-height:1.5">Approaching threshold, freshness expiring, awaiting human input. Pairs with <code class="t">warning-alt</code>.</div>
+          <div class="stops">
+            <div style="background:#FEF7E6" class="lt">10</div>
+            <div style="background:#F8DC8E" class="lt">20</div>
+            <div style="background:#B45309">100</div>
+            <div style="background:#7A4800">110</div>
+          </div>
+        </div>
+        <div class="cell ok">
+          <div class="pill"><span class="dot"></span>Success</div>
+          <div class="name">Verified / healthy</div>
+          <div style="font-size:13px;color:#0D5C2E;line-height:1.5">Verified state, completed action, healthy node. Pairs with the <code class="t">checkmark-filled</code> glyph.</div>
+          <div class="stops">
+            <div style="background:#ECFDF5" class="lt">10</div>
+            <div style="background:#A7F3D0" class="lt">20</div>
+            <div style="background:#10B981">100</div>
+            <div style="background:#0D5C2E">110</div>
+          </div>
+        </div>
+        <div class="cell info">
+          <div class="pill"><span class="dot"></span>Information</div>
+          <div class="name">Neutral context</div>
+          <div style="font-size:13px;color:#0E4A7A;line-height:1.5">Tip, note, link to docs. Used for ambient context that doesn't require action. Pairs with <code class="t">information</code>.</div>
+          <div class="stops">
+            <div style="background:#ECF5FB" class="lt">10</div>
+            <div style="background:#BCD8EE" class="lt">20</div>
+            <div style="background:#1769B5">100</div>
+            <div style="background:#0E4A7A">110</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>RAG · stops 10 / 20 / 100 / 110 · always paired with icon or label</span></div>
+  </section>
+
+  <!-- ============ 6 · AI TINTS + CHARTS ============ -->
+  <section data-screen-label="06 AI tints & charts">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Color · 4 of 4</span>
+      <span class="ix">06 / 19</span>
+    </div>
+    <div>
+      <h1>AI tints, chart palettes.</h1>
+      <p class="lede">Anything generated by the agent gets the AI surface treatment — Shidoka <code>Opacity.AI</code> tints in spruce or warm-red. The gradient border (spruce ↔ warm-red, 28% α) is reserved for live agentic surfaces. Charts pull from four locked palettes; pick by data shape, not aesthetic.</p>
+
+      <div class="body split-3070">
+        <div>
+          <h3 style="margin-bottom:18px">AI surface tints</h3>
+          <div class="ai-tints">
+            <div class="swatch-card" style="background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(41,112,122,.05));border:1px solid rgba(41,112,122,.28)">
+              <div class="label"><b>AI · Spruce</b><code>--k-ai-spruce-*</code></div>
+              <div class="row-tints">
+                <div style="background:rgba(41,112,122,.04)" class="lt">04</div>
+                <div style="background:rgba(41,112,122,.08)" class="lt">08</div>
+                <div style="background:rgba(41,112,122,.12)" class="lt">12</div>
+                <div style="background:rgba(41,112,122,.20)" class="lt">20</div>
+                <div style="background:rgba(41,112,122,.40)">40</div>
+              </div>
+              <div class="ex">Default agent surface — chat bubbles, recommendation cards, agentic affordance backgrounds.</div>
+            </div>
+            <div class="swatch-card" style="background:linear-gradient(135deg, rgba(255,70,45,.05), rgba(255,70,45,.05));border:1px solid rgba(255,70,45,.28)">
+              <div class="label"><b>AI · Warm Red</b><code>--k-ai-warm-red-*</code></div>
+              <div class="row-tints">
+                <div style="background:rgba(255,70,45,.04)" class="lt">04</div>
+                <div style="background:rgba(255,70,45,.08)" class="lt">08</div>
+                <div style="background:rgba(255,70,45,.12)" class="lt">12</div>
+                <div style="background:rgba(255,70,45,.20)" class="lt">20</div>
+                <div style="background:rgba(255,70,45,.40)">40</div>
+              </div>
+              <div class="ex">Brand-accent agent surface — highlighted tile, brand moment, AI brand pill.</div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;padding:24px;background:#fff padding-box, linear-gradient(135deg, rgba(41,112,122,.28), rgba(255,70,45,.28)) border-box;border:1px solid transparent;border-radius:12px">
+            <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--k-spruce-70);font-weight:700;margin-bottom:8px">Live agentic surface · gradient border</div>
+            <div style="font-size:16px;color:var(--fg-2);line-height:1.55">The signature spruce-60 ↔ warm-red-50 (28% α) gradient border. Reserved for live AI surfaces — ChatMessage, SnapshotCard, all six agentic interaction states. <strong>Never decorative.</strong></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom:18px">Chart palettes</h3>
+          <div class="chart-pal">
+            <div class="row">
+              <div class="label-cell"><b>Categorical</b>10 slots, order-locked</div>
+              <div style="background:#29707A">01</div>
+              <div style="background:#FF462D">02</div>
+              <div style="background:#1769B5">03</div>
+              <div style="background:#8A4FBF">04</div>
+              <div style="background:#E58E1A">05</div>
+              <div style="background:#6B7780">06</div>
+              <div style="background:#3D8590">07</div>
+            </div>
+            <div class="row">
+              <div class="label-cell"><b>Sequential01</b>single-hue, ordinal</div>
+              <div style="background:#E8F2F4" class="lt">10</div>
+              <div style="background:#BEDDE2" class="lt">20</div>
+              <div style="background:#91C4CC" class="lt">30</div>
+              <div style="background:#5BA2AE">40</div>
+              <div style="background:#3D8590">50</div>
+              <div style="background:#29707A">60</div>
+              <div style="background:#1F5A63">70</div>
+            </div>
+            <div class="row">
+              <div class="label-cell"><b>Divergent01</b>signed deltas</div>
+              <div style="background:#B82915">−3</div>
+              <div style="background:#FF6647">−2</div>
+              <div style="background:#FFB8A3" class="lt">−1</div>
+              <div style="background:#F2F4F5" class="lt">0</div>
+              <div style="background:#91C4CC" class="lt">+1</div>
+              <div style="background:#3D8590">+2</div>
+              <div style="background:#1F5A63">+3</div>
+            </div>
+            <div class="row">
+              <div class="label-cell"><b>RAG</b>operational status only</div>
+              <div style="background:#7A0E0E">CRIT</div>
+              <div style="background:#D62E2E">ERR</div>
+              <div style="background:#B45309">WARN</div>
+              <div style="background:#10B981">OK</div>
+              <div style="background:#1769B5">INFO</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;font-size:14px;color:var(--fg-muted);line-height:1.55">Pick by data shape: mutually-exclusive categories → categorical; ordinal magnitude → sequential01; signed delta around a midpoint → divergent01; operational status only → RAG.</div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>AI tints · chart palettes · gradient border 28% α</span></div>
+  </section>
+
+  <!-- ============ 7 · TYPE ============ -->
+  <section data-screen-label="07 Type">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Type</span>
+      <span class="ix">07 / 19</span>
+    </div>
+    <div>
+      <h1>Three families. One contract.</h1>
+      <p class="lede">TWK Everett is the corporate sans — display only, 20 px and above, anchors the page. Roboto is the body workhorse, 14–18 px, dense UI. Geist Mono carries code, IDs, and timestamps. Numbers are <code class="t">tabular-nums</code> everywhere — KPI dashboards never wobble.</p>
+
+      <div class="type-grid">
+        <div class="type-fam" style="border-color:#F5D8D0;background:linear-gradient(180deg, #fff, #FFF8F6)">
+          <div class="role">Display · 20 px and above</div>
+          <div class="name">TWK Everett</div>
+          <div class="specimen-display">Aa Gg 0123</div>
+          <div class="role-list"><b>Use for</b> page titles · section headings · card titles · KPI numbers · brand moments. Weights 300–900; UI uses 400 / 500.</div>
+          <div class="scale">
+            <div class="scale-row"><code>display</code><span style="font-family:var(--font-display);font-size:64px;font-weight:500;letter-spacing:-.015em;line-height:1">Display 64</span></div>
+            <div class="scale-row"><code>h1</code><span style="font-family:var(--font-display);font-size:40px;font-weight:500;letter-spacing:-.012em;line-height:1.1">Heading 40</span></div>
+            <div class="scale-row"><code>h2</code><span style="font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.008em;line-height:1.2">Heading 28</span></div>
+            <div class="scale-row"><code>h3</code><span style="font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-.005em;line-height:1.25">Heading 20</span></div>
+          </div>
+        </div>
+
+        <div class="type-fam">
+          <div class="role">Body · 14–18 px</div>
+          <div class="name">Roboto</div>
+          <div class="specimen-body">Aa Gg 0123</div>
+          <div class="role-list"><b>Use for</b> paragraph copy · table cells · form labels · button labels · captions. Weights 300 / 400 / 500 / 700. Roman never italic for UI.</div>
+          <div class="scale">
+            <div class="scale-row"><code>body-lg</code><span style="font-family:var(--font-sans);font-size:18px;line-height:1.55">Body large 18 / 28</span></div>
+            <div class="scale-row"><code>body</code><span style="font-family:var(--font-sans);font-size:15px;line-height:1.55">Body 15 / 23</span></div>
+            <div class="scale-row"><code>body-sm</code><span style="font-family:var(--font-sans);font-size:13px;line-height:1.5">Body small 13 / 20</span></div>
+            <div class="scale-row"><code>caption</code><span style="font-family:var(--font-sans);font-size:11px;line-height:1.4">Caption 11 / 15</span></div>
+          </div>
+        </div>
+
+        <div class="type-fam" style="border-color:#D7E6E9;background:linear-gradient(180deg, #fff, #FAFCFC)">
+          <div class="role">Mono · code · IDs</div>
+          <div class="name">Geist Mono</div>
+          <div class="specimen-mono">Aa Gg 0123</div>
+          <div class="role-list"><b>Use for</b> code · ticket IDs (<code>bINC#######</code>) · CI names · JSON · timestamps · eyebrows + kickers (uppercase, +letter-spacing).</div>
+          <div class="scale">
+            <div class="scale-row"><code>code-lg</code><span style="font-family:var(--font-mono);font-size:15px;line-height:1.5">cmdb.write(22)</span></div>
+            <div class="scale-row"><code>code</code><span style="font-family:var(--font-mono);font-size:13px;line-height:1.5">payments-svc · 02:14</span></div>
+            <div class="scale-row"><code>code-sm</code><span style="font-family:var(--font-mono);font-size:11px;line-height:1.5">bINC0000147</span></div>
+            <div class="scale-row"><code>kicker</code><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--k-spruce-70)">EYEBROW · KICKER</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>TWK Everett · Roboto · Geist Mono · tabular-nums everywhere</span></div>
+  </section>
+
+  <!-- ============ 8 · SPACING + RADII ============ -->
+  <section data-screen-label="08 Spacing & radii">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Foundations · spacing</span>
+      <span class="ix">08 / 19</span>
+    </div>
+    <div>
+      <h1>4-pt base. Restrained radii.</h1>
+      <p class="lede">Standard scale 4 → 64. Cards use <code class="t">p-4</code> or <code class="t">p-6</code>; KPI tiles <code class="t">px-6 py-4</code>; data tables <code class="t">py-2.5</code> for Jira-adjacent density. Radii: 4 / 8 / 16, plus pill. Inputs and chips use 4. Cards use 8. Drawers and dialogs step up to 16. Sharp corners are reserved for table cells.</p>
+
+      <div class="space-grid">
+        <div>
+          <h3 style="margin-bottom:14px">Spacing scale</h3>
+          <div class="space-scale">
+            <div class="space-row"><span class="num">4</span><span class="px">4 px</span><div class="vis" style="width:4px"></div><span class="alias">--space-1</span></div>
+            <div class="space-row"><span class="num">8</span><span class="px">8 px</span><div class="vis" style="width:8px"></div><span class="alias">--space-2</span></div>
+            <div class="space-row"><span class="num">12</span><span class="px">12 px</span><div class="vis" style="width:12px"></div><span class="alias">--space-3</span></div>
+            <div class="space-row"><span class="num">16</span><span class="px">16 px</span><div class="vis" style="width:16px"></div><span class="alias">--space-4 · --k-space-1-x</span></div>
+            <div class="space-row"><span class="num">20</span><span class="px">20 px</span><div class="vis" style="width:20px"></div><span class="alias">--space-5</span></div>
+            <div class="space-row"><span class="num">24</span><span class="px">24 px</span><div class="vis" style="width:24px"></div><span class="alias">--space-6</span></div>
+            <div class="space-row"><span class="num">32</span><span class="px">32 px</span><div class="vis" style="width:32px"></div><span class="alias">--space-8</span></div>
+            <div class="space-row"><span class="num">40</span><span class="px">40 px</span><div class="vis" style="width:40px"></div><span class="alias">--space-10</span></div>
+            <div class="space-row"><span class="num">48</span><span class="px">48 px</span><div class="vis" style="width:48px"></div><span class="alias">--space-12</span></div>
+            <div class="space-row"><span class="num">64</span><span class="px">64 px</span><div class="vis" style="width:64px"></div><span class="alias">--space-16</span></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom:14px">Corner radii</h3>
+          <div class="radii-grid">
+            <div class="radii-card r-sm"><div class="shape"></div><div class="name">sm · 4</div><div class="meta">inputs · chips · buttons</div></div>
+            <div class="radii-card r-md"><div class="shape"></div><div class="name">md · 8</div><div class="meta">cards (default)</div></div>
+            <div class="radii-card r-lg"><div class="shape"></div><div class="name">lg · 16</div><div class="meta">drawers · dialogs</div></div>
+            <div class="radii-card r-pill"><div class="shape"></div><div class="name">pill</div><div class="meta">avatars · severity pills · status dots</div></div>
+          </div>
+          <div style="margin-top:24px;padding:18px;background:var(--bg-2);border-radius:8px;font-size:14px;color:var(--fg-2);line-height:1.55">
+            <strong style="color:var(--fg-1);font-weight:600">Page gutter</strong> is <code class="t">p-6</code> · <strong style="color:var(--fg-1);font-weight:600">grid gap</strong> default <code class="t">gap-4</code> · <strong style="color:var(--fg-1);font-weight:600">data table</strong> row <code class="t">py-2.5</code> · cell <code class="t">px-3</code>. Density is intentional — operators scan, not read.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>spacing 4–64 · radii 4 / 8 / 16 + pill</span></div>
+  </section>
+
+  <!-- ============ 9 · ELEVATION + MOTION ============ -->
+  <section data-screen-label="09 Elevation & motion">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Foundations · the AI Loader</span>
+      <span class="ix">09 / 19</span>
+    </div>
+    <div>
+      <h1>Every state the agent thinks in.</h1>
+      <p class="lede">A loader system, not a spinner. <strong>Warm Red 50</strong> + <strong>Spruce 60</strong> across four sizes, three inline surfaces, and a drifting dot-field for full-panel generative work. Generic spinners, dot-trails, and Lottie are forbidden inside an AI surface.</p>
+
+      <div style="display:grid;grid-template-rows:auto auto auto auto;gap:16px">
+
+        <!-- SIZES -->
+        <div>
+          <h3 style="margin-bottom:10px">Ring · 4 sizes</h3>
+          <div class="ail-sizes">
+            <div class="ail-size">
+              <div class="stage"><span class="ailoader sm"></span></div>
+              <div class="meta"><div class="px">16 px</div><div class="cls">.sm</div><div class="use">Inside chips, inline labels.</div></div>
+            </div>
+            <div class="ail-size">
+              <div class="stage"><span class="ailoader md"></span></div>
+              <div class="meta"><div class="px">32 px</div><div class="cls">.md</div><div class="use">Input fields, table rows.</div></div>
+            </div>
+            <div class="ail-size">
+              <div class="stage"><span class="ailoader lg"></span></div>
+              <div class="meta"><div class="px">64 px</div><div class="cls">.ai-loader</div><div class="use">Page-level / panel.</div></div>
+            </div>
+            <div class="ail-size">
+              <div class="stage"><span class="ailoader xl"></span></div>
+              <div class="meta"><div class="px">96 px</div><div class="cls">.xl</div><div class="use">Full-screen blocking.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INLINE STATES -->
+        <div>
+          <h3 style="margin-bottom:10px">Inline · 3 surfaces</h3>
+          <div class="ail-ctx">
+            <div class="card">
+              <h4>Suggested-prompt chips · loading</h4>
+              <div class="demo">
+                <div class="ail-chips">
+                  <span class="chip">Cloud Services<span class="x">×</span></span>
+                  <span class="chip">CMDB Drift Q3<span class="x">×</span></span>
+                  <span class="chip">Hybrid IT Mod<span class="x">×</span></span>
+                  <span class="chip gen"><span class="ailoader sm"></span> Generating more…</span>
+                </div>
+              </div>
+              <div class="desc">When the chip rail regenerates, append a single <code class="t">.sm</code> ring chip. Existing chips remain interactive.</div>
+            </div>
+
+            <div class="card">
+              <h4>Composer · AI thinking</h4>
+              <div class="demo">
+                <div class="ail-input">
+                  <span class="ph">Type your message…</span>
+                  <span class="ailoader md"></span>
+                </div>
+              </div>
+              <div class="desc">Sits inside the input field's right rail at <code class="t">.md</code>. Replaces the send glyph until the model returns first token.</div>
+            </div>
+
+            <div class="card">
+              <h4>Response · streaming</h4>
+              <div class="demo ail-stream">
+                <div class="head"><span class="ailoader sm"></span> Streaming response</div>
+                <div class="skel">
+                  <div class="ln"></div>
+                  <div class="ln"></div>
+                  <div class="ln"></div>
+                </div>
+              </div>
+              <div class="desc">Sm ring beside a status line, paired with a 3-line skeleton until tokens land. Tokens replace lines top-down.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL RENDER · DOT-GRID DRIFT -->
+        <div>
+          <h3 style="margin-bottom:10px">Panel render · drifting dot-field</h3>
+          <div class="ail-panels">
+            <div class="panel-load">
+              <span class="label">Sketching it out</span>
+              <div class="grid"></div>
+              <div class="grid tint"></div>
+              <div class="grid spruce"></div>
+              <div class="pmeta"><span>graph · 22 nodes</span><span>0:04</span></div>
+            </div>
+            <div class="panel-load">
+              <span class="label">Creating image</span>
+              <div class="grid"></div>
+              <div class="grid tint"></div>
+              <div class="grid spruce"></div>
+              <div class="pmeta"><span>topology · diagram</span><span>0:07</span></div>
+            </div>
+            <div class="panel-load">
+              <span class="label">Drafting recommendation</span>
+              <div class="grid"></div>
+              <div class="grid tint"></div>
+              <div class="grid spruce"></div>
+              <div class="pmeta"><span>3 actions · 14 services</span><span>0:02</span></div>
+            </div>
+          </div>
+          <div class="ail-states-caption">
+            <div class="cap"><b>Sketching it out</b>Used while the agent is laying out a graph, sequence, or diagram. Three drift layers at 5.5 / 7 / 8.5 s.</div>
+            <div class="cap"><b>Creating image</b>Used during generative image work — topology renders, screenshots, illustrations. Same engine, different label.</div>
+            <div class="cap"><b>Drafting recommendation</b>Used when the agent is composing a multi-part response with tool calls. Update the label as the agent moves through stages.</div>
+          </div>
+        </div>
+
+        <!-- RULES -->
+        <div class="ail-bottom">
+          <div class="ail-rules">
+            <div class="rule"><span class="num">1</span><span><strong>Never use a generic spinner</strong> inside an AI surface. Always one of these states. CSS spinners, gif spinners, and dot-trails are banned.</span></div>
+            <div class="rule"><span class="num">2</span><span>If the wait <strong>exceeds 4 s</strong>, swap to the streaming skeleton or panel-render with a status label. Plain ring is for ≤ 4 s.</span></div>
+            <div class="rule"><span class="num">3</span><span><code class="t">prefers-reduced-motion</code>: rotation slows to <strong>6 s</strong> and dot-drift slows to 14–20 s. Never stop entirely — a stopped loader reads as broken.</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>AI Loader · 4 sizes · 3 inline · panel-render · warm-red 50 + spruce 60</span></div>
+  </section>
+
+  <!-- ============ 10 · ICONOGRAPHY ============ -->
+  <section data-screen-label="10 Iconography">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Foundations · iconography</span>
+      <span class="ix">10 / 19</span>
+    </div>
+    <div>
+      <h1>One icon set. <code class="t">currentColor</code>. No emoji.</h1>
+      <p class="lede">17 curated symbols from the Shidoka Icon Library, shipped as an inline SVG sprite. Sizes: 14 / 16 / 20 / 24 / 32 / 48. 16 px is the default. All icons use <code class="t">currentColor</code> — they inherit text colour, severity foreground, and button state without ceremony. Lucide, Carbon, heroicons, and emoji are not used.</p>
+
+      <div class="icons-grid">
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="10" height="10"/><rect x="18" y="4" width="10" height="10"/><rect x="4" y="18" width="10" height="10"/><rect x="18" y="18" width="10" height="10"/></svg><div class="iname">dashboard</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="4 26 11 18 17 23 28 8"/><polyline points="22 8 28 8 28 14"/></svg><div class="iname">analytics</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="8" cy="8" r="3"/><circle cx="24" cy="8" r="3"/><circle cx="16" cy="24" r="3"/><line x1="10" y1="10" x2="14" y2="22"/><line x1="22" y1="10" x2="18" y2="22"/><line x1="11" y1="8" x2="21" y2="8"/></svg><div class="iname">network</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="11" r="5"/><path d="M5 27c1-5 5-8 11-8s10 3 11 8"/></svg><div class="iname">group</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="24" height="18" rx="3"/><circle cx="11" cy="15" r="1.6" fill="currentColor"/><circle cx="21" cy="15" r="1.6" fill="currentColor"/><line x1="10" y1="28" x2="22" y2="28"/></svg><div class="iname">chat-bot</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h12l6 6v18a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="20 4 20 10 26 10"/><polyline points="11 22 14 18 17 21 21 15"/></svg><div class="iname">document-chart</div></div>
+        <div class="icon-tile" style="color:var(--k-warm-red-60)"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L18.5 12.5 27 14 18.5 15.5 16 24 13.5 15.5 5 14 13.5 12.5 Z"/></svg><div class="iname">recommend</div></div>
+        <div class="icon-tile" style="color:#B45309"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 25h8M14 28h4M16 4a8 8 0 0 0-5 14c1 1 2 2 2 4h6c0-2 1-3 2-4a8 8 0 0 0-5-14z"/></svg><div class="iname">lightbulb</div></div>
+
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 16 8 13 13 18 19 8 25 14 29 11"/><circle cx="13" cy="18" r="1.5" fill="currentColor"/></svg><div class="iname">anomaly</div></div>
+        <div class="icon-tile" style="color:#0D5C2E"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 2a14 14 0 1 0 0 28 14 14 0 0 0 0-28zm-2 20-7-7 2-2 5 5 11-11 2 2-13 13z"/></svg><div class="iname">checkmark-filled</div></div>
+        <div class="icon-tile" style="color:#A1100F"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 2a14 14 0 1 0 0 28 14 14 0 0 0 0-28zM16 19a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zm1-11v8h-2v-8z" fill-rule="evenodd"/></svg><div class="iname">error-filled</div></div>
+        <div class="icon-tile" style="color:#7A4800"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L29 27 H3 Z"/><line x1="16" y1="13" x2="16" y2="20"/><circle cx="16" cy="23.5" r="1" fill="currentColor"/></svg><div class="iname">warning-alt</div></div>
+        <div class="icon-tile" style="color:#0E4A7A"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="16" r="13"/><line x1="16" y1="14" x2="16" y2="22"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg><div class="iname">information</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 29 6 19 17 19 26 13 23 13 17"/></svg><div class="iname">filter</div></div>
+        <div class="icon-tile"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8"/><polyline points="20 22 26 16 20 10"/><line x1="13" y1="16" x2="26" y2="16"/></svg><div class="iname">log-out</div></div>
+        <div class="icon-tile" style="color:#0D5C2E"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="24" x2="24" y2="8"/><polyline points="13 8 24 8 24 19"/></svg><div class="iname">arrow-up-right</div></div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>Shidoka Icons · 17 curated · 32-grid · 2 px stroke · currentColor</span></div>
+  </section>
+
+  <!-- ============ 11 · VOICE ============ -->
+  <section data-screen-label="11 Voice">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Content</span>
+      <span class="ix">11 / 19</span>
+    </div>
+    <div>
+      <h1>The voice of a senior SRE.</h1>
+      <p class="lede">Operational, precise, quietly authoritative. The agent speaks <em>about</em> its work, never <em>as</em> a character. Sentence case for everything; uppercase reserved for eyebrows. Every number is specific — "62%", not "most"; "12-week trend", not "recent". Emoji are never used.</p>
+
+      <div class="voice-grid">
+        <div class="voice-col">
+          <h3><span class="tag do">Do</span>What the system actually says</h3>
+          <div class="voice-quote">"Severity rolls up from active impacted nodes."<span class="src">graph inspector · neutral attribution</span></div>
+          <div class="voice-quote">"62% of CIs verified in the last 30 days."<span class="src">trust score · specific number, specific window</span></div>
+          <div class="voice-quote">"Adjust the filters or select a node or edge to see rolled-up process severity."<span class="src">empty state · instructional, not apologetic</span></div>
+          <div class="voice-quote">"Investigate with AI"<span class="src">primary CTA · neutral, not exclamatory</span></div>
+          <div class="voice-quote">"Powered by agentic AI"<span class="src">attribution · honest, not magic</span></div>
+        </div>
+
+        <div class="voice-col">
+          <h3><span class="tag dont">Don't</span>What never ships</h3>
+          <div class="voice-quote bad">"⚠️ URGENT ACTION REQUIRED!!"<span class="src">never · alarmist, exclamatory, emoji</span></div>
+          <div class="voice-quote bad">"Oops! Something went wrong."<span class="src">never · cute, vague, no next step</span></div>
+          <div class="voice-quote bad">"Let's get started! 🚀"<span class="src">never · onboarding-as-marketing</span></div>
+          <div class="voice-quote bad">"AI-powered ✨ recommendations"<span class="src">never · sparkle voice, magic framing</span></div>
+          <div class="voice-quote bad">"Most users find this helpful"<span class="src">never · vague, no number, no provenance</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>voice · operational · sentence case · specific numbers · no emoji</span></div>
+  </section>
+
+  <!-- ============ 12 · AGENTIC PRIMITIVES ============ -->
+  <section data-screen-label="12 Agentic primitives">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Primitives · the heart</span>
+      <span class="ix">12 / 19</span>
+    </div>
+    <div>
+      <h1>Every badge is a control point.</h1>
+      <p class="lede">Five semantic primitives carry the agent's decisions. Each shows a value, a dotted underline, and a trailing <code class="t">•••</code> on hover. Click opens a popover with 2–4 targeted actions: <em>override</em>, <em>teach the agent</em>, <em>request more evidence</em>, <em>dispute</em>. Every override is written to the "Learned from you" inbox — corrections compound, never vanish.</p>
+
+      <div class="agentic-grid">
+        <div class="ag-row">
+          <div class="head">
+            <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L14 10L22 12L14 14L12 22L10 14L2 12L10 10Z"/></svg></div>
+            <div class="name">ConfidenceBadge</div>
+          </div>
+          <div class="demo-strip">
+            <span class="badge conf"><span class="v">87%</span><span class="ddd">•••</span></span>
+            <span class="badge conf med"><span class="v">62%</span><span class="ddd">•••</span></span>
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-muted)">role=readonly removes chevron</span>
+          </div>
+          <div class="actions"><b>Actions</b><span>override</span><span>ask for more evidence</span><span>snooze</span><span>teach the agent</span></div>
+        </div>
+
+        <div class="ag-row">
+          <div class="head">
+            <div class="glyph" style="background:var(--k-ai-warm-red-12);color:var(--k-warm-red-60)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="name">FreshnessBadge</div>
+          </div>
+          <div class="demo-strip">
+            <span class="badge fresh"><span class="v">Today · verified</span><span class="ddd">•••</span></span>
+            <span class="badge fresh stale"><span class="v">Last seen 12d ago</span><span class="ddd">•••</span></span>
+          </div>
+          <div class="actions"><b>Actions</b><span>force refresh</span><span>change stale threshold</span><span>notify owner</span><span>pin as trusted</span></div>
+        </div>
+
+        <div class="ag-row">
+          <div class="head">
+            <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="7 14 12 9 17 14"/></svg></div>
+            <div class="name">DeltaIndicator</div>
+          </div>
+          <div class="demo-strip" style="font-size:24px;font-family:var(--font-display);font-weight:500;color:var(--fg-1);align-items:baseline;gap:18px">
+            <span>62% <span class="delta up" style="font-size:14px"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 17 12 11 18 17"/></svg> +3.4% WoW</span></span>
+            <span style="color:var(--fg-2)">−180 stale CIs <span class="delta dn" style="font-size:14px"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 11 12 17 18 11"/></svg> 12 wk</span></span>
+          </div>
+          <div class="actions"><b>Actions</b><span>explain this change</span><span>set alert threshold</span><span>compare periods</span><span>teach what caused this</span></div>
+        </div>
+
+        <div class="ag-row">
+          <div class="head">
+            <div class="glyph" style="background:#FFEBEB;color:#A1100F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/></svg></div>
+            <div class="name">StatusBadge / SeverityPill</div>
+          </div>
+          <div class="demo-strip">
+            <span class="stat hi">Critical</span>
+            <span class="stat med">High</span>
+            <span class="badge fresh" style="background:#ECFDF5;color:#0D5C2E;border-color:#A7F3D0"><span class="v">Approved</span><span class="ddd">•••</span></span>
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-muted)">always paired with icon or label</span>
+          </div>
+          <div class="actions"><b>Actions</b><span>advance / approve</span><span>reassign reviewer</span><span>add note</span><span>reject / rollback</span></div>
+        </div>
+
+        <div class="ag-row" style="grid-column:span 2">
+          <div class="head">
+            <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="name">SourceAttribution</div>
+          </div>
+          <div class="demo-strip" style="font-size:14px;color:var(--fg-2);gap:18px">
+            <span><span class="source">cmdb.payments-svc · verified 14:08</span></span>
+            <span style="color:var(--fg-muted);font-family:var(--font-mono);font-size:13px">"Powered by agentic AI · dataset · timestamp · confidence"</span>
+          </div>
+          <div class="actions"><b>Actions</b><span>open source</span><span>view provenance</span><span>request re-derivation</span><span>dispute</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;padding:18px 22px;background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05));border-radius:10px;font-size:15px;color:var(--fg-2);line-height:1.55;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <strong style="color:var(--fg-1);font-family:var(--font-display);font-size:18px;font-weight:500">Reversibility model</strong>
+        <span>Non-destructive actions apply instantly with a passive confirm toast.</span>
+        <span style="color:var(--k-warm-red-60);font-weight:600">Destructive actions — anything that changes future agent behaviour or writes to the audit trail — require an in-popover confirm step with explicit blast-radius language.</span>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>5 primitives · override · teach · dispute · "Learned from you" inbox</span></div>
+  </section>
+
+  <!-- ============ 13 · COMPOSITES — POSTURE / TRIAGE ============ -->
+  <section data-screen-label="13 Composites — posture & triage">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Composites · 1 of 2</span>
+      <span class="ix">13 / 19</span>
+    </div>
+    <div>
+      <h1>Posture &amp; triage.</h1>
+      <p class="lede">The dashboard's centre of gravity. Trust gauge anchors the page; KPI grid carries supporting numbers; finding cards sit in the right rail or feed. Every number pairs with a freshness badge and a delta. Severity-tinted left borders are how the eye picks the row.</p>
+
+      <div class="posture-grid">
+        <div class="posture-left">
+          <div class="gauge">
+            <div class="gauge-viz">
+              <svg viewBox="0 0 200 110" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0%" stop-color="#D62E2E"/>
+                    <stop offset="50%" stop-color="#B45309"/>
+                    <stop offset="100%" stop-color="#10B981"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 14 100 A 86 86 0 0 1 186 100" fill="none" stroke="#E1E5E8" stroke-width="14" stroke-linecap="round"/>
+                <path d="M 14 100 A 86 86 0 0 1 144 32" fill="none" stroke="url(#g1)" stroke-width="14" stroke-linecap="round"/>
+                <circle cx="144" cy="32" r="8" fill="#fff" stroke="#29707A" stroke-width="3"/>
+              </svg>
+              <div class="gauge-readout">
+                <span class="num">62<span class="pct">%</span></span>
+              </div>
+            </div>
+            <div class="gauge-meta">
+              <span class="lbl">CMDB Trust Score</span>
+              <h3 class="gauge-title">Up 4 pts WoW · still amber.</h3>
+              <p class="gauge-sub">Composite of verified-CI ratio, owner coverage, and freshness. Threshold for green is 80%.</p>
+              <div class="gauge-deltas">
+                <span class="delta" style="color:#0D5C2E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 17 12 11 18 17"/></svg> +3.4 WoW</span>
+                <span class="delta" style="color:#A1100F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 11 12 17 18 11"/></svg> −12 vs Q1</span>
+                <span class="delta" style="color:var(--fg-muted)">verified 14:08</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-row">
+            <div class="kpi-tile">
+              <div class="lbl">Stale CIs</div>
+              <div class="num">847</div>
+              <div class="meta"><span class="delta dn"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 11 12 17 18 11"/></svg> 12% MoM</span> · last 30 d</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="lbl">Orphaned</div>
+              <div class="num">22</div>
+              <div class="meta"><span class="delta up" style="color:#7A4800"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 17 12 11 18 17"/></svg> +3 overnight</span> · payments-svc</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="lbl">Open corrections</div>
+              <div class="num">14</div>
+              <div class="meta"><span class="badge fresh" style="height:22px;padding:0 9px;font-size:11px"><span class="v" style="font-size:11px">Today</span></span> · 3 pending you</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="lbl">12 wk trend</div>
+              <div class="num" style="font-size:36px">−18%</div>
+              <div class="meta"><span style="color:#0D5C2E;font-weight:600">↓ improving</span> · stale-CI rate</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <h3 style="margin:0">Findings · right rail</h3>
+          <div class="finding-card crit">
+            <div class="meta">02:14 · payments-svc · bINC0000147</div>
+            <div class="title">22 orphaned CIs · no upstream owner</div>
+            <div class="body">First seen 02:14 · payments-svc lost owner mapping after the overnight Terraform apply. Affects 1 app and 2 critical processes downstream.</div>
+            <div class="ctas"><button class="btn prim">Investigate with AI</button><button class="btn">Assign owner</button><button class="btn">Defer</button></div>
+          </div>
+          <div class="finding-card warn">
+            <div class="meta">14d ago · checkout-api · 12-week trend</div>
+            <div class="title">Trust score drift · checkout domain</div>
+            <div class="body">Trust score has slipped from 78% → 58% over 12 weeks. Driven by 18% increase in stale CI verifications.</div>
+            <div class="ctas"><button class="btn prim">View trend</button><button class="btn">Notify owner</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>composites · TrustScoreGauge · KpiGrid · FindingCard</span></div>
+  </section>
+
+  <!-- ============ 14 · COMPOSITES — ACTION + GRAPH ============ -->
+  <section data-screen-label="14 Composites — action & graph">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Composites · 2 of 2</span>
+      <span class="ix">14 / 19</span>
+    </div>
+    <div>
+      <h1>Action &amp; investigation.</h1>
+      <p class="lede">Recommendations always carry a three-way affordance: <em>Execute</em> · <em>Send for review</em> · <em>Dismiss</em>. The graph is the investigation surface — node colour encodes status, never role. Severity rolls up from leaves to roots. Every chart and node has a source line attached.</p>
+
+      <div class="body split">
+        <div class="recco">
+          <div class="head"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L13.5 8 20 9 13.5 10 12 16 10.5 10 4 9 10.5 8 Z"/></svg>Recommendation · 87% confidence</div>
+          <h4>Assign 22 orphan CIs to A. Ortiz based on deploy recency.</h4>
+          <div class="body">Ortiz is the last structural editor on 20 of 22 CIs in the payments-svc cluster. K. Patel made cosmetic config edits in the same window but no structural changes. <b>Two CIs remain ambiguous</b> and will be flagged for manual tie-break.</div>
+          <div class="rationale">"Powered by agentic AI · dataset: cmdb.commits + cmdb.deploys · 12-week window · last verified 14:08 · model: ownership-v3"</div>
+          <div class="impact-row">
+            <span><b>22</b> CIs</span>
+            <span>·</span>
+            <span><b>1</b> app</span>
+            <span>·</span>
+            <span><b>2</b> processes</span>
+            <span>·</span>
+            <span><b>0</b> downstream BUs</span>
+          </div>
+          <div class="ctas">
+            <button class="btn prim">Execute</button>
+            <button class="btn">Send for review</button>
+            <button class="btn">Edit args</button>
+            <button class="btn danger" style="margin-left:auto">Dismiss</button>
+          </div>
+        </div>
+
+        <div class="graph">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h3 style="margin:0">Knowledge graph · payments-svc</h3>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-muted)">22 nodes · 31 edges · severity rolled up</span>
+          </div>
+          <svg viewBox="0 0 760 420" preserveAspectRatio="xMidYMid meet" class="rf-canvas">
+            <defs>
+              <pattern id="rf-dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="1" fill="#D1D9DE"/>
+              </pattern>
+              <marker id="rf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#9AA3AB"/>
+              </marker>
+              <marker id="rf-arrow-warn" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#B45309"/>
+              </marker>
+              <marker id="rf-arrow-crit" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#D62E2E"/>
+              </marker>
+              <filter id="rf-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0F1B22" flood-opacity=".12"/>
+              </filter>
+            </defs>
+
+            <!-- dot-grid background -->
+            <rect x="0" y="0" width="760" height="420" fill="url(#rf-dots)"/>
+
+            <!-- edges (bezier splines, source-right → target-left handles) -->
+            <!-- L0 service → L1 -->
+            <path d="M 184 210 C 264 210, 264 80, 344 80"   fill="none" stroke="#9AA3AB" stroke-width="1.6"  marker-end="url(#rf-arrow)"/>
+            <path d="M 184 210 C 264 210, 264 210, 344 210" fill="none" stroke="#B45309" stroke-width="2.2"  marker-end="url(#rf-arrow-warn)"/>
+            <path d="M 184 210 C 264 210, 264 340, 344 340" fill="none" stroke="#9AA3AB" stroke-width="1.6"  marker-end="url(#rf-arrow)"/>
+            <!-- L1 → L2 -->
+            <path d="M 472 80   C 552 80,  552 60,  608 60"   fill="none" stroke="#9AA3AB" stroke-width="1.6" marker-end="url(#rf-arrow)"/>
+            <path d="M 472 80   C 552 80,  552 130, 608 130"  fill="none" stroke="#D62E2E" stroke-width="2.4" marker-end="url(#rf-arrow-crit)" stroke-dasharray="6 4" class="rf-edge-impacted"/>
+            <path d="M 472 210  C 552 210, 552 200, 608 200"  fill="none" stroke="#9AA3AB" stroke-width="1.6" marker-end="url(#rf-arrow)"/>
+            <path d="M 472 210  C 552 210, 552 270, 608 270"  fill="none" stroke="#B45309" stroke-width="2.2" marker-end="url(#rf-arrow-warn)"/>
+            <path d="M 472 340  C 552 340, 552 340, 608 340"  fill="none" stroke="#9AA3AB" stroke-width="1.6" marker-end="url(#rf-arrow)"/>
+
+            <!-- ============ NODES ============ -->
+            <!-- L0 — Service (origin) -->
+            <g filter="url(#rf-shadow)">
+              <rect x="40" y="178" width="144" height="64" rx="9" fill="#fff" stroke="#29707A" stroke-width="2"/>
+              <rect x="40" y="178" width="6" height="64" rx="2" fill="#29707A"/>
+              <text x="58" y="201" font-family="Geist Mono, monospace" font-size="9" fill="#5C5C5C" letter-spacing=".06em">SERVICE · L0</text>
+              <text x="58" y="222" font-family="TWK Everett, sans-serif" font-size="14" font-weight="500" fill="#141414">payments-svc</text>
+              <text x="58" y="236" font-family="Geist Mono, monospace" font-size="9" fill="#9AA3AB">eu-west-1 · prod</text>
+              <circle cx="184" cy="210" r="3.5" fill="#fff" stroke="#29707A" stroke-width="1.5"/>
+            </g>
+
+            <!-- L1 — components -->
+            <g filter="url(#rf-shadow)">
+              <rect x="344" y="56" width="128" height="48" rx="8" fill="#fff" stroke="#A7F3D0" stroke-width="1.5"/>
+              <circle cx="344" cy="80" r="3.5" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="356" cy="68" r="4.5" fill="#10B981"/>
+              <text x="370" y="71" font-family="Geist Mono, monospace" font-size="9" fill="#0D5C2E" letter-spacing=".06em">HEALTHY</text>
+              <text x="356" y="93" font-family="TWK Everett, sans-serif" font-size="13" font-weight="500" fill="#141414">checkout-api</text>
+              <circle cx="472" cy="80" r="3.5" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="344" y="186" width="128" height="48" rx="8" fill="#FFFCF6" stroke="#F8DC8E" stroke-width="1.5"/>
+              <circle cx="344" cy="210" r="3.5" fill="#fff" stroke="#B45309" stroke-width="1.5"/>
+              <circle cx="356" cy="198" r="4.5" fill="#B45309"/>
+              <text x="370" y="201" font-family="Geist Mono, monospace" font-size="9" fill="#7A4800" letter-spacing=".06em">DEGRADED</text>
+              <text x="356" y="223" font-family="TWK Everett, sans-serif" font-size="13" font-weight="500" fill="#141414">web-gateway</text>
+              <circle cx="472" cy="210" r="3.5" fill="#fff" stroke="#B45309" stroke-width="1.5"/>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="344" y="316" width="128" height="48" rx="8" fill="#fff" stroke="#A7F3D0" stroke-width="1.5"/>
+              <circle cx="344" cy="340" r="3.5" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="356" cy="328" r="4.5" fill="#10B981"/>
+              <text x="370" y="331" font-family="Geist Mono, monospace" font-size="9" fill="#0D5C2E" letter-spacing=".06em">HEALTHY</text>
+              <text x="356" y="353" font-family="TWK Everett, sans-serif" font-size="13" font-weight="500" fill="#141414">orders-db</text>
+              <circle cx="472" cy="340" r="3.5" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+            </g>
+
+            <!-- L2 — leaves -->
+            <g filter="url(#rf-shadow)">
+              <rect x="608" y="40" width="124" height="40" rx="7" fill="#fff" stroke="#E1E5E8"/>
+              <circle cx="608" cy="60" r="3" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="620" cy="60" r="4" fill="#10B981"/>
+              <text x="630" y="63" font-family="Geist Mono, monospace" font-size="11" fill="#141414">cdn-edge-eu</text>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="608" y="110" width="124" height="40" rx="7" fill="#FFFBFB" stroke="#F8C7C2"/>
+              <circle cx="608" cy="130" r="3" fill="#fff" stroke="#D62E2E" stroke-width="1.5"/>
+              <circle cx="620" cy="130" r="4" fill="#D62E2E"/>
+              <text x="630" y="128" font-family="Geist Mono, monospace" font-size="11" fill="#A1100F">stripe-webhook</text>
+              <text x="630" y="140" font-family="Geist Mono, monospace" font-size="9" fill="#9AA3AB">5xx · 14:08</text>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="608" y="180" width="124" height="40" rx="7" fill="#fff" stroke="#E1E5E8"/>
+              <circle cx="608" cy="200" r="3" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="620" cy="200" r="4" fill="#10B981"/>
+              <text x="630" y="203" font-family="Geist Mono, monospace" font-size="11" fill="#141414">redis-prod</text>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="608" y="250" width="124" height="40" rx="7" fill="#FFFCF6" stroke="#F8DC8E"/>
+              <circle cx="608" cy="270" r="3" fill="#fff" stroke="#B45309" stroke-width="1.5"/>
+              <circle cx="620" cy="270" r="4" fill="#B45309"/>
+              <text x="630" y="268" font-family="Geist Mono, monospace" font-size="11" fill="#7A4800">queue-orders</text>
+              <text x="630" y="280" font-family="Geist Mono, monospace" font-size="9" fill="#9AA3AB">depth · 14k</text>
+            </g>
+            <g filter="url(#rf-shadow)">
+              <rect x="608" y="320" width="124" height="40" rx="7" fill="#fff" stroke="#E1E5E8"/>
+              <circle cx="608" cy="340" r="3" fill="#fff" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="620" cy="340" r="4" fill="#10B981"/>
+              <text x="630" y="343" font-family="Geist Mono, monospace" font-size="11" fill="#141414">db-replica</text>
+            </g>
+
+            <!-- mini-map controls (top-right) -->
+            <g transform="translate(700,4)">
+              <rect x="0" y="0" width="56" height="22" rx="4" fill="#fff" stroke="#E1E5E8"/>
+              <text x="6" y="14" font-family="Geist Mono, monospace" font-size="9" fill="#5C5C5C">⊕  ⊖  ⤢</text>
+            </g>
+          </svg>
+          <div class="legend">
+            <span class="sw"><span class="d" style="background:#29707A"></span>Service</span>
+            <span class="sw"><span class="d" style="background:#10B981"></span>Healthy</span>
+            <span class="sw"><span class="d" style="background:#B45309"></span>Degraded</span>
+            <span class="sw"><span class="d" style="background:#D62E2E"></span>Impacted</span>
+            <span class="sw" style="margin-left:auto;color:var(--fg-muted)">React-Flow-style canvas · bezier edges</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>composites · RecommendationCard · GraphCanvas + Inspector</span></div>
+  </section>
+
+  <!-- ============ 15 · TEMPLATES ============ -->
+  <section data-screen-label="15 Templates">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Templates</span>
+      <span class="ix">15 / 19</span>
+    </div>
+    <div>
+      <h1>Five shells. New pages are composed.</h1>
+      <p class="lede">Every page in the app lives inside one of these. Permission-aware via <code class="t">role</code> / <code class="t">capabilities</code> props — full / review / readonly fall back automatically. New pages compose existing composites; they don't redesign the chrome.</p>
+
+      <div class="tpl-grid">
+        <div class="tpl-card">
+          <div class="num">Template 01</div>
+          <div class="name">Dashboard</div>
+          <div class="desc">Posture surface. Trust gauge top-left, KPI grid right, findings rail.</div>
+          <div class="wire"><div class="top"></div><div class="row m"></div><div class="row tall"></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px"><div class="row tall" style="height:40px"></div><div class="row tall" style="height:40px"></div><div class="row tall" style="height:40px"></div></div><div class="row tall"></div></div>
+          <div class="uses">trust · kpi · findings · executive summary</div>
+        </div>
+
+        <div class="tpl-card">
+          <div class="num">Template 02</div>
+          <div class="name">Triage</div>
+          <div class="desc">Filterable list + detail drawer. Density-first; hits 50+ rows on screen.</div>
+          <div class="wire"><div class="top"></div><div class="row m"></div><div style="display:grid;grid-template-columns:1.2fr 1fr;gap:5px;flex:1"><div style="display:flex;flex-direction:column;gap:3px"><div class="row" style="height:8px;background:#fff;border:1px solid var(--border-1);opacity:1"></div><div class="row" style="height:8px;background:#fff;border:1px solid var(--border-1);opacity:1"></div><div class="row" style="height:8px;background:var(--k-spruce-20);border:1px solid var(--k-spruce-40);opacity:1"></div><div class="row" style="height:8px;background:#fff;border:1px solid var(--border-1);opacity:1"></div><div class="row" style="height:8px;background:#fff;border:1px solid var(--border-1);opacity:1"></div><div class="row" style="height:8px;background:#fff;border:1px solid var(--border-1);opacity:1"></div></div><div class="row tall" style="height:auto"></div></div></div>
+          <div class="uses">stale CIs · orphan CIs · drift list</div>
+        </div>
+
+        <div class="tpl-card">
+          <div class="num">Template 03</div>
+          <div class="name">Investigation</div>
+          <div class="desc">Graph canvas centre, control rail right, inspector pane bottom.</div>
+          <div class="wire investigation">
+            <svg viewBox="0 0 200 130" preserveAspectRatio="xMidYMid meet">
+              <line x1="40" y1="65" x2="100" y2="35" stroke="#C1C8CD" stroke-width="1"/>
+              <line x1="40" y1="65" x2="100" y2="65" stroke="#C1C8CD" stroke-width="1"/>
+              <line x1="40" y1="65" x2="100" y2="95" stroke="#C1C8CD" stroke-width="1"/>
+              <line x1="100" y1="35" x2="160" y2="20" stroke="#C1C8CD" stroke-width="1"/>
+              <line x1="100" y1="35" x2="160" y2="50" stroke="#D62E2E" stroke-width="1.4"/>
+              <line x1="100" y1="65" x2="160" y2="80" stroke="#C1C8CD" stroke-width="1"/>
+              <line x1="100" y1="95" x2="160" y2="110" stroke="#C1C8CD" stroke-width="1"/>
+              <circle cx="40" cy="65" r="9" fill="#29707A"/>
+              <circle cx="100" cy="35" r="6" fill="#10B981"/>
+              <circle cx="100" cy="65" r="6" fill="#B45309"/>
+              <circle cx="100" cy="95" r="6" fill="#10B981"/>
+              <circle cx="160" cy="20" r="4" fill="#10B981"/>
+              <circle cx="160" cy="50" r="4" fill="#D62E2E"/>
+              <circle cx="160" cy="80" r="4" fill="#B45309"/>
+              <circle cx="160" cy="110" r="4" fill="#10B981"/>
+            </svg>
+          </div>
+          <div class="uses">graph canvas · control rail · inspector · impact rollup</div>
+        </div>
+
+        <div class="tpl-card">
+          <div class="num">Template 04</div>
+          <div class="name">Review queue</div>
+          <div class="desc">One pattern, three uses: access · change · correction. Filterable + drawer + audit.</div>
+          <div class="wire review"><div class="top"></div><div class="grid-rows"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+          <div class="uses">approve · reject · defer · audit · owner · timestamp · reason</div>
+        </div>
+
+        <div class="tpl-card">
+          <div class="num">Template 05</div>
+          <div class="name">Conversation</div>
+          <div class="desc">Chat + agent surfaces. AgentStatusBar above, ChatMessage stream, ToolCallCards inline.</div>
+          <div class="wire conv"><div class="msg" style="background:linear-gradient(135deg, rgba(41,112,122,.05), rgba(255,70,45,.05));border-color:rgba(41,112,122,.28)"><div class="l s" style="background:var(--k-spruce-60)"></div></div><div class="msg" style="margin-left:24px"><div class="l m"></div><div class="l s"></div></div><div class="msg"><div class="l"></div><div class="l m"></div></div><div class="msg" style="margin-left:24px;border-color:#F8DC8E;background:#FEF7E6"><div class="l m" style="background:#B45309"></div></div></div>
+          <div class="uses">chat · snapshot · highlight-link · agentic states</div>
+        </div>
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>5 templates · permission-aware fallback · compose, don't redesign</span></div>
+  </section>
+
+  <!-- ============ 16 · AGENTIC INTERACTION STATES ============ -->
+  <section data-screen-label="16 Agentic interaction states">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>The live surface</span>
+      <span class="ix">16 / 19</span>
+    </div>
+    <div>
+      <h1>Six live-surface primitives.</h1>
+      <p class="lede">The agentic primitives govern post-hoc decisions; these six govern the moment. Every one shares the AI gradient border (spruce ↔ warm-red, 28% α) — except <strong>HumanInputRequest</strong>, which deliberately switches to amber so the eye finds it on a long scroll. Activity is signalled by a single moving element. No spinners.</p>
+
+      <div class="ais-grid">
+
+        <!-- 1 · AgentStatusBar -->
+        <div class="ais-cell">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div>
+          <div class="head">
+            <span class="ev">run.started · thinking · streaming · paused · done</span>
+            <div class="h">AgentStatusBar</div>
+          </div>
+          <div class="demo">
+            <div class="row"><span class="dot"></span><span class="lbl">Investigating payments-svc</span><span style="margin-left:auto" class="ctl">Pause</span><span class="ctl">Inject</span><span class="ctl">Branch</span></div>
+            <div class="stream">step 4 of 7 · querying cmdb.commits</div>
+          </div>
+          <div class="foot">
+            <div class="desc">Pinned "what is the agent doing right now" header. Reads activity, exposes session-level controls.</div>
+            <span class="pin">Non-blocking</span>
+          </div>
+        </div>
+
+        <!-- 2 · ToolCallCard -->
+        <div class="ais-cell">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 7l-4 4M3 17l6 0M14 21l-3-3 3-3M21 7l-3-3-3 3M3 7l6 0M10 17l4-4"/></svg></div>
+          <div class="head">
+            <span class="ev">tool.requested · executing · completed · failed</span>
+            <div class="h">ToolCallCard</div>
+          </div>
+          <div class="demo">
+            <div class="tool"><span>cmdb.write_owner(<span class="arg">22 CIs</span>, <span class="arg">A. Ortiz</span>)</span><span class="stat">Awaiting approval</span></div>
+            <div class="tool" style="background:#ECFDF5;border-color:#A7F3D0"><span>cmdb.query(payments-svc · 12wk)</span><span class="stat" style="background:#10B981;color:#fff">Returned · 22 rows</span></div>
+          </div>
+          <div class="foot">
+            <div class="desc">Inline tool invocation between messages. Args editable in-place. Destructive tools always gate.</div>
+            <span class="pin">Sometimes blocking</span>
+          </div>
+        </div>
+
+        <!-- 3 · HumanInputRequest -->
+        <div class="ais-cell amber">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/><circle cx="12" cy="12" r="10"/></svg></div>
+          <div class="head">
+            <span class="ev">input.required · input.received</span>
+            <div class="h">HumanInputRequest</div>
+          </div>
+          <div class="demo">
+            <div class="ask">
+              <div class="q">2 CIs are ambiguous. Should I assign by deploy recency or last-edit?</div>
+              <div class="opts">
+                <span class="opt">By deploy recency</span>
+                <span class="opt">By last-edit</span>
+                <span class="opt">Skip both</span>
+                <span class="opt">Show evidence</span>
+              </div>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="desc">Amber surface that breaks the AI gradient on purpose. Buttons name choices, never "Yes/No".</div>
+            <span class="pin block">Blocking · paused</span>
+          </div>
+        </div>
+
+        <!-- 4 · StepTimeline -->
+        <div class="ais-cell">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="6" cy="18" r="2"/><line x1="11" y1="6" x2="20" y2="6"/><line x1="11" y1="12" x2="20" y2="12"/><line x1="11" y1="18" x2="20" y2="18"/></svg></div>
+          <div class="head">
+            <span class="ev">step.started · step.completed · step.failed</span>
+            <div class="h">StepTimeline</div>
+          </div>
+          <div class="demo">
+            <div class="step done"><span class="ix">✓</span><span>Identify orphan CIs · 22 found</span></div>
+            <div class="step done"><span class="ix">✓</span><span>Cross-reference cmdb.commits · 12wk window</span></div>
+            <div class="step active"><span class="ix">4</span><span>Resolve owner candidates · A. Ortiz · K. Patel</span></div>
+            <div class="step" style="opacity:.55"><span class="ix">5</span><span>Write owner assignments · awaiting approval</span></div>
+          </div>
+          <div class="foot">
+            <div class="desc">The agent's plan, rendered. Marker pulses on the active row. Plan is mutable up to the active step.</div>
+            <span class="pin">Non-blocking</span>
+          </div>
+        </div>
+
+        <!-- 5 · HandoffCard -->
+        <div class="ais-cell">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14 6 20 12 14 18"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+          <div class="head">
+            <span class="ev">handoff.dispatched · received · accepted</span>
+            <div class="h">HandoffCard</div>
+          </div>
+          <div class="demo">
+            <div class="handoff">
+              <div class="who"><b>cmdb-agent</b><span>analysis</span></div>
+              <span class="arrow">→</span>
+              <div class="who"><b>change-mgmt</b><span>review</span></div>
+              <span class="reason">approval-authority</span>
+            </div>
+            <div style="font-size:10px;color:var(--fg-muted);font-family:var(--font-mono)">context: 22 CIs · evidence bundle · 87% confidence</div>
+          </div>
+          <div class="foot">
+            <div class="desc">Marks the moment work passes between agents — or to a human. Reason chip names a capability.</div>
+            <span class="pin">Sometimes blocking</span>
+          </div>
+        </div>
+
+        <!-- 6 · StateDeltaToast -->
+        <div class="ais-cell">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          <div class="head">
+            <span class="ev">state.delta · state.reverted</span>
+            <div class="h">StateDeltaToast</div>
+          </div>
+          <div class="demo">
+            <div class="toast">
+              <span style="color:#A7F3D0">●</span>
+              <span>Trust score</span>
+              <span class="diff"><span class="old">58.6%</span> → <span class="new">62.0%</span></span>
+              <span class="undo">Undo</span>
+            </div>
+            <div class="toast" style="background:#3A434B">
+              <span style="color:#FED7AA">●</span>
+              <span>847 CIs flagged stale</span>
+              <span class="undo">View audit</span>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="desc">Ambient bottom-left when the agent mutates a value visible elsewhere. Always shows the diff. Audit is permanent.</div>
+            <span class="pin">Non-blocking</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>6 live primitives · 11 AG-UI events · 1 contract</span></div>
+  </section>
+
+  <!-- ============ 17 · STATES MATRIX ============ -->
+  <section data-screen-label="17 States matrix">
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Layer 5 · non-negotiable</span>
+      <span class="ix">17 / 19</span>
+    </div>
+    <div>
+      <h1>Eight states. No exceptions.</h1>
+      <p class="lede">Every composite ships these eight states or it doesn't ship. Loading skeletons match the final shape — never a generic spinner. Empty states explain and offer a next step. Errors carry a human cause, a retry, and an escalate path. Stale data warns; unauthorized data tells the user how to ask.</p>
+
+      <table class="states-table">
+        <colgroup><col style="width:18%"><col style="width:14%"><col style="width:36%"><col style="width:32%"></colgroup>
+        <thead><tr><th>State</th><th>Trigger</th><th>What ships</th><th>Voice example</th></tr></thead>
+        <tbody>
+          <tr><td><b>Loading</b></td><td class="ev">data.fetching</td><td><span class="pat">skeleton</span> matching the final shape — same gridlines, same row heights, same column widths. Never a generic spinner.</td><td><em>(silent · the skeleton is the message)</em></td></tr>
+          <tr><td><b>Empty</b></td><td class="ev">data.empty</td><td><span class="pat">illustration-free</span> · explanatory text + next-step CTA. Tells the user what would normally be here and how to make something happen.</td><td>"No findings in this window. Adjust filters or run a fresh sweep."</td></tr>
+          <tr><td><b>Filtered-empty</b></td><td class="ev">filter.no-match</td><td><span class="pat">distinct from Empty</span> — offers <strong>Clear filters</strong> as the primary action. Never silently merges with Empty.</td><td>"No findings match these filters. Clear filters to see all 22 records."</td></tr>
+          <tr><td><b>Error</b></td><td class="ev">request.failed</td><td><span class="pat">human cause</span> + <span class="pat">retry</span> + <span class="pat">escalate</span>. Status code is mono-fonted; cause is human.</td><td>"cmdb.query timed out. Retry, or escalate to platform-eng."</td></tr>
+          <tr><td><b>Stale</b></td><td class="ev">data.older-than-threshold</td><td>FreshnessBadge → <strong>warning</strong>; banner above the surface; values continue rendering but flagged.</td><td>"Last verified 14 days ago. Force refresh to recompute."</td></tr>
+          <tr><td><b>Unauthorized</b></td><td class="ev">RBAC.denied</td><td>Tells the user <strong>what they can see</strong>, what they can't, and <strong>how to request access</strong>. Never a blank page.</td><td>"You can see 12 of 22 CIs. Request elevated access to see the rest."</td></tr>
+          <tr><td><b>Executing</b></td><td class="ev">action.running</td><td><span class="pat">disabled CTAs</span> + inline progress. Never let the user double-submit; never let them think nothing happened.</td><td>"Writing 22 owner assignments… 14 of 22 done."</td></tr>
+          <tr><td><b>Success-after-action</b></td><td class="ev">action.completed</td><td>ExecutionTimeline or toast with <strong>Undo</strong> wherever possible. The audit trail captures everything; the toast is just the announce.</td><td>"22 CIs assigned. Undo · View in audit."</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>8 states · loading · empty · filtered-empty · error · stale · unauth · executing · success</span></div>
+  </section>
+
+  <!-- ============ 18 · DAG & GRAPH KIT ============ -->
+  <section data-screen-label="18 DAG & graph kit">
+    <style>
+      .gks-grid{display:grid;grid-template-columns:1fr 720px;gap:24px;height:100%}
+      .gks-canvas{position:relative;background:radial-gradient(circle at 1px 1px, #DCE2E6 1px, transparent 1.6px) 0 0/22px 22px, linear-gradient(180deg,#FAFBFC 0,#F5F6F8 100%);border:1px solid var(--border-1);border-radius:10px;overflow:hidden}
+      .gks-canvas .nd{
+        --nd-accent:#29707A;--nd-tint:#E0EFF1;--nd-tint-strong:rgba(41,112,122,.22);
+        position:absolute;background:#fff;border:1px solid var(--border-1);border-left:3px solid var(--nd-accent);border-radius:6px;width:230px;box-shadow:0 1px 0 rgba(15,23,42,.02),0 6px 14px -10px rgba(15,23,42,.18);transform:translate(-50%,-50%)
+      }
+      .gks-canvas .nd .nh{display:flex;align-items:center;gap:8px;padding:9px 12px 8px;background:var(--nd-tint);border-bottom:1px solid var(--nd-tint-strong)}
+      .gks-canvas .nd .nh .pip{width:7px;height:7px;border-radius:50%;background:var(--nd-accent)}
+      .gks-canvas .nd .nh .ttl{font-size:13px;font-weight:600;color:var(--fg-1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .gks-canvas .nd .nh .st{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--nd-accent);text-transform:uppercase}
+      .gks-canvas .nd .nb{padding:9px 12px 11px;font-size:11.5px;color:var(--fg-2);line-height:1.4}
+      .gks-canvas .nd .nb .id{font-family:var(--font-mono);font-size:10px;color:var(--fg-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .gks-canvas .nd .nb .meta{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10.5px;color:var(--fg-muted);margin-top:5px}
+      .gks-canvas .nd .nb .meta b{color:var(--fg-1);font-weight:600}
+      .gks-canvas .nd.t-orchestration{--nd-accent:#29707A;--nd-tint:#E0EFF1;--nd-tint-strong:rgba(41,112,122,.22)}
+      .gks-canvas .nd.t-recommendation{--nd-accent:#7A3FB0;--nd-tint:#F3EBFA;--nd-tint-strong:#DDC6F0}
+      .gks-canvas .nd.t-analysis{--nd-accent:#B45309;--nd-tint:#FEF3C7;--nd-tint-strong:#FDE68A}
+      .gks-canvas .nd.t-snapshot{--nd-accent:#0E91C9;--nd-tint:#E0F1F8;--nd-tint-strong:#B6DDED}
+      .gks-canvas .nd.t-governance{--nd-accent:#A8001F;--nd-tint:#FBE9EE;--nd-tint-strong:#F0B4C0}
+      .gks-canvas .nd.t-execution{--nd-accent:#FF462D;--nd-tint:#FFE8E0;--nd-tint-strong:#FFC2B0}
+      .gks-canvas .nd.s-success{border-left-color:#1F8F4A}
+      .gks-canvas .nd.s-running::after{content:"";position:absolute;inset:-1px;border:1.5px solid var(--nd-accent);border-radius:7px;opacity:.55;animation:gks-pulse 1.6s ease-in-out infinite;pointer-events:none}
+      @keyframes gks-pulse{0%,100%{box-shadow:0 0 0 0 rgba(41,112,122,.35)}50%{box-shadow:0 0 0 8px rgba(41,112,122,0)}}
+      .gks-canvas svg.gks-edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+      .gks-edges .ae{stroke-dasharray:8 6;animation:gks-dash 1.4s linear infinite}
+      @keyframes gks-dash{to{stroke-dashoffset:-28}}
+
+      .gks-chrome{position:absolute;background:rgba(255,255,255,.94);border:1px solid var(--border-1);border-radius:6px;padding:6px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px)}
+      .gks-chrome .ob{width:30px;height:30px;border-radius:4px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;color:var(--fg-2)}
+      .gks-chrome .ob.active{background:var(--k-spruce-10);color:var(--k-spruce-70)}
+      .gks-chrome .ob svg{width:15px;height:15px}
+      .gks-chrome .div{width:1px;height:20px;background:var(--border-1);margin:0 3px}
+      .gks-chrome .zv{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);padding:0 8px}
+
+      .gks-mini{position:absolute;bottom:18px;right:18px;width:200px;height:130px;background:rgba(255,255,255,.95);border:1px solid var(--border-1);border-radius:6px;padding:8px;backdrop-filter:blur(6px)}
+      .gks-mini .mh{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+      .gks-mini svg{width:100%;height:calc(100% - 18px);background:var(--bg-2);border-radius:3px}
+
+      .gks-legend{position:absolute;bottom:18px;left:18px;background:rgba(255,255,255,.95);border:1px solid var(--border-1);border-radius:6px;padding:10px 12px;backdrop-filter:blur(6px)}
+      .gks-legend .lh{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--fg-muted);text-transform:uppercase;margin-bottom:6px}
+      .gks-legend .li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--fg-2);padding:2px 0}
+      .gks-legend .li .sw{width:9px;height:9px;border-radius:50%;background:var(--c)}
+
+      .gks-side{display:flex;flex-direction:column;gap:18px;overflow:hidden}
+      .gks-card{background:#fff;border:1px solid var(--border-1);border-radius:10px;padding:18px}
+      .gks-card .hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+      .gks-card h3{margin:0;font-size:18px;font-weight:500;font-family:var(--font-display);letter-spacing:-.005em}
+      .gks-card .tag{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);letter-spacing:.04em}
+
+      .gks-lod{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--border-1)}
+      .gks-lod:first-of-type{border-top:none;padding-top:0}
+      .gks-lod .lod-name{font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;width:120px}
+      .gks-lod .lod-vis{display:flex;align-items:center;justify-content:center}
+      .gks-lod .lod-desc{font-size:13px;color:var(--fg-2);line-height:1.4;max-width:260px}
+
+      .gks-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;background:var(--c-tint);color:var(--c);border:1px solid var(--c-tint-strong);font-family:var(--font-mono);font-size:11px;font-weight:500}
+      .gks-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--c)}
+      .gks-pill .lbl{color:var(--fg-1)}
+
+      .gks-mini-card{background:#fff;border:1px solid var(--border-1);border-left:3px solid var(--c);border-radius:5px;width:170px;font-size:11px}
+      .gks-mini-card .h{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--c-tint);border-bottom:1px solid var(--c-tint-strong);font-size:11px;font-weight:600}
+      .gks-mini-card .h .pip{width:5px;height:5px;border-radius:50%;background:var(--c)}
+      .gks-mini-card .b{padding:5px 8px;font-family:var(--font-mono);font-size:9.5px;color:var(--fg-muted)}
+
+      .gks-tax{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+      .gks-tax .ti{display:flex;align-items:center;gap:6px;padding:5px 7px;background:var(--bg-2);border-radius:4px;font-size:11px;color:var(--fg-2)}
+      .gks-tax .ti .sw{width:8px;height:8px;border-radius:50%;background:var(--c);flex-shrink:0}
+
+      .gks-edge-row{display:grid;grid-template-columns:90px 1fr 1fr;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border-1);font-size:12px}
+      .gks-edge-row:first-of-type{border-top:none}
+      .gks-edge-row .nm{font-weight:600;color:var(--fg-1)}
+      .gks-edge-row .desc{color:var(--fg-2);font-size:11.5px;line-height:1.35}
+      .gks-edge-row svg{width:100%;height:24px}
+    </style>
+
+    <div class="hd">
+      <span class="eyebrow"><span class="gl"></span>Composites · graph &amp; ontology</span>
+      <span class="ix">18 / 19</span>
+    </div>
+
+    <div class="gks-grid">
+      <!-- LEFT: live canvas -->
+      <div class="gks-canvas">
+        <div class="gks-chrome" style="top:14px;left:14px">
+          <button class="ob active" title="Pan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 9V5h4M19 9V5h-4M5 15v4h4M19 15v4h-4"/></svg></button>
+          <button class="ob" title="Select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l7 14 2-6 6-2L4 4z"/></svg></button>
+          <div class="div"></div>
+          <button class="ob" title="Connect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 9l6 6"/></svg></button>
+        </div>
+
+        <div class="gks-chrome" style="top:14px;right:14px">
+          <span class="zv">100%</span>
+          <button class="ob" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button class="ob" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14"/></svg></button>
+          <div class="div"></div>
+          <button class="ob" title="Fit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></svg></button>
+        </div>
+
+        <!-- nodes & edges -->
+        <svg class="gks-edges" viewBox="0 0 1140 880" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gks-active" x1="0" x2="1"><stop offset="0" stop-color="#29707A"/><stop offset="1" stop-color="#7A3FB0"/></linearGradient>
+            <marker id="gks-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#29707A"/></marker>
+            <marker id="gks-arr-warm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FF462D"/></marker>
+          </defs>
+          <!-- 1->2 traversed -->
+          <path d="M 200 360 C 290 360, 290 360, 380 360" fill="none" stroke="#1F8F4A" stroke-width="2" marker-end="url(#gks-arr)"/>
+          <!-- 2->3 traversed -->
+          <path d="M 580 360 C 670 360, 670 360, 760 360" fill="none" stroke="#1F8F4A" stroke-width="2" marker-end="url(#gks-arr)"/>
+          <!-- 3->4 active -->
+          <path d="M 960 360 C 1050 360, 1010 600, 870 600" fill="none" stroke="url(#gks-active)" stroke-width="2.4" class="ae" marker-end="url(#gks-arr)"/>
+          <!-- 3->5 conditional -->
+          <path d="M 870 360 C 870 480, 320 540, 360 660" fill="none" stroke="#98A3AB" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#gks-arr)"/>
+          <!-- 4->6 conditional -->
+          <path d="M 670 600 C 580 600, 540 720, 540 740" fill="none" stroke="#98A3AB" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#gks-arr)"/>
+          <!-- 4->7 retried (warm) -->
+          <path d="M 870 660 C 940 720, 980 740, 870 770" fill="none" stroke="#FF462D" stroke-width="2.4" marker-end="url(#gks-arr-warm)"/>
+        </svg>
+
+        <!-- node 1 — orchestration · success -->
+        <div class="nd t-orchestration s-success" style="left:120px;top:360px">
+          <div class="nh"><span class="pip" style="background:#1F8F4A"></span><span class="ttl">Session start</span><span class="st">OK</span></div>
+          <div class="nb"><div class="id">ORCH_SESSION_START</div><div class="meta"><span>events 1</span><span><b>7s</b></span></div></div>
+        </div>
+
+        <!-- node 2 — recommendation · success -->
+        <div class="nd t-recommendation s-success" style="left:480px;top:360px">
+          <div class="nh"><span class="pip" style="background:#1F8F4A"></span><span class="ttl">Processing your request</span><span class="st">OK</span></div>
+          <div class="nb"><div class="id">FUNC_STEP_PROCESSING_YOUR_REQUEST_LERND</div><div class="meta"><span>tools 1</span><span><b>6s</b></span></div></div>
+        </div>
+
+        <!-- node 3 — analysis · running (the focus) -->
+        <div class="nd t-analysis s-running" style="left:870px;top:360px">
+          <div class="nh"><span class="pip" style="background:#B45309;animation:gks-blink 1s ease-in-out infinite"></span><span class="ttl">Reviewing signals</span><span class="st">RUN</span></div>
+          <div class="nb"><div class="id">FUNC_STEP_REVIEWING_CROSS_FUNCTIONAL_PERFORMANCE_SIGNALS</div><div class="meta"><span>tools 2 · sources 5</span><span><b>1.4s</b></span></div></div>
+        </div>
+
+        <!-- node 4 — recommendation · running -->
+        <div class="nd t-recommendation s-running" style="left:780px;top:600px">
+          <div class="nh"><span class="pip" style="background:#7A3FB0;animation:gks-blink 1s ease-in-out infinite"></span><span class="ttl">Preparing response</span><span class="st">RUN</span></div>
+          <div class="nb"><div class="id">FUNC_STEP_PREPARING_RESPONSE_LYC4A20</div><div class="meta"><span>conf. 0.86</span><span><b>0.4s</b></span></div></div>
+        </div>
+
+        <!-- node 5 — snapshot pending (left branch — conditional) -->
+        <div class="nd t-snapshot" style="left:250px;top:680px;opacity:.85">
+          <div class="nh"><span class="pip" style="background:#0E91C9"></span><span class="ttl">snapshot_dashboard</span><span class="st">QUEUE</span></div>
+          <div class="nb"><div class="id">SNAPSHOT_DASHBOARD</div><div class="meta"><span>conditional</span><span><b>—</b></span></div></div>
+        </div>
+
+        <!-- node 6 — governance · approving -->
+        <div class="nd t-governance" style="left:430px;top:780px;border-left-style:double;border-left-width:5px">
+          <div class="nh"><span class="pip" style="background:#A8001F"></span><span class="ttl">Approval gate</span><span class="st">GATE</span></div>
+          <div class="nb"><div class="id">GOV_HUMAN_APPROVAL</div><div class="meta"><span>requested by Avery</span><span><b>—</b></span></div></div>
+        </div>
+
+        <!-- node 7 — execution · failed/retried -->
+        <div class="nd t-execution" style="left:870px;top:790px;border-left-color:#A1100F">
+          <div class="nh"><span class="pip" style="background:#A1100F"></span><span class="ttl">execute_remediation</span><span class="st">RETRY</span></div>
+          <div class="nb"><div class="id">EXEC_REMEDIATION_PLAN</div><div class="meta"><span>attempt 2 / 3</span><span><b>2.1s</b></span></div></div>
+        </div>
+
+        <!-- minimap -->
+        <div class="gks-mini">
+          <div class="mh"><span>Overview</span><span>7 nodes · 6 edges</span></div>
+          <svg viewBox="0 0 200 110">
+            <line x1="20" y1="42" x2="60" y2="42" stroke="#C1C8CD" stroke-width="2"/>
+            <line x1="60" y1="42" x2="105" y2="42" stroke="#C1C8CD" stroke-width="2"/>
+            <line x1="105" y1="42" x2="150" y2="42" stroke="#C1C8CD" stroke-width="2"/>
+            <line x1="150" y1="42" x2="135" y2="74" stroke="#C1C8CD" stroke-width="2"/>
+            <line x1="105" y1="42" x2="50" y2="78" stroke="#98A3AB" stroke-width="1" stroke-dasharray="2 2"/>
+            <line x1="135" y1="74" x2="80" y2="92" stroke="#98A3AB" stroke-width="1" stroke-dasharray="2 2"/>
+            <line x1="135" y1="74" x2="155" y2="95" stroke="#FF462D" stroke-width="1.6"/>
+            <rect x="20" y="36" width="40" height="14" rx="3" fill="#29707A"/>
+            <rect x="65" y="36" width="40" height="14" rx="3" fill="#7A3FB0"/>
+            <rect x="110" y="36" width="40" height="14" rx="3" fill="#B45309"/>
+            <rect x="115" y="68" width="40" height="14" rx="3" fill="#7A3FB0"/>
+            <rect x="30" y="72" width="40" height="14" rx="3" fill="#0E91C9" opacity=".7"/>
+            <rect x="60" y="86" width="40" height="14" rx="3" fill="#A8001F" opacity=".8"/>
+            <rect x="135" y="89" width="40" height="14" rx="3" fill="#FF462D"/>
+            <rect x="0" y="20" width="200" height="80" fill="rgba(41,112,122,.06)" stroke="#29707A" stroke-width="1"/>
+          </svg>
+        </div>
+
+        <!-- legend -->
+        <div class="gks-legend">
+          <div class="lh">Workflow color key</div>
+          <div class="li" style="--c:#29707A"><span class="sw"></span>Orchestration</div>
+          <div class="li" style="--c:#A8001F"><span class="sw"></span>Governance</div>
+          <div class="li" style="--c:#3E8AC2"><span class="sw"></span>Ingestion</div>
+          <div class="li" style="--c:#B45309"><span class="sw"></span>Analysis</div>
+          <div class="li" style="--c:#7A3FB0"><span class="sw"></span>Recommendation</div>
+          <div class="li" style="--c:#FF462D"><span class="sw"></span>Execution</div>
+          <div class="li" style="--c:#1F8F4A"><span class="sw"></span>Monitoring</div>
+          <div class="li" style="--c:#0E91C9"><span class="sw"></span>Snapshot</div>
+          <div class="li" style="--c:#5C5C5C"><span class="sw"></span>Unmapped</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: spec column -->
+      <div class="gks-side">
+        <div>
+          <h1 style="font-size:54px;margin-bottom:14px">DAG &amp; knowledge graph.</h1>
+          <p class="lede" style="margin-bottom:0">One node atom · three levels of detail · nine semantic types · eight lifecycle states · four layouts · four edge styles. The same kit renders an <em>agentic workflow</em> as a left-to-right DAG and a <em>CMDB ontology</em> as a force-directed graph — only the layout and edge labels change.</p>
+        </div>
+
+        <!-- LOD -->
+        <div class="gks-card">
+          <div class="hd"><h3>3 levels of detail</h3><span class="tag">.nd.pill · .nd.card · .nd.expanded</span></div>
+          <div class="gks-lod">
+            <div class="lod-name">Pill</div>
+            <div class="lod-vis">
+              <span class="gks-pill" style="--c:#7A3FB0;--c-tint:#F3EBFA;--c-tint-strong:#DDC6F0"><span class="dot"></span><span class="lbl">Preparing response</span></span>
+            </div>
+            <div class="lod-desc">Minimap, breadcrumbs, log references. Single mono label.</div>
+          </div>
+          <div class="gks-lod">
+            <div class="lod-name">Card</div>
+            <div class="lod-vis">
+              <div class="gks-mini-card" style="--c:#7A3FB0;--c-tint:#F3EBFA;--c-tint-strong:#DDC6F0">
+                <div class="h"><span class="pip"></span>Preparing response</div>
+                <div class="b">FUNC_STEP_PREPARING…</div>
+              </div>
+            </div>
+            <div class="lod-desc">Canvas default. Header carries pip · title · state tag.</div>
+          </div>
+          <div class="gks-lod">
+            <div class="lod-name">Expanded</div>
+            <div class="lod-vis">
+              <div class="gks-mini-card" style="--c:#7A3FB0;--c-tint:#F3EBFA;--c-tint-strong:#DDC6F0">
+                <div class="h"><span class="pip"></span>Preparing response</div>
+                <div class="b">conf. 0.86 · tools 2<br/><span style="color:#7A3FB0">3 · Redirections ›</span></div>
+              </div>
+            </div>
+            <div class="lod-desc">On hover/select. Adds metadata + redirections (trace · replay · inspect).</div>
+          </div>
+        </div>
+
+        <!-- Taxonomy mini-grid -->
+        <div class="gks-card">
+          <div class="hd"><h3>9 semantic types</h3><span class="tag">color is never the only signal</span></div>
+          <div class="gks-tax">
+            <div class="ti" style="--c:#29707A"><span class="sw"></span>Orchestration</div>
+            <div class="ti" style="--c:#A8001F"><span class="sw"></span>Governance</div>
+            <div class="ti" style="--c:#3E8AC2"><span class="sw"></span>Ingestion</div>
+            <div class="ti" style="--c:#B45309"><span class="sw"></span>Analysis</div>
+            <div class="ti" style="--c:#7A3FB0"><span class="sw"></span>Recommendation</div>
+            <div class="ti" style="--c:#FF462D"><span class="sw"></span>Execution</div>
+            <div class="ti" style="--c:#1F8F4A"><span class="sw"></span>Monitoring</div>
+            <div class="ti" style="--c:#0E91C9"><span class="sw"></span>Snapshot</div>
+            <div class="ti" style="--c:#5C5C5C"><span class="sw"></span>Unmapped</div>
+          </div>
+        </div>
+
+        <!-- Edge states -->
+        <div class="gks-card">
+          <div class="hd"><h3>Edge states</h3><span class="tag">curved · orthogonal · straight</span></div>
+          <div class="gks-edge-row">
+            <span class="nm">Active</span>
+            <svg viewBox="0 0 200 24"><path d="M2 12 C 70 12, 130 12, 198 12" fill="none" stroke="url(#gks-active)" stroke-width="2.2" stroke-dasharray="7 5" class="ae"/></svg>
+            <div class="desc">Currently traversing — flowing dash.</div>
+          </div>
+          <div class="gks-edge-row">
+            <span class="nm">Traversed</span>
+            <svg viewBox="0 0 200 24"><path d="M2 12 C 70 12, 130 12, 198 12" fill="none" stroke="#1F8F4A" stroke-width="2"/></svg>
+            <div class="desc">Already executed — solid green.</div>
+          </div>
+          <div class="gks-edge-row">
+            <span class="nm">Conditional</span>
+            <svg viewBox="0 0 200 24"><path d="M2 12 C 70 12, 130 12, 198 12" fill="none" stroke="#98A3AB" stroke-width="1.6" stroke-dasharray="5 5"/></svg>
+            <div class="desc">May or may not fire — dashed neutral.</div>
+          </div>
+          <div class="gks-edge-row">
+            <span class="nm">Retried</span>
+            <svg viewBox="0 0 200 24"><path d="M2 12 C 70 12, 130 12, 198 12" fill="none" stroke="#FF462D" stroke-width="2.6"/></svg>
+            <div class="desc">Re-run after failure — heavy warm-red.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft"><span class="l"><span class="gl"></span>Kyndryl CMDB Design System</span><span>graph kit · 9 types · 8 states · 4 layouts · pill / card / expanded</span></div>
+  </section>
+
+  <!-- ============ 19 · OUTRO ============ -->
+  <section class="outro" data-screen-label="19 Summary">
+    <div class="stamp"><span class="gl"></span>Kyndryl · CMDB Data Quality · Design system v1.0</div>
+    <div>
+      <h1 class="big">A system that <em>compounds</em>.</h1>
+      <p style="font-size:24px;line-height:1.45;color:var(--fg-2);max-width:1300px;margin:32px 0 0">The agent does the work. The user keeps the wheel. Every override teaches the system. The "Learned from you" inbox makes corrections visible — not invisible, not opaque, not lost. Aligned to Shidoka. Tuned for SREs. Calm by default. Ready for new pages, new agents, new surfaces — without redesigning the chrome.</p>
+    </div>
+    <div>
+      <div class="summary">
+        <div><b>5</b><span>Layers</span></div>
+        <div><b>30+</b><span>Primitives</span></div>
+        <div><b>6</b><span>Live agentic states</span></div>
+        <div><b>5</b><span>Page templates</span></div>
+      </div>
+      <div class="meta-row" style="margin-top:32px">
+        <span>colors_and_type.css · 45 preview surfaces · 1 ui kit</span>
+        <span>k-cmdb-ds · v1.0 · April 2026</span>
+        <span>End — Vol. 01</span>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+</body></html>

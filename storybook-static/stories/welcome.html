@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Welcome · Kyndryl Agentic Framework</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { margin: 0; padding: 40px 56px 64px; background: #fff; color: var(--fg-1); }
+  .hero { max-width: 880px; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--k-spruce-60); margin-bottom: 12px; }
+  h1 { font-family: var(--font-display); font-size: 44px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.05; color: var(--fg-1); margin: 0 0 16px; max-width: 760px; text-wrap: pretty; }
+  .lead { font-size: 17px; line-height: 1.55; color: var(--fg-2); margin: 0 0 32px; max-width: 720px; text-wrap: pretty; }
+  .meta-row { display: flex; gap: 24px; margin: 0 0 40px; padding: 16px 20px; background: var(--bg-2); border-radius: 8px; border: 1px solid var(--border-1); }
+  .meta-row .m { display: flex; flex-direction: column; }
+  .meta-row .ml { font-size: 10px; letter-spacing: 0.14em; font-weight: 700; text-transform: uppercase; color: var(--fg-muted); }
+  .meta-row .mv { font-family: var(--font-display); font-size: 18px; color: var(--fg-1); margin-top: 2px; font-weight: 500; }
+  .meta-row .mv code { font-family: var(--font-mono); background: transparent; padding: 0; font-size: 14px; }
+
+  h2 { font-family: var(--font-display); font-size: 22px; font-weight: 500; color: var(--fg-1); margin: 48px 0 12px; padding-top: 24px; border-top: 1px solid var(--border-1); max-width: 880px; }
+  h2:first-of-type { border-top: 0; padding-top: 0; }
+  p { color: var(--fg-2); line-height: 1.6; margin: 0 0 12px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 880px; margin: 12px 0 16px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .card { border: 1px solid var(--border-1); border-radius: 8px; padding: 16px 18px; background: #fff; text-decoration: none; color: inherit; display: block; transition: border-color 120ms ease, transform 120ms ease; }
+  .card:hover { border-color: var(--k-spruce-60); transform: translateY(-1px); }
+  .card .ce { font-size: 10px; letter-spacing: 0.14em; font-weight: 700; text-transform: uppercase; color: var(--k-spruce-60); }
+  .card h3 { font-family: var(--font-display); font-size: 17px; font-weight: 500; color: var(--fg-1); margin: 4px 0 6px; }
+  .card p { font-size: 13px; color: var(--fg-2); margin: 0; }
+
+  .layer { display: grid; grid-template-columns: 90px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border-1); max-width: 880px; }
+  .layer:last-child { border-bottom: 0; }
+  .layer-num { font-family: var(--font-display); font-size: 24px; font-weight: 500; color: var(--k-spruce-60); letter-spacing: -0.01em; }
+  .layer-name { font-family: var(--font-display); font-size: 16px; font-weight: 500; color: var(--fg-1); margin-bottom: 4px; }
+  .layer-body { font-size: 13.5px; color: var(--fg-2); line-height: 1.55; }
+
+  .swatch-row { display: flex; gap: 10px; margin: 12px 0 8px; flex-wrap: wrap; }
+  .swatch { display: flex; flex-direction: column; gap: 6px; }
+  .swatch .chip { width: 90px; height: 56px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.06); }
+  .swatch .label { font-size: 11px; color: var(--fg-2); }
+  .swatch .hex { font-family: var(--font-mono); font-size: 10px; color: var(--fg-muted); }
+
+  .source-list { display: grid; grid-template-columns: 1fr; gap: 8px; max-width: 880px; }
+  .source { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 1px solid var(--border-1); border-radius: 6px; }
+  .source-num { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--k-spruce-60); padding: 2px 8px; background: var(--k-ai-spruce-12); border-radius: 4px; flex-shrink: 0; height: 22px; display: inline-flex; align-items: center; }
+  .source-body strong { font-family: var(--font-display); font-size: 15px; font-weight: 500; color: var(--fg-1); display: block; margin-bottom: 2px; }
+  .source-body { font-size: 13px; color: var(--fg-2); line-height: 1.55; }
+  .source-body code { font-family: var(--font-mono); font-size: 11.5px; background: var(--bg-2); padding: 1px 5px; border-radius: 3px; color: var(--fg-1); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Design system · v1.0</div>
+  <h1>Kyndryl Agentic Framework</h1>
+  <p class="lead">A design system for evidence-first agentic operations. Every number has a reason, every recommendation has provenance, and every action shows its blast radius before it runs. Aligned to <strong>Shidoka (Bridge)</strong>, Kyndryl's foundation design system.</p>
+</div>
+
+<div class="meta-row">
+  <div class="m"><span class="ml">Brand accent</span><span class="mv"><code>#FF462D</code> Warm Red 50</span></div>
+  <div class="m"><span class="ml">Interactive</span><span class="mv"><code>#29707A</code> Spruce 60</span></div>
+  <div class="m"><span class="ml">Type pair</span><span class="mv">TWK Everett · Roboto</span></div>
+  <div class="m"><span class="ml">Stories</span><span class="mv">50+</span></div>
+</div>
+
+<h2>Sources</h2>
+<p>This system is compiled from two inputs:</p>
+<div class="source-list">
+  <div class="source">
+    <span class="source-num">1</span>
+    <div class="source-body">
+      <strong>Shidoka foundation</strong>
+      Brand authority and primary source for tokens — palette, type, space, radii, semantic aliases (<code>$k-color-*</code>, <code>$k-text-*</code>, <code>Opacity.AI.*</code>). Three gray ramps (Dark Stone, Cool Gray, Warm Gray). Type stack: TWK Everett, Roboto, Geist Mono.
+    </div>
+  </div>
+  <div class="source">
+    <span class="source-num">2</span>
+    <div class="source-body">
+      <strong>CMDB Data Quality app</strong>
+      Applied patterns and composites from <code>daaron-wright/KyndrylAgenticFramework_cmdb-data-quality</code>. The five archetypes (Posture, Findings &amp; triage, Recommendation &amp; action, Investigation &amp; graph, Conversational &amp; narrative) shape every composite in this system.
+    </div>
+  </div>
+</div>
+
+<h2>Five-layer architecture</h2>
+<div class="layer">
+  <div class="layer-num">01</div>
+  <div>
+    <div class="layer-name">Foundations — tokens</div>
+    <div class="layer-body">All in <code>colors_and_type.css</code>. Color (brand, surface, text, semantic, severity, chart, workflow-status), type (display + body + mono + Arabic), space (4→64), radii (2/4/8/16), elevation (rare and subtle), motion (200ms standard ease), iconography (Shidoka sprite at 16/20/24).</div>
+  </div>
+</div>
+<div class="layer">
+  <div class="layer-num">02</div>
+  <div>
+    <div class="layer-name">Primitives</div>
+    <div class="layer-body">Curated shadcn-style layer plus semantic primitives with opinionated props: <code>SeverityPill</code>, <code>ConfidenceBadge</code>, <code>FreshnessBadge</code>, <code>DeltaIndicator</code>, <code>StatusBadge</code>, <code>SourceAttribution</code>. Every agentic primitive carries a dotted underline, ••• indicator, and a popover with 2–4 actions.</div>
+  </div>
+</div>
+<div class="layer">
+  <div class="layer-num">03</div>
+  <div>
+    <div class="layer-name">Composites</div>
+    <div class="layer-body">Posture (TrustScoreGauge, KpiTile, KpiGrid, StatusBannerCard), Triage (FindingCard, InspectorDrawer, SignalsPanel), Action (RecommendationCard, ScenarioProjectionCard, ExecutionTimeline), Graph (GraphCanvas, GraphInspector), Chat (ChatMessage, SnapshotCard).</div>
+  </div>
+</div>
+<div class="layer">
+  <div class="layer-num">04</div>
+  <div>
+    <div class="layer-name">Templates</div>
+    <div class="layer-body">5 page shells plus AppShell: Dashboard, Triage, Investigation, Review queue, Conversation. New pages are composed, not designed.</div>
+  </div>
+</div>
+<div class="layer">
+  <div class="layer-num">05</div>
+  <div>
+    <div class="layer-name">States matrix</div>
+    <div class="layer-body">Every composite ships loading / empty / filtered-empty / error / stale / unauthorized / executing / success-after-action. Non-negotiable.</div>
+  </div>
+</div>
+
+<h2>Brand at a glance</h2>
+<div class="swatch-row">
+  <div class="swatch"><div class="chip" style="background:#FF462D"></div><span class="label">Warm Red 50</span><span class="hex">#FF462D</span></div>
+  <div class="swatch"><div class="chip" style="background:#29707A"></div><span class="label">Spruce 60</span><span class="hex">#29707A</span></div>
+  <div class="swatch"><div class="chip" style="background:#141414"></div><span class="label">Dark Stone 90</span><span class="hex">#141414</span></div>
+  <div class="swatch"><div class="chip" style="background:#F2F4F5;border-color:#D6DBDF"></div><span class="label">Cool Gray 10</span><span class="hex">#F2F4F5</span></div>
+  <div class="swatch"><div class="chip" style="background:#1F8F4A"></div><span class="label">Success 100</span><span class="hex">#1F8F4A</span></div>
+  <div class="swatch"><div class="chip" style="background:#E68A00"></div><span class="label">Warning 100</span><span class="hex">#E68A00</span></div>
+  <div class="swatch"><div class="chip" style="background:#D62E2E"></div><span class="label">Error 100</span><span class="hex">#D62E2E</span></div>
+  <div class="swatch"><div class="chip" style="background:#A8001F"></div><span class="label">Critical 100</span><span class="hex">#A8001F</span></div>
+</div>
+
+<h2>Jump in</h2>
+<div class="grid grid-3">
+  <a class="card" href="#/story/foundations-colors--brand">
+    <div class="ce">Foundations</div>
+    <h3>Colors</h3>
+    <p>Brand, neutrals, severity, RAG status, and chart palettes.</p>
+  </a>
+  <a class="card" href="#/story/foundations-type--display">
+    <div class="ce">Foundations</div>
+    <h3>Type</h3>
+    <p>TWK Everett display + Roboto body + Geist Mono.</p>
+  </a>
+  <a class="card" href="#/story/primitives-severitypill--default">
+    <div class="ce">Primitives</div>
+    <h3>SeverityPill</h3>
+    <p>Canonical triage taxonomy. Try the controls.</p>
+  </a>
+  <a class="card" href="#/story/primitives-confidencebadge--default">
+    <div class="ce">Agentic primitive</div>
+    <h3>ConfidenceBadge</h3>
+    <p>Override, ask for evidence, snooze, or teach the agent.</p>
+  </a>
+  <a class="card" href="#/story/agentic-flow--full-run">
+    <div class="ce">Agentic</div>
+    <h3>Full live run</h3>
+    <p>Status bar → step timeline → tool calls → handoff → toast.</p>
+  </a>
+  <a class="card" href="#/story/templates--dashboard">
+    <div class="ce">Templates</div>
+    <h3>Dashboard</h3>
+    <p>The reference posture page. KPI grid + trust gauge + chat.</p>
+  </a>
+  <a class="card" href="#/story/states-matrix--all">
+    <div class="ce">States</div>
+    <h3>States matrix</h3>
+    <p>Eight states every composite must ship.</p>
+  </a>
+  <a class="card" href="#/story/kits-cmdb--workspace">
+    <div class="ce">Kits</div>
+    <h3>CMDB workspace</h3>
+    <p>The full clickable UI kit — five archetypes wired together.</p>
+  </a>
+  <a class="card" href="#/story/kits-shidoka--charts">
+    <div class="ce">Kits</div>
+    <h3>Shidoka charts</h3>
+    <p>Bar, line, sankey, choropleth, heatmap — palette-locked.</p>
+  </a>
+</div>
+
+<h2>Content fundamentals</h2>
+<p>Voice is operational, precise, quietly authoritative. Sentence case for titles and buttons; uppercase only for eyebrows and severity pills. Numbers are always specific (<code>62%</code> not "most"). No emoji. No exclamation points. Severity is never color-only — always paired with icon or label.</p>
+
+</body>
+</html>

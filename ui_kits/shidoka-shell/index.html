@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shidoka — Shell Demo</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+:root{
+  --bg-page:#F1F5F9;
+  --fg-1:#0F172A;
+  --fg-2:#334155;
+  --fg-muted:#64748B;
+  --border-1:#E2E8F0;
+  --border-2:#CBD5E1;
+  --primary:#29707A;
+  --primary-hover:#1F5860;
+  --primary-pressed:#184A51;
+  --accent:#FF462D;
+  --menu-hover:rgba(15,23,42,.06);
+  --menu-open:rgba(41,112,122,.08);
+  --shadow-1:0 1px 2px rgba(15,23,42,.05), 0 1px 3px rgba(15,23,42,.06);
+  --shadow-2:0 4px 12px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.05);
+  --header-h:56px;
+  --header-pad:64px;
+  --local-nav-w:56px;
+  --local-nav-w-open:224px;
+  --gutter:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg-page);
+  color:var(--fg-1);
+  font:14px/1.5 var(--font-sans,'Roboto',system-ui,sans-serif);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============================ HEADER ============================ */
+.kyn-header{
+  position:fixed; top:0; left:0; right:0;
+  height:var(--header-h);
+  padding:4px 16px 4px 20px;
+  margin:8px;
+  display:flex; align-items:center; gap:24px;
+  background:#fff;
+  border-radius:8px;
+  box-shadow:var(--shadow-1);
+  z-index:100;
+}
+.kyn-header__logo{display:inline-flex; align-items:center}
+.kyn-header__logo img{height:20px}
+.kyn-header__title{
+  font-family:'TWK Everett','TWKEverett',system-ui,sans-serif;
+  font-weight:300; font-size:16px;
+  padding-left:16px; border-left:1px solid var(--border-2);
+}
+.kyn-header__nav{display:flex; align-items:center; gap:2px; margin-left:16px}
+.kyn-nav-link{
+  font-size:14px; color:var(--fg-1); text-decoration:none;
+  padding:8px 12px; border-radius:4px;
+  display:inline-flex; align-items:center; gap:6px;
+  cursor:pointer;
+  transition:background-color 150ms, color 150ms;
+}
+.kyn-nav-link:hover{background:#0F172A; color:#fff}
+.kyn-nav-link.is-active{background:var(--menu-open); font-weight:500}
+.kyn-nav-link .chev{transition:transform 150ms}
+.kyn-nav-link[aria-expanded="true"] .chev{transform:rotate(180deg)}
+
+.kyn-header__right{margin-left:auto; display:flex; align-items:center; gap:4px}
+.kyn-header__icon-btn{
+  width:36px; height:36px; border-radius:4px; background:transparent; border:0;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--fg-1); cursor:pointer; position:relative;
+  transition:background-color 150ms;
+}
+.kyn-header__icon-btn:hover{background:var(--menu-hover)}
+.kyn-header__icon-btn svg{width:20px; height:20px}
+.kyn-header__icon-btn .dot{position:absolute; top:6px; right:8px; width:8px; height:8px; border-radius:50%; background:var(--accent); border:2px solid #fff}
+.kyn-avatar{
+  width:32px; height:32px; border-radius:50%;
+  background:var(--primary); color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:500; cursor:pointer; border:0;
+}
+
+/* ---- Flyout / Workspace switcher ---- */
+.flyout{
+  position:fixed; top:calc(var(--header-h) + 16px); z-index:120;
+  background:#fff; border-radius:8px;
+  box-shadow:var(--shadow-2);
+  display:none;
+  overflow:hidden;
+}
+.flyout.is-open{display:block}
+
+/* Apps menu */
+.flyout--apps{right:56px; width:320px; padding:12px}
+.flyout--apps h5{
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--fg-muted); margin:6px 8px 6px;
+}
+.flyout--apps a{
+  display:flex; gap:10px; padding:8px 10px; border-radius:4px;
+  text-decoration:none; color:var(--fg-1); font-size:13px;
+}
+.flyout--apps a:hover{background:var(--menu-hover)}
+.flyout--apps a .ico{width:28px; height:28px; border-radius:4px; background:#F1F5F9; display:inline-flex; align-items:center; justify-content:center; color:var(--primary); flex-shrink:0}
+.flyout--apps a .ico svg{width:16px; height:16px}
+.flyout--apps a small{display:block; color:var(--fg-muted); font-size:11px}
+
+/* Workspace switcher */
+.flyout--workspace{right:8px; width:620px; display:none}
+.flyout--workspace.is-open{display:flex}
+.ws__left{
+  width:240px; background:rgba(15,23,42,.03);
+  padding:12px; display:flex; flex-direction:column; gap:2px;
+}
+.ws__title{
+  font-size:10px; font-weight:500; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--fg-1); padding:4px 8px 8px;
+}
+.ws__meta{
+  padding:8px 8px 12px; margin-bottom:8px;
+  border-bottom:1px solid var(--border-1);
+  display:flex; gap:8px;
+}
+.ws__meta svg{width:16px; height:16px; color:#047857; flex-shrink:0; margin-top:2px}
+.ws__meta .name{font-weight:500; font-size:13px}
+.ws__meta .sub{font-size:11px; color:var(--fg-muted)}
+.ws-item{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px; border-radius:4px;
+  text-decoration:none; color:var(--fg-1); font-size:13px;
+  cursor:pointer;
+}
+.ws-item:hover{background:var(--menu-hover)}
+.ws-item.is-active{background:var(--menu-open); font-weight:500}
+.ws-item .ico{width:22px; height:22px; border-radius:4px; background:#E2E8F0; display:inline-flex; align-items:center; justify-content:center; color:var(--fg-2); font-size:11px; font-weight:600; flex-shrink:0}
+.ws-item .ico.ws-k{background:#FFEDE8; color:var(--accent)}
+.ws-item .ico.ws-s{background:#DBEAFE; color:#1D4ED8}
+.ws-item .ico.ws-g{background:#DCFCE7; color:#047857}
+.ws__right{
+  flex:1; padding:16px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.ws__right h4{
+  font-family:'TWK Everett','TWKEverett',sans-serif;
+  font-weight:400; font-size:16px; margin:0 0 4px;
+}
+.ws__card{
+  padding:12px; border:1px solid var(--border-1); border-radius:6px;
+  display:flex; gap:10px; cursor:pointer;
+  transition:border-color 150ms, box-shadow 150ms;
+}
+.ws__card:hover{border-color:var(--primary); box-shadow:var(--shadow-1)}
+.ws__card .ico{width:32px; height:32px; border-radius:4px; background:#FFEDE8; color:var(--accent); display:inline-flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0}
+.ws__card .name{font-weight:500; font-size:13px; margin:0 0 2px}
+.ws__card .sub{color:var(--fg-muted); font-size:12px; margin:0}
+
+/* ============================ PAGE LAYOUT ============================ */
+.shell{
+  padding-top:var(--header-pad);
+  min-height:100vh;
+  display:flex;
+}
+
+/* ---- Local nav (left rail) ---- */
+.localnav{
+  width:var(--local-nav-w);
+  background:#fff;
+  border-radius:8px;
+  margin:0 0 8px 8px;
+  padding:12px 8px;
+  box-shadow:var(--shadow-1);
+  display:flex; flex-direction:column; gap:4px;
+  position:fixed; top:calc(var(--header-pad) + 0px);
+  bottom:8px; left:0;
+  transition:width 200ms ease-out;
+  z-index:50;
+}
+.localnav.is-open{width:var(--local-nav-w-open)}
+.localnav__toggle{
+  display:flex; align-items:center; justify-content:flex-end;
+  width:100%; height:32px; padding:0 6px;
+  background:transparent; border:0; border-radius:4px; cursor:pointer;
+  color:var(--fg-1);
+}
+.localnav__toggle:hover{background:var(--menu-hover)}
+.localnav__item{
+  display:flex; align-items:center; gap:12px;
+  padding:8px; border-radius:4px;
+  color:var(--fg-1); text-decoration:none;
+  font-size:14px; cursor:pointer;
+  transition:background-color 120ms;
+  position:relative;
+}
+.localnav__item:hover{background:var(--menu-hover)}
+.localnav__item.is-active{background:var(--menu-open); font-weight:500}
+.localnav__item.is-active::before{content:""; position:absolute; left:0; top:6px; bottom:6px; width:3px; background:var(--primary); border-radius:2px}
+.localnav__item .ico{width:20px; height:20px; flex-shrink:0; color:var(--fg-2); display:inline-flex}
+.localnav__item .ico svg{width:20px; height:20px}
+.localnav__item.is-active .ico{color:var(--primary)}
+.localnav__item .label{
+  white-space:nowrap; opacity:0; transition:opacity 150ms; pointer-events:none;
+}
+.localnav.is-open .localnav__item .label{opacity:1; pointer-events:auto}
+.localnav__item .badge{
+  margin-left:auto; background:var(--accent); color:#fff;
+  font-size:10px; font-weight:700; padding:2px 6px; border-radius:9999px;
+  opacity:0; transition:opacity 150ms;
+}
+.localnav.is-open .localnav__item .badge{opacity:1}
+.localnav__spacer{flex:1}
+
+/* ---- Main content ---- */
+.main{
+  flex:1;
+  margin-left:calc(var(--local-nav-w) + 16px);
+  padding:0 var(--gutter) 8px;
+  transition:margin-left 200ms ease-out;
+  min-width:0;
+}
+.shell.nav-open .main{margin-left:calc(var(--local-nav-w-open) + 16px)}
+
+.page-head{display:flex; align-items:center; gap:16px; padding:8px 0 16px}
+.crumbs{display:flex; align-items:center; gap:12px; list-style:none; margin:0; padding:0; font-size:14px; color:var(--fg-muted)}
+.crumbs a{color:var(--primary); text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+.crumbs strong{color:var(--fg-1); font-weight:400}
+.crumbs li{display:flex; align-items:center; gap:12px}
+.crumbs li::after{content:""; width:12px; height:12px; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'><path d='M9.6 7L5.2 11.4l-.6-.6L8.4 7 4.6 3.2l.6-.6z' fill='%2394A3B8'/></svg>") no-repeat center/contain}
+.crumbs li:last-child::after{display:none}
+.page-title{
+  font-family:'TWK Everett','TWKEverett',system-ui,sans-serif;
+  font-weight:300; font-size:32px; margin:0;
+}
+.page-actions{margin-left:auto; display:flex; gap:8px}
+
+/* Reusable buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  height:40px; padding:0 20px; font:500 14px/1 var(--font-sans); letter-spacing:.01em;
+  border-radius:4px; border:1px solid transparent; cursor:pointer; text-decoration:none;
+  transition:background-color 150ms, color 150ms, border-color 150ms;
+}
+.btn--sm{height:32px; padding:0 14px; font-size:13px}
+.btn--primary{background:var(--primary); color:#fff}
+.btn--primary:hover{background:var(--primary-hover)}
+.btn--tertiary{background:transparent; color:var(--fg-1); border-color:var(--fg-1)}
+.btn--tertiary:hover{background:#0F172A; color:#fff}
+.btn--ghost{background:transparent; color:var(--fg-1)}
+.btn--ghost:hover{background:var(--menu-hover)}
+.btn--ai{color:#fff; background:linear-gradient(135deg,#29707A 0%,#FF462D 100%)}
+.btn svg{width:16px; height:16px}
+
+/* Cards / panels */
+.card{background:#fff; border-radius:8px; box-shadow:var(--shadow-1)}
+.panel{padding:20px}
+.eyebrow{font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-muted); margin:0 0 6px}
+.h3{font-family:'TWK Everett','TWKEverett',sans-serif; font-weight:400; font-size:18px; margin:0 0 6px}
+.h2{font-family:'TWK Everett','TWKEverett',sans-serif; font-weight:400; font-size:22px; margin:0 0 4px}
+p{margin:0 0 8px}
+
+/* Dashboard grid (screen 1) */
+.dash-grid{
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;
+  margin-bottom:16px;
+}
+.kpi{padding:16px 20px}
+.kpi .num{font-family:'TWK Everett',sans-serif; font-weight:400; font-size:36px; letter-spacing:-.015em; line-height:1; margin:6px 0 4px; font-variant-numeric:tabular-nums}
+.kpi .delta{font-size:12px; color:#047857; font-variant-numeric:tabular-nums}
+.kpi .delta.down{color:#B91C1C}
+.kpi .sub{font-size:11px; color:var(--fg-muted); margin-top:6px}
+
+.dash-row{display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px}
+
+/* Activity list */
+.activity{padding:0; overflow:hidden}
+.activity header{padding:14px 20px; border-bottom:1px solid var(--border-1); display:flex; align-items:center; justify-content:space-between}
+.activity header h3{margin:0; font:500 14px/1.3 var(--font-sans)}
+.activity ul{list-style:none; margin:0; padding:0}
+.activity li{display:flex; gap:12px; padding:14px 20px; border-bottom:1px solid var(--border-1); font-size:13px}
+.activity li:last-child{border-bottom:0}
+.activity .who{display:inline-flex; align-items:center; gap:8px; font-weight:500}
+.activity .av{width:24px; height:24px; border-radius:50%; background:#E2E8F0; color:var(--fg-2); font-size:10px; font-weight:600; display:inline-flex; align-items:center; justify-content:center}
+.activity .time{color:var(--fg-muted); font-size:11px; font-variant-numeric:tabular-nums}
+.activity .body{color:var(--fg-2); margin-top:2px}
+
+/* Notification panel */
+.notif-panel{padding:16px 20px; display:flex; flex-direction:column; gap:8px}
+.notif{
+  display:flex; gap:10px; padding:10px 12px; border-radius:4px;
+  border-left:3px solid var(--fg-muted); background:#F8FAFC; font-size:13px;
+}
+.notif--ai{border-left:0; background:linear-gradient(180deg,rgba(41,112,122,.04),rgba(255,70,45,.04)), #fff; position:relative; padding:12px}
+.notif--ai::before{
+  content:""; position:absolute; inset:0; border-radius:4px; padding:1px;
+  background:linear-gradient(135deg,#29707A,#FF462D);
+  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite:exclude; -webkit-mask-composite:xor; pointer-events:none;
+}
+.notif--success{border-left-color:#047857}
+.notif--warn{border-left-color:#B45309}
+.notif--err{border-left-color:#B91C1C}
+.notif .title{font-weight:500; margin:0 0 2px}
+.notif .msg{color:var(--fg-2); margin:0}
+.notif .icon{flex-shrink:0; color:var(--fg-muted); margin-top:2px}
+.notif--success .icon{color:#047857}
+.notif--warn .icon{color:#B45309}
+.notif--err .icon{color:#B91C1C}
+
+/* Screen 2 : workspace detail */
+.screen{display:none}
+.screen.is-active{display:block}
+
+/* Triage table */
+.toolbar{display:flex; align-items:center; gap:8px; padding:14px 16px; border-bottom:1px solid var(--border-1); flex-wrap:wrap}
+.toolbar .search{position:relative; flex:1; max-width:360px}
+.toolbar .search input{width:100%; height:36px; padding:0 12px 0 36px; border:1px solid var(--border-2); border-radius:4px; font-size:13px}
+.toolbar .search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--fg-muted)}
+.tag{display:inline-flex; align-items:center; gap:4px; padding:2px 8px; background:#F1F5F9; color:var(--fg-2); font-size:12px; border-radius:9999px}
+.kyn-table{width:100%; border-collapse:separate; border-spacing:0; font-size:13px}
+.kyn-table th{text-align:left; padding:10px 16px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--fg-muted); border-bottom:1px solid var(--border-1); background:#F8FAFC}
+.kyn-table td{padding:12px 16px; border-bottom:1px solid var(--border-1); font-variant-numeric:tabular-nums}
+.kyn-table tbody tr:hover{background:rgba(248,250,252,.7); cursor:pointer}
+.kyn-table tbody tr:last-child td{border-bottom:0}
+.kyn-table .mono{font-family:var(--font-mono,'Geist Mono',monospace); font-size:12px}
+.badge{display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px; font-size:11px; font-weight:500}
+.badge--warn{background:#FEF3C7; color:#92400E}
+.badge--err{background:#FEE2E2; color:#991B1B}
+.badge--success{background:#D1FAE5; color:#065F46}
+.badge--info{background:#E0F2FE; color:#075985}
+
+/* Footer */
+.kyn-footer{
+  display:flex; align-items:center; gap:16px;
+  padding:20px 24px; margin:0 8px 8px calc(var(--local-nav-w) + 16px);
+  background:#fff; border-radius:8px; box-shadow:var(--shadow-1);
+  flex-wrap:wrap;
+  transition:margin-left 200ms ease-out;
+}
+.shell.nav-open .kyn-footer{margin-left:calc(var(--local-nav-w-open) + 16px)}
+.kyn-footer__links{display:flex; gap:24px; flex-wrap:wrap}
+.kyn-footer__links a{color:var(--fg-1); text-decoration:none; font-size:13px}
+.kyn-footer__links a:hover{text-decoration:underline}
+.kyn-footer__copy{margin-left:auto; color:var(--fg-muted); font-size:12px; font-weight:300}
+.kyn-footer__logo{height:18px; margin-left:16px}
+
+@media (max-width:960px){
+  .dash-grid{grid-template-columns:1fr 1fr}
+  .dash-row{grid-template-columns:1fr}
+  .flyout--workspace{width:calc(100vw - 32px); right:16px}
+  .ws__left{width:200px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================== HEADER ================== -->
+<header class="kyn-header">
+  <a href="#" class="kyn-header__logo" aria-label="Kyndryl home">
+    <img src="../../assets/kyndryl-logo.png" alt="Kyndryl">
+  </a>
+  <span class="kyn-header__title">Agentic Framework</span>
+
+  <nav class="kyn-header__nav" aria-label="Primary">
+    <a class="kyn-nav-link" data-screen="dashboard" href="#dashboard">Dashboard</a>
+    <button class="kyn-nav-link" id="navProducts" aria-haspopup="true" aria-expanded="false">
+      Products
+      <span class="chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg></span>
+    </button>
+    <a class="kyn-nav-link" href="#triage" data-screen="triage">Triage</a>
+    <a class="kyn-nav-link" href="#docs">Docs</a>
+  </nav>
+
+  <div class="kyn-header__right">
+    <button class="kyn-header__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <button class="kyn-header__icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+    <button class="kyn-header__icon-btn" id="appsBtn" aria-label="Apps" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg></button>
+    <button class="kyn-avatar" id="wsBtn" title="Workspace: Kyndryl · Payments" aria-haspopup="true" aria-expanded="false">KP</button>
+  </div>
+</header>
+
+<!-- ================== FLYOUTS ================== -->
+<div class="flyout flyout--apps" id="appsMenu" role="menu" aria-labelledby="appsBtn">
+  <h5>Kyndryl platforms</h5>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span>CMDB Data Quality<small>Trust posture · triage · reconciliation</small></span></a>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span><span>Incident Intelligence<small>Correlate alerts · accelerate MTTR</small></span></a>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></span><span>Change Risk<small>Predict &amp; review proposed changes</small></span></a>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 5-9 5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg></span><span>Observability Graph<small>Service dependency &amp; blast radius</small></span></a>
+  <h5 style="margin-top:8px">Tools</h5>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></span><span>Admin console</span></a>
+  <a href="#" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span><span>Help &amp; docs</span></a>
+</div>
+
+<div class="flyout flyout--workspace" id="wsMenu" role="menu" aria-labelledby="wsBtn">
+  <div class="ws__left">
+    <div class="ws__meta">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 14-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7z"/></svg>
+      <div>
+        <div class="name">Dana Aaron</div>
+        <div class="sub">dana.aaron@kyndryl.com</div>
+        <div class="sub">Admin · Payments</div>
+      </div>
+    </div>
+
+    <div class="ws__title">Workspaces</div>
+    <a href="#" class="ws-item is-active"><span class="ico ws-k">KP</span>Kyndryl · Payments</a>
+    <a href="#" class="ws-item"><span class="ico ws-s">SN</span>ServiceNow sandbox</a>
+    <a href="#" class="ws-item"><span class="ico ws-g">GL</span>Global ops</a>
+
+    <div class="ws__title" style="margin-top:8px">Account</div>
+    <a href="#" class="ws-item"><span class="ico">⚙</span>Settings</a>
+    <a href="#" class="ws-item"><span class="ico">⎋</span>Sign out</a>
+  </div>
+  <div class="ws__right">
+    <h4>Recent workspaces</h4>
+    <div class="ws__card">
+      <span class="ico">KP</span>
+      <div>
+        <p class="name">Kyndryl · Payments</p>
+        <p class="sub">1,284 CIs · last active 4 min ago</p>
+      </div>
+    </div>
+    <div class="ws__card">
+      <span class="ico" style="background:#DBEAFE; color:#1D4ED8">SN</span>
+      <div>
+        <p class="name">ServiceNow sandbox</p>
+        <p class="sub">342 CIs · read-only · last visited yesterday</p>
+      </div>
+    </div>
+    <div class="ws__card">
+      <span class="ico" style="background:#DCFCE7; color:#047857">GL</span>
+      <div>
+        <p class="name">Global ops</p>
+        <p class="sub">18,902 CIs · member of 4 teams</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================== SHELL ================== -->
+<div class="shell" id="shell">
+
+  <!-- LOCAL NAV -->
+  <aside class="localnav" id="localnav">
+    <button class="localnav__toggle" id="navToggle" aria-label="Toggle navigation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a class="localnav__item is-active" data-screen="dashboard" href="#dashboard">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span>
+      <span class="label">Overview</span>
+    </a>
+    <a class="localnav__item" data-screen="triage" href="#triage">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.3a2 2 0 0 1 3.4 0l7 11.7a2 2 0 0 1-1.7 3H5a2 2 0 0 1-1.7-3z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+      <span class="label">Triage</span>
+      <span class="badge">17</span>
+    </a>
+    <a class="localnav__item" href="#">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></span>
+      <span class="label">Freshness</span>
+    </a>
+    <a class="localnav__item" href="#">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 5-9 5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg></span>
+      <span class="label">Knowledge graph</span>
+    </a>
+    <a class="localnav__item" href="#">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 10h16M10 4v16"/></svg></span>
+      <span class="label">Requests</span>
+    </a>
+    <div class="localnav__spacer"></div>
+    <a class="localnav__item" href="#">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .4 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.4 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.4l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .4-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.4-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.4h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.4l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.4 1.9v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
+      <span class="label">Settings</span>
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Screen 1 : Dashboard -->
+    <section class="screen is-active" id="screen-dashboard">
+      <div class="page-head">
+        <ul class="crumbs">
+          <li><a href="#">Kyndryl · Payments</a></li>
+          <li><strong>Overview</strong></li>
+        </ul>
+        <div class="page-actions">
+          <button class="btn btn--tertiary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>Refresh</button>
+          <button class="btn btn--ai"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>Ask the agent</button>
+        </div>
+      </div>
+
+      <h1 class="page-title">CMDB posture</h1>
+      <p style="color:var(--fg-muted); margin:0 0 24px">1,284 configuration items · last sync 4 minutes ago</p>
+
+      <!-- KPI -->
+      <div class="dash-grid">
+        <div class="card kpi">
+          <p class="eyebrow">Trust score</p>
+          <p class="num">78.4<span style="font-size:18px; color:var(--fg-muted); font-weight:300"> / 100</span></p>
+          <p class="delta">+2.1 vs last week</p>
+          <p class="sub">Weighted across freshness, ownership, reconciliation.</p>
+        </div>
+        <div class="card kpi">
+          <p class="eyebrow">Stale Prod CIs</p>
+          <p class="num">17</p>
+          <p class="delta down">+4 vs last week</p>
+          <p class="sub">Older than 14-day threshold.</p>
+        </div>
+        <div class="card kpi">
+          <p class="eyebrow">Open correction requests</p>
+          <p class="num">6</p>
+          <p class="delta">2 awaiting approval</p>
+          <p class="sub">Avg time to approve · 42m</p>
+        </div>
+      </div>
+
+      <!-- Row with agent recommendation + activity -->
+      <div class="dash-row">
+        <div class="card">
+          <div class="notif-panel">
+            <div class="notif notif--ai">
+              <span class="icon" style="color:#29707A"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></span>
+              <div style="flex:1">
+                <p class="title">Agent recommendation · 92% confidence</p>
+                <p class="msg">11 of the 17 stale Prod CIs share owner <strong>payments-team</strong> and region <strong>us-east-1</strong>. Batching them into one correction request cuts approval overhead by 91% and MTTR by ~4 h.</p>
+                <div style="display:flex; gap:8px; margin-top:10px">
+                  <button class="btn btn--primary btn--sm">Review plan</button>
+                  <button class="btn btn--ghost btn--sm">Show evidence</button>
+                </div>
+              </div>
+            </div>
+            <div class="notif notif--warn">
+              <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V10h2v4z"/></svg></span>
+              <div>
+                <p class="title">Stale threshold reached</p>
+                <p class="msg">17 Prod CIs have not reported inventory for 14+ days. Investigate before Friday’s audit.</p>
+              </div>
+            </div>
+            <div class="notif notif--success">
+              <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 14-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7z"/></svg></span>
+              <div>
+                <p class="title">Reconciliation complete</p>
+                <p class="msg">48 CIs re-synced overnight. 2 required manual review.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card activity">
+          <header>
+            <h3>Recent activity</h3>
+            <a href="#" style="color:var(--primary); font-size:12px; text-decoration:none">View all</a>
+          </header>
+          <ul>
+            <li>
+              <div class="av">AM</div>
+              <div style="flex:1">
+                <div class="who">Amara Mwangi <span class="time">· 12 min</span></div>
+                <div class="body">Approved correction request <a href="#" style="color:var(--primary); text-decoration:none">CR-2847</a>.</div>
+              </div>
+            </li>
+            <li>
+              <div class="av" style="background:#FFEDE8; color:var(--accent)">AI</div>
+              <div style="flex:1">
+                <div class="who">Agent <span class="time">· 38 min</span></div>
+                <div class="body">Flagged 4 new stale CIs in <strong>payments-prod</strong>.</div>
+              </div>
+            </li>
+            <li>
+              <div class="av">OL</div>
+              <div style="flex:1">
+                <div class="who">Owen Lee <span class="time">· 1 h</span></div>
+                <div class="body">Reconciled <strong>checkout-gateway-stage</strong>.</div>
+              </div>
+            </li>
+            <li>
+              <div class="av">DA</div>
+              <div style="flex:1">
+                <div class="who">Dana Aaron <span class="time">· 3 h</span></div>
+                <div class="body">Updated owner on 6 CIs.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen 2 : Triage -->
+    <section class="screen" id="screen-triage">
+      <div class="page-head">
+        <ul class="crumbs">
+          <li><a href="#">Kyndryl · Payments</a></li>
+          <li><a href="#" data-screen="dashboard">CMDB</a></li>
+          <li><strong>Triage</strong></li>
+        </ul>
+        <div class="page-actions">
+          <button class="btn btn--tertiary">Export</button>
+          <button class="btn btn--primary">Bulk reconcile</button>
+        </div>
+      </div>
+
+      <h1 class="page-title">Triage · stale &amp; orphaned</h1>
+      <p style="color:var(--fg-muted); margin:0 0 20px">17 items need attention · filtered to Prod, last 30 days</p>
+
+      <div class="card" style="overflow:hidden">
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input placeholder="Search by CI ID, name, owner…">
+          </div>
+          <span class="tag">Env: Prod <button style="background:none; border:0; cursor:pointer; color:var(--fg-2)">×</button></span>
+          <span class="tag">Status: Stale, Orphaned <button style="background:none; border:0; cursor:pointer; color:var(--fg-2)">×</button></span>
+          <span class="tag">Last seen &lt; 30d <button style="background:none; border:0; cursor:pointer; color:var(--fg-2)">×</button></span>
+          <button class="btn btn--ghost btn--sm" style="margin-left:auto">+ Add filter</button>
+        </div>
+        <table class="kyn-table">
+          <thead>
+            <tr>
+              <th>CI ID</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>Status</th>
+              <th style="text-align:right">Last seen</th>
+              <th style="text-align:right">Blast radius</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">CI-0019837</td>
+              <td>payments-api-prod-01</td>
+              <td>Dana Aaron</td>
+              <td><span class="badge badge--warn">Stale 17d</span></td>
+              <td style="text-align:right">2025-11-03 14:02</td>
+              <td style="text-align:right">14 dependents</td>
+              <td><button class="btn btn--ghost btn--sm">Open</button></td>
+            </tr>
+            <tr>
+              <td class="mono">CI-0019841</td>
+              <td>ledger-worker-prod-04</td>
+              <td>Mia Quin</td>
+              <td><span class="badge badge--err">Orphaned</span></td>
+              <td style="text-align:right">2025-10-18 09:14</td>
+              <td style="text-align:right">3 dependents</td>
+              <td><button class="btn btn--ghost btn--sm">Open</button></td>
+            </tr>
+            <tr>
+              <td class="mono">CI-0019902</td>
+              <td>notif-queue-prod-02</td>
+              <td>—</td>
+              <td><span class="badge badge--info">In review</span></td>
+              <td style="text-align:right">2025-11-21 03:51</td>
+              <td style="text-align:right">7 dependents</td>
+              <td><button class="btn btn--ghost btn--sm">Open</button></td>
+            </tr>
+            <tr>
+              <td class="mono">CI-0019955</td>
+              <td>auth-edge-prod-03</td>
+              <td>Dana Aaron</td>
+              <td><span class="badge badge--warn">Stale 22d</span></td>
+              <td style="text-align:right">2025-10-29 08:40</td>
+              <td style="text-align:right">22 dependents</td>
+              <td><button class="btn btn--ghost btn--sm">Open</button></td>
+            </tr>
+            <tr>
+              <td class="mono">CI-0019967</td>
+              <td>fraud-scoring-prod-01</td>
+              <td>Owen Lee</td>
+              <td><span class="badge badge--err">Orphaned</span></td>
+              <td style="text-align:right">2025-09-30 16:22</td>
+              <td style="text-align:right">5 dependents</td>
+              <td><button class="btn btn--ghost btn--sm">Open</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="kyn-footer">
+  <div class="kyn-footer__links">
+    <a href="#">Terms of use</a>
+    <a href="#">Privacy</a>
+    <a href="#">Cookie preferences</a>
+    <a href="#">Accessibility</a>
+  </div>
+  <img class="kyn-footer__logo" src="../../assets/kyndryl-logo.png" alt="Kyndryl">
+  <span class="kyn-footer__copy">© 2026 Kyndryl Holdings, Inc.</span>
+</footer>
+
+<script>
+// Local nav collapse / expand
+const shell = document.getElementById('shell');
+const nav = document.getElementById('localnav');
+document.getElementById('navToggle').addEventListener('click', ()=>{
+  nav.classList.toggle('is-open');
+  shell.classList.toggle('nav-open');
+});
+// open by default on wide screens
+if (window.matchMedia('(min-width: 1100px)').matches) {
+  nav.classList.add('is-open');
+  shell.classList.add('nav-open');
+}
+
+// Nav → screen switching
+function activateScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('is-active'));
+  const el = document.getElementById('screen-'+id);
+  if(el) el.classList.add('is-active');
+
+  document.querySelectorAll('[data-screen]').forEach(a=>{
+    a.classList.toggle('is-active', a.dataset.screen===id);
+  });
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('[data-screen]').forEach(a=>{
+  a.addEventListener('click', (e)=>{
+    e.preventDefault();
+    activateScreen(a.dataset.screen);
+  });
+});
+
+// Flyouts
+function toggleFlyout(btnId, menuId){
+  const btn = document.getElementById(btnId);
+  const menu = document.getElementById(menuId);
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const open = menu.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true':'false');
+    // close siblings
+    document.querySelectorAll('.flyout.is-open').forEach(m=>{ if(m!==menu){ m.classList.remove('is-open'); }});
+  });
+}
+toggleFlyout('appsBtn','appsMenu');
+toggleFlyout('wsBtn','wsMenu');
+toggleFlyout('navProducts','appsMenu'); // reuse apps menu for products demo
+
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.flyout') && !e.target.closest('.kyn-header__icon-btn') && !e.target.closest('.kyn-avatar') && !e.target.closest('#navProducts')){
+    document.querySelectorAll('.flyout.is-open').forEach(m=>m.classList.remove('is-open'));
+    document.querySelectorAll('[aria-expanded="true"]').forEach(b=>b.setAttribute('aria-expanded','false'));
+  }
+});
+</script>
+</body>
+</html>

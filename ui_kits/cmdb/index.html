@@ -1,0 +1,624 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Kyndryl CMDB — UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<script src="../../assets/icons/ki.js" defer></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-2);color:var(--fg-2);font-family:var(--font-sans);min-height:100vh}
+.app{display:grid;grid-template-columns:256px 1fr;min-height:100vh}
+/* Sidebar */
+.side{background:#fff;border-right:1px solid var(--border-1);display:flex;flex-direction:column}
+.side-head{height:64px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid var(--border-1)}
+.side-head img{height:28px}
+.nav{flex:1;padding:12px 8px;overflow-y:auto}
+.nav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--fg-muted);text-decoration:none;transition:all 150ms}
+.nav a:hover{background:rgba(241,245,249,.8);color:var(--fg-1)}
+.nav a.active{background:#F1F5F9;color:var(--fg-1)}
+.nav a.active svg{stroke-width:2.5}
+.nav svg{width:15px;height:15px;flex-shrink:0}
+.nav .badge{margin-left:auto;background:#171717;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:9999px;min-width:16px;text-align:center}
+.side-foot{padding:12px;border-top:1px solid var(--border-1);display:flex;flex-direction:column;gap:8px}
+.explain-btn{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:500;background:rgba(41,112,122,.08);color:#29707A;border:none;cursor:pointer;font-family:inherit}
+.explain-btn:hover{background:rgba(41,112,122,.15)}
+.user-info{padding:8px 12px;font-size:11px;color:var(--fg-muted)}
+.user-info .name{color:var(--fg-2);font-weight:500;font-size:12px;margin-bottom:2px}
+.signout{background:none;border:none;color:var(--fg-muted);font-size:11px;font-weight:500;padding:0;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit}
+/* Main */
+.main{display:flex;flex-direction:column;overflow:hidden}
+.header{height:64px;background:#fff;border-bottom:1px solid var(--border-1);display:flex;align-items:center;padding:0 24px;justify-content:space-between}
+.header h1{font-size:18px;font-weight:600;margin:0;color:var(--fg-1)}
+.avatar{width:36px;height:36px;border-radius:50%;background:#0F172A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+.content{padding:24px;overflow-y:auto}
+/* Sections / hidden toggles */
+.view{display:none}.view.active{display:block}
+/* Common */
+.card{background:#fff;border:1px solid var(--border-1);border-radius:8px}
+.eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted)}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.kpi{padding:16px 20px}
+.kpi-warn{padding:6px 14px;background:#FEF3C7;border-bottom:1px solid #FDE68A;font-size:10px;color:#B45309;display:flex;align-items:center;gap:6px;font-weight:500;justify-content:space-between;border-radius:8px 8px 0 0}
+.kpi-warn-btn{background:none;border:none;color:#B45309;font-size:10px;font-weight:600;cursor:pointer;display:inline-flex;gap:4px;align-items:center;font-family:inherit}
+.kpi-lbl{font-size:11px;color:var(--fg-muted);margin:0 0 4px}
+.kpi-val{font-size:28px;font-weight:700;letter-spacing:-.015em;color:var(--fg-1);margin:0;line-height:1}
+.kpi-delta{font-size:11px;font-weight:500;margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-delta.up{color:#047857}.kpi-delta.down{color:#B91C1C}
+.kpi-sub{font-size:10px;color:var(--fg-muted);margin-top:2px}
+/* Gauge */
+.gauge-card{padding:20px;margin-bottom:20px}
+.gauge-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.gauge-head h3{margin:0;font-size:14px;font-weight:600}
+.gauge-pct{font-size:36px;font-weight:700;color:var(--fg-1);letter-spacing:-.02em;line-height:1}
+.gauge-bar{position:relative;height:10px;background:#F1F5F9;border-radius:9999px;margin:14px 0 8px;overflow:visible}
+.gauge-fill{position:absolute;inset:0;width:62%;background:linear-gradient(90deg,#29707A,#5BA2AE);border-radius:9999px}
+.gauge-gap{position:absolute;top:0;left:62%;right:5%;height:100%;background:repeating-linear-gradient(45deg,#FDE68A,#FDE68A 5px,#FEF3C7 5px,#FEF3C7 10px)}
+.gauge-mark{position:absolute;top:-5px;left:95%;width:2px;height:20px;background:var(--fg-1)}
+/* Section / charts placeholder */
+.row-2{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-bottom:20px}
+.chart-card{padding:0}
+.chart-head{padding:12px 16px;border-bottom:1px solid var(--border-1);background:rgba(248,250,252,.7)}
+.chart-head h3{font-size:14px;font-weight:600;margin:0 0 2px}
+.chart-head p{font-size:11px;color:var(--fg-muted);margin:0}
+.chart-body{padding:16px;height:240px;display:flex;align-items:flex-end;gap:10px}
+.bar{flex:1;background:linear-gradient(180deg,#29707A,#5BA2AE);border-radius:4px 4px 0 0;position:relative;min-height:8px}
+.bar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-family:var(--font-mono);color:var(--fg-2);font-weight:600}
+.bar small{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--fg-muted);white-space:nowrap}
+.donut{width:160px;height:160px;border-radius:50%;background:conic-gradient(#E11D48 0 22%,#F59E0B 22% 48%,#29707A 48% 78%,#10B981 78% 100%);margin:30px auto;position:relative}
+.donut::after{content:"";position:absolute;inset:32px;background:#fff;border-radius:50%}
+.donut-legend{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 16px;font-size:11px}
+.donut-legend span{display:inline-flex;align-items:center;gap:6px;color:var(--fg-2)}
+.donut-legend i{width:8px;height:8px;border-radius:2px;display:inline-block}
+/* Signals */
+.sig-panel{margin-bottom:20px}
+.sig-head{padding:10px 16px;background:rgba(248,250,252,.8);border-bottom:1px solid #F1F5F9;display:flex;gap:10px;align-items:center;font-size:12px}
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.sig-col{padding:14px;border-right:1px solid #F1F5F9}
+.sig-col:last-child{border:none}
+.sig-col-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sig-col-head i{width:3px;height:14px;border-radius:2px}
+.sig-col-head .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--fg-2)}
+.sig-col-head .cnt{font-size:10px;color:var(--fg-muted)}
+.sig-card{padding:10px 12px;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all 150ms}
+.sig-card.critical{background:rgba(255,228,230,.4);border:1px solid #FECDD3}
+.sig-card.high{background:rgba(254,243,199,.3);border:1px solid #FDE68A}
+.sig-card.medium{background:#fff;border:1px solid #E2E8F0}
+.sig-card:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.sig-row-top{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap}
+.sev-pill{font-size:9px;font-weight:700;padding:1px 7px;border-radius:9999px;text-transform:uppercase;letter-spacing:.04em}
+.sev-pill.critical{background:#FFE4E6;color:#BE123C;border:1px solid #FECDD3}
+.sev-pill.high{background:#FEF3C7;color:#B45309;border:1px solid #FDE68A}
+.sev-pill.medium{background:#F1F5F9;color:#475569;border:1px solid #E2E8F0}
+.sev-pill.low{background:#D1FAE5;color:#047857;border:1px solid #A7F3D0}
+.sig-title{font-size:12px;font-weight:600;color:var(--fg-1)}
+.sig-metric{font-size:11px;font-weight:600;color:var(--fg-2);margin-top:2px}
+.sig-detail{font-size:11px;color:var(--fg-2);line-height:1.5;margin-top:6px;padding-top:8px;border-top:1px solid rgba(226,232,240,.5);display:none}
+.sig-card.expanded .sig-detail{display:block}
+.sig-actions{display:flex;gap:6px;margin-top:8px}
+.btn-xs{height:26px;padding:0 10px;border-radius:6px;font-size:10.5px;font-weight:500;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.btn-xs.primary{background:#1E293B;color:#fff}
+.btn-xs.primary:hover{background:#0F172A}
+.btn-xs.secondary{background:#fff;color:#475569;border:1px solid #E2E8F0}
+.btn-xs.secondary:hover{background:#F8FAFC}
+/* Recommendation */
+.rec-card{padding:18px;margin-bottom:20px}
+.rec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.rec-icon{width:36px;height:36px;border-radius:8px;background:#E8F2F4;color:#1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rec-title{font-size:15px;font-weight:600;color:var(--fg-1);margin:0 0 4px}
+.rec-meta{display:flex;gap:6px;flex-wrap:wrap}
+.rec-b{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:9999px;font-size:10px;font-weight:600;border:1px solid}
+.rec-b.conf{background:#E8F2F4;color:#1D4ED8;border-color:#BFDBFE}
+.rec-b.lift{background:#D1FAE5;color:#047857;border-color:#A7F3D0}
+.rec-reason{font-size:13px;color:#334155;line-height:1.6;margin:12px 0 14px;padding:12px 14px;background:#F8FAFC;border-left:3px solid #29707A;border-radius:0 6px 6px 0}
+.rec-reason strong{color:var(--fg-1);font-weight:600}
+.rec-sig-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);margin:14px 0 8px}
+.rec-sigs{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.rec-sig{display:flex;gap:8px;font-size:12px;color:#475569;align-items:center}
+.rec-sig i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rec-actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid #F1F5F9;align-items:center}
+.btn-sm{height:34px;padding:0 14px;border-radius:6px;font-size:12.5px;font-weight:500;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn-sm.primary{background:#171717;color:#fff}
+.btn-sm.primary:hover{background:#0F172A}
+.btn-sm.secondary{background:#fff;color:var(--fg-1);border:1px solid #E2E8F0}
+.btn-sm.secondary:hover{background:#F5F5F5}
+.btn-sm.ghost{background:transparent;color:var(--fg-muted)}
+.btn-sm.ghost:hover{background:#F1F5F9;color:var(--fg-2)}
+.rec-attrib{margin-left:auto;font-size:10px;color:var(--fg-subtle);font-style:italic}
+/* Triage table */
+.triage-header{padding:14px 16px;border-bottom:1px solid var(--border-1);display:flex;justify-content:space-between;align-items:center;background:rgba(248,250,252,.5)}
+.triage-header h3{font-size:14px;font-weight:600;margin:0}
+.filters{display:flex;gap:8px}
+.filter{height:30px;padding:0 10px;font-size:11px;background:#fff;border:1px solid #E2E8F0;border-radius:6px;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.filter svg{width:11px;height:11px}
+.triage-table{width:100%;border-collapse:collapse;font-size:12px}
+.triage-table thead{background:rgba(248,250,252,.7)}
+.triage-table th{text-align:left;padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-muted);border-bottom:1px solid var(--border-1)}
+.triage-table td{padding:11px 14px;border-bottom:1px solid #F1F5F9;color:var(--fg-2);vertical-align:middle}
+.triage-table tr:hover td{background:rgba(248,250,252,.5);cursor:pointer}
+.triage-table .mono{font-family:var(--font-mono);font-size:11px;color:var(--fg-1)}
+.link{color:#29707A;font-weight:500;text-decoration:none;font-size:11.5px;background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+.link:hover{text-decoration:underline}
+/* Drawer */
+.scrim{position:fixed;inset:0;background:rgba(15,23,42,.25);backdrop-filter:blur(1px);display:none;z-index:90}
+.scrim.open{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;background:#fff;box-shadow:0 20px 48px rgba(15,23,42,.18);display:none;flex-direction:column;z-index:100;animation:slide 200ms cubic-bezier(.4,0,.2,1)}
+.drawer.open{display:flex}
+@keyframes slide{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.drawer-head{padding:14px 18px;border-bottom:1px solid var(--border-1);display:flex;justify-content:space-between;align-items:flex-start}
+.drawer-head h2{font-size:15px;font-weight:600;margin:0 0 2px}
+.drawer-head p{font-size:11px;color:var(--fg-muted);margin:0;font-family:var(--font-mono)}
+.drawer-close{background:none;border:none;cursor:pointer;padding:4px;color:var(--fg-muted);border-radius:4px}
+.drawer-close:hover{background:#F1F5F9}
+.drawer-body{padding:18px;overflow-y:auto;flex:1}
+.prop{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:8px 0;font-size:12px;border-bottom:1px solid #F8FAFC}
+.prop .k{color:var(--fg-muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.prop .v{color:var(--fg-1);font-weight:500}
+.drawer-section{margin-top:16px}
+.drawer-section h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);margin:0 0 8px}
+.drawer-actions{padding:14px 18px;border-top:1px solid var(--border-1);background:#F8FAFC;display:flex;gap:8px}
+/* Graph */
+.graph-layout{display:grid;grid-template-columns:220px 1fr 320px;gap:16px;height:calc(100vh - 112px)}
+.graph-rail{background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px}
+.graph-rail h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--fg-muted);margin:14px 0 8px}
+.graph-rail h4:first-child{margin-top:0}
+.lens{display:flex;flex-direction:column;gap:4px}
+.lens button{background:#fff;border:1px solid #E2E8F0;border-radius:6px;padding:8px 10px;font-size:11.5px;text-align:left;cursor:pointer;font-family:inherit;color:var(--fg-2)}
+.lens button.active{background:#29707A;color:#fff;border-color:#29707A}
+.graph-canvas{background:#fff;border:1px solid var(--border-1);border-radius:8px;position:relative;overflow:hidden;background-image:radial-gradient(circle,#E2E8F0 1px,transparent 1px);background-size:20px 20px}
+.node{position:absolute;background:#fff;border:1.5px solid #E2E8F0;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all 150ms;display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.node:hover{border-color:#29707A;box-shadow:0 4px 12px rgba(41,112,122,.15)}
+.node.selected{border-color:#29707A;background:#E8F2F4;box-shadow:0 0 0 3px rgba(41,112,122,.15)}
+.node i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.node.domain{background:#F8FAFC}
+.node.healthy i{background:#10B981}
+.node.degraded i{background:#F59E0B}
+.node.impacted i{background:#F97316}
+.edge{position:absolute;background:#CBD5E1;height:1.5px;transform-origin:0 0;pointer-events:none}
+.edge.impacted{background:#F97316}
+.graph-inspector{background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:14px;overflow-y:auto}
+.graph-inspector h3{font-size:13px;font-weight:600;margin:0 0 2px}
+.breadcrumb{font-size:10px;color:var(--fg-muted);margin-bottom:12px;font-family:var(--font-mono)}
+.rollup{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.rollup-tile{padding:10px;background:#F8FAFC;border-radius:6px;border:1px solid var(--border-1)}
+.rollup-tile .k{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-muted);font-weight:600}
+.rollup-tile .v{font-size:20px;font-weight:700;color:var(--fg-1);margin-top:2px}
+/* Review queue */
+.queue-row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;padding:14px 16px;border-bottom:1px solid #F1F5F9;align-items:center}
+.queue-row:last-child{border:none}
+.queue-row:hover{background:rgba(248,250,252,.5)}
+.queue-state{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:9999px;font-size:10px;font-weight:600;border:1px solid}
+.queue-state.pending{background:#FEF3C7;color:#B45309;border-color:#FDE68A}
+.queue-state.approved{background:#CCFBF1;color:#0F766E;border-color:#99F6E4}
+.queue-state.executed{background:#DBEAFE;color:#1D4ED8;border-color:#BFDBFE}
+.queue-title{font-size:13px;font-weight:500;color:var(--fg-1);margin:0 0 3px}
+.queue-meta{font-size:11px;color:var(--fg-muted)}
+.queue-actions{display:flex;gap:6px}
+/* Login */
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#29707A 0%,#003B78 100%);padding:24px}
+.login-box{width:380px;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:32px}
+.login-box img{height:36px;margin-bottom:20px}
+.login-box h2{font-size:20px;margin:0 0 6px}
+.login-box p{color:var(--fg-muted);font-size:13px;margin:0 0 24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--fg-2);margin-bottom:6px}
+.field input{width:100%;height:40px;padding:0 12px;border:1px solid var(--border-1);border-radius:6px;font-size:13px;font-family:inherit;background:#fff}
+.field input:focus{outline:none;border-color:#29707A;box-shadow:0 0 0 3px rgba(41,112,122,.15)}
+.login-btn{width:100%;height:42px;background:#171717;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:8px}
+.login-btn:hover{background:#0F172A}
+.demo-accounts{margin-top:18px;padding-top:16px;border-top:1px solid #F1F5F9;font-size:11px;color:var(--fg-muted)}
+.demo-accounts strong{display:block;color:var(--fg-2);margin-bottom:6px;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.14em}
+.demo-accounts code{font-family:var(--font-mono);font-size:11px;background:#F1F5F9;padding:1px 6px;border-radius:3px;color:var(--fg-1)}
+/* Utility */
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-screen" id="login">
+  <div class="login-box">
+    <img src="../../assets/kyndryl-logo.png" alt="Kyndryl">
+    <h2>Sign in</h2>
+    <p>CMDB Data Quality workspace</p>
+    <div class="field"><label>Username</label><input id="login-user" value="anna_access"></div>
+    <div class="field"><label>Password</label><input id="login-pw" type="password" value="password"></div>
+    <button class="login-btn" onclick="doLogin()">Sign in</button>
+    <div class="demo-accounts">
+      <strong>Demo accounts</strong>
+      <code>anna_access</code> · <code>raj_security</code> · <code>tom_team</code><br>
+      <span style="margin-top:4px;display:inline-block">Password: <code>password</code></span>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app hidden" id="app">
+  <aside class="side">
+    <div class="side-head"><img src="../../assets/kyndryl-logo.png" alt="Kyndryl"></div>
+    <nav class="nav">
+      <ul>
+        <li><a href="#" data-view="chat"><svg class="ki"><use href="#icon-chat-bot"/></svg>Assistant</a></li>
+        <li><a href="#" data-view="dashboard" class="active"><svg class="ki"><use href="#icon-dashboard"/></svg>Dashboard<span class="badge">3</span></a></li>
+        <li><a href="#" data-view="investigation"><svg class="ki"><use href="#icon-network"/></svg>Investigation</a></li>
+        <li><a href="#" data-view="triage"><svg class="ki"><use href="#icon-group"/></svg>Access review</a></li>
+        <li><a href="#" data-view="recommendations"><svg class="ki"><use href="#icon-recommend"/></svg>Recommendations</a></li>
+        <li><a href="#" data-view="changes"><svg class="ki"><use href="#icon-checkmark-filled"/></svg>Change requests</a></li>
+        <li><a href="#" data-view="incidents"><svg class="ki"><use href="#icon-error-filled"/></svg>Incidents</a></li>
+        <li><a href="#" data-view="reports"><svg class="ki"><use href="#icon-document-chart"/></svg>Reports</a></li>
+      </ul>
+    </nav>
+    <div class="side-foot">
+      <button class="explain-btn"><svg class="ki"><use href="#icon-information"/></svg>Explainability</button>
+      <div style="border-top:1px solid var(--border-1);padding-top:8px">
+        <div class="user-info">
+          <div class="name" id="user-display">Anna Access</div>
+          <button class="signout" onclick="signout()"><svg class="ki ki-14"><use href="#icon-log-out"/></svg>Sign out</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="header">
+      <h1 id="header-title">Dashboard</h1>
+      <div class="avatar" id="avatar">AA</div>
+    </header>
+    <div class="content">
+
+      <!-- Dashboard -->
+      <div class="view active" data-view="dashboard">
+        <div class="gauge-card card">
+          <div class="eyebrow" style="margin-bottom:6px">CMDB Trust Score</div>
+          <div class="gauge-head">
+            <h3>Reconciled &amp; verified CIs · production domains</h3>
+            <span style="font-size:11px;color:var(--fg-muted)">Target 95% · gap 33 pts</span>
+          </div>
+          <div class="gauge-pct">62<span style="font-size:20px;color:var(--fg-muted);font-weight:500">%</span></div>
+          <div class="gauge-bar"><div class="gauge-fill"></div><div class="gauge-gap"></div><div class="gauge-mark"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--fg-muted);font-family:var(--font-mono);margin-top:6px">
+            <span>0%</span><span>current 62%</span><span>target 95%</span>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi card"><div style="padding:16px 20px">
+            <p class="kpi-lbl">Total CIs tracked</p>
+            <p class="kpi-val">4,812</p>
+            <p class="kpi-delta up"><svg class="ki ki-14"><use href="#icon-arrow-up-right"/></svg>+124 WoW</p>
+            <p class="kpi-sub">Discovered across 38 applications</p>
+          </div></div>
+          <div class="kpi card">
+            <div class="kpi-warn"><span style="display:flex;align-items:center;gap:6px"><svg class="ki ki-14" style="color:#B45309"><use href="#icon-warning-alt"/></svg>Unreviewed for 30d+</span><button class="kpi-warn-btn" onclick="navigate('triage')">Investigate with AI →</button></div>
+            <div style="padding:14px 20px">
+              <p class="kpi-lbl">Stale CIs</p>
+              <p class="kpi-val">312</p>
+              <p class="kpi-delta down"><svg class="ki ki-14"><use href="#icon-arrow-down-right"/></svg>+28 vs last week</p>
+              <p class="kpi-sub">Not verified in 30d+</p>
+            </div>
+          </div>
+          <div class="kpi card"><div style="padding:16px 20px">
+            <p class="kpi-lbl">Orphaned CIs</p>
+            <p class="kpi-val">47</p>
+            <p class="kpi-delta up"><svg class="ki ki-14"><use href="#icon-arrow-up-right"/></svg>−8 vs last week</p>
+            <p class="kpi-sub">No upstream/downstream edges</p>
+          </div></div>
+        </div>
+
+        <div class="row-2">
+          <div class="chart-card card">
+            <div class="chart-head"><h3>Impacted CIs by Domain</h3><p>Rolled up from active impact set · last 24h</p></div>
+            <div class="chart-body">
+              <div class="bar" style="height:85%"><span>142</span><small>Payments</small></div>
+              <div class="bar" style="height:68%"><span>118</span><small>Logistics</small></div>
+              <div class="bar" style="height:52%"><span>91</span><small>Retail</small></div>
+              <div class="bar" style="height:38%"><span>66</span><small>HR</small></div>
+              <div class="bar" style="height:22%"><span>38</span><small>Shared</small></div>
+            </div>
+          </div>
+          <div class="chart-card card">
+            <div class="chart-head"><h3>Correction priority mix</h3><p>124 open correction requests</p></div>
+            <div class="donut"></div>
+            <div class="donut-legend">
+              <span><i style="background:#E11D48"></i>Immediate · 22%</span>
+              <span><i style="background:#F59E0B"></i>Urgent · 26%</span>
+              <span><i style="background:#29707A"></i>High · 30%</span>
+              <span><i style="background:#10B981"></i>Medium · 22%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sig-panel card">
+          <div class="sig-head"><svg class="ki" style="color:var(--k-spruce-60)"><use href="#icon-lightbulb"/></svg><span style="font-weight:600;color:var(--fg-1)">Live Signals</span><span style="color:var(--fg-muted)">·</span><span style="color:var(--fg-muted);font-size:11px">6 active · 1 Critical · 3 High · 2 Medium</span></div>
+          <div class="sig-grid">
+            <div class="sig-col">
+              <div class="sig-col-head"><i style="background:#10B981"></i><span class="lbl">Optimisation</span><span class="cnt">3 signals</span></div>
+              <div class="sig-card high" onclick="this.classList.toggle('expanded')">
+                <div class="sig-row-top"><span class="sev-pill high">High</span><span class="sig-title">Retire 47 unused CIs</span></div>
+                <p class="sig-metric">+5.1 pts domain trust lift</p>
+                <div class="sig-detail">None of these 47 CIs appeared in discovery for 90+ days and no incidents reference them. Safe to retire in batch.<div class="sig-actions"><button class="btn-xs primary"><svg class="ki" style="width:10px;height:10px"><use href="#icon-lightbulb"/></svg>Ask AI</button><button class="btn-xs secondary">View →</button></div></div>
+              </div>
+              <div class="sig-card medium" onclick="this.classList.toggle('expanded')">
+                <div class="sig-row-top"><span class="sev-pill medium">Medium</span><span class="sig-title">Consolidate 14 duplicate records</span></div>
+                <p class="sig-metric">Estimated 2h analyst time saved</p>
+              </div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-col-head"><i style="background:#E11D48"></i><span class="lbl">Reconciliation triggers</span><span class="cnt">3 signals</span></div>
+              <div class="sig-card critical" onclick="this.classList.toggle('expanded')">
+                <div class="sig-row-top"><span class="sev-pill critical">Critical</span><span class="sig-title">Payments domain below 60%</span></div>
+                <p class="sig-metric">Trust dropped 4 pts overnight</p>
+                <div class="sig-detail">22 new orphaned CIs in payments-svc cluster since the 02:00 discovery scan. Upstream app <code>checkout-api</code> marked Degraded.<div class="sig-actions"><button class="btn-xs primary">Investigate</button><button class="btn-xs secondary">View →</button></div></div>
+              </div>
+              <div class="sig-card high" onclick="this.classList.toggle('expanded')">
+                <div class="sig-row-top"><span class="sev-pill high">High</span><span class="sig-title">Owner missing · 8 CIs</span></div>
+                <p class="sig-metric">Logistics domain · since 3d</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Triage -->
+      <div class="view" data-view="triage">
+        <div class="card" style="margin-bottom:16px">
+          <div class="triage-header">
+            <h3>Stale CIs · 312 findings</h3>
+            <div class="filters">
+              <button class="filter"><svg class="ki ki-14"><use href="#icon-filter"/></svg>All domains</button>
+              <button class="filter">All priorities</button>
+              <button class="filter">Clear all</button>
+            </div>
+          </div>
+          <table class="triage-table">
+            <thead><tr><th>CI</th><th>Application</th><th>Last verified</th><th>Priority</th><th>Signals</th><th></th></tr></thead>
+            <tbody id="triage-body">
+              <tr onclick="openDrawer('ci-payments-db-03')"><td class="mono">payments-db-03</td><td>checkout-api</td><td>94 days ago</td><td><span class="sev-pill critical">Critical</span></td><td>3</td><td><button class="link">Investigate →</button></td></tr>
+              <tr><td class="mono">logistics-cache-11</td><td>shipment-tracker</td><td>62 days ago</td><td><span class="sev-pill high">High</span></td><td>2</td><td><button class="link">Investigate →</button></td></tr>
+              <tr><td class="mono">hr-audit-svc-04</td><td>people-hub</td><td>44 days ago</td><td><span class="sev-pill medium">Medium</span></td><td>1</td><td><button class="link">Investigate →</button></td></tr>
+              <tr><td class="mono">retail-session-02</td><td>pos-gateway</td><td>38 days ago</td><td><span class="sev-pill medium">Medium</span></td><td>2</td><td><button class="link">Investigate →</button></td></tr>
+              <tr><td class="mono">shared-auth-proxy-01</td><td>iam-core</td><td>33 days ago</td><td><span class="sev-pill low">Low</span></td><td>1</td><td><button class="link">Investigate →</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="view" data-view="recommendations">
+        <div class="rec-card card">
+          <div class="rec-head">
+            <div class="rec-icon"><svg class="ki ki-20"><use href="#icon-recommend"/></svg></div>
+            <div style="flex:1">
+              <h3 class="rec-title">Retire 47 stale CIs in payments-svc cluster</h3>
+              <div class="rec-meta"><span class="rec-b conf">92% confidence</span><span class="rec-b lift">+5.1 pts trust lift</span><span class="rec-b" style="background:#F1F5F9;color:#475569;border-color:#E2E8F0;text-transform:none;letter-spacing:normal;font-weight:500">Last verified today</span></div>
+            </div>
+          </div>
+          <div class="rec-reason"><strong>Agent reason · </strong>None of these 47 CIs have appeared in discovery scans for 90+ days and no active incidents reference them. Retiring now lifts Payments domain trust from 58% to 63% and removes 47 orphaned nodes from the graph.</div>
+          <div class="rec-sig-head">Signals</div>
+          <div class="rec-sigs">
+            <div class="rec-sig"><i style="background:#F59E0B"></i>No discovery heartbeat · 94d average</div>
+            <div class="rec-sig"><i style="background:#64748B"></i>0 open incidents reference these CIs</div>
+            <div class="rec-sig"><i style="background:#10B981"></i>All upstream apps show Healthy status</div>
+          </div>
+          <div class="rec-sig-head">Impact rollup — before action</div>
+          <div class="rollup" style="margin-top:8px">
+            <div class="rollup-tile"><div class="k">Impacted CIs</div><div class="v">47</div></div>
+            <div class="rollup-tile"><div class="k">Applications</div><div class="v">3</div></div>
+            <div class="rollup-tile"><div class="k">Processes</div><div class="v">2</div></div>
+            <div class="rollup-tile"><div class="k">Business units</div><div class="v">1</div></div>
+          </div>
+          <div class="rec-actions">
+            <button class="btn-sm primary" onclick="executeRec(this)">Execute</button>
+            <button class="btn-sm secondary">Send for review</button>
+            <button class="btn-sm ghost">Dismiss</button>
+            <span class="rec-attrib">Powered by agentic AI · 3m ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Investigation -->
+      <div class="view" data-view="investigation">
+        <div class="graph-layout">
+          <div class="graph-rail">
+            <h4>Filters</h4>
+            <div class="lens" style="margin-bottom:6px">
+              <button style="text-align:left">All domains ▾</button>
+              <button style="text-align:left">All business units ▾</button>
+              <button style="text-align:left">All statuses ▾</button>
+            </div>
+            <h4>Lens</h4>
+            <div class="lens">
+              <button class="active">Full context</button>
+              <button>Upstream</button>
+              <button>Downstream</button>
+              <button>Business impact</button>
+            </div>
+            <h4>Legend</h4>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+              <div style="display:flex;gap:8px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:#10B981"></i>Healthy</div>
+              <div style="display:flex;gap:8px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:#F59E0B"></i>Degraded</div>
+              <div style="display:flex;gap:8px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:#F97316"></i>Impacted</div>
+              <div style="display:flex;gap:8px;align-items:center"><i style="width:8px;height:8px;border-radius:50%;background:#94A3B8"></i>Unknown</div>
+            </div>
+          </div>
+          <div class="graph-canvas" id="graph">
+            <!-- edges -->
+            <div class="edge" style="top:84px;left:170px;width:180px"></div>
+            <div class="edge" style="top:84px;left:170px;width:180px;transform:rotate(30deg)"></div>
+            <div class="edge impacted" style="top:174px;left:370px;width:150px;transform:rotate(20deg)"></div>
+            <div class="edge" style="top:244px;left:530px;width:120px"></div>
+            <div class="edge" style="top:244px;left:530px;width:120px;transform:rotate(-25deg)"></div>
+            <div class="edge impacted" style="top:334px;left:680px;width:130px"></div>
+            <!-- nodes: Domain → BU → Process → App → CI -->
+            <div class="node domain healthy" style="top:60px;left:24px"><i></i>Retail</div>
+            <div class="node healthy" style="top:60px;left:180px"><i></i>BU · Commerce</div>
+            <div class="node degraded" style="top:160px;left:380px"><i></i>Process · Checkout</div>
+            <div class="node impacted selected" style="top:230px;left:540px" onclick="openDrawer('app-checkout-api')"><i></i>App · checkout-api</div>
+            <div class="node impacted" style="top:320px;left:690px" onclick="openDrawer('ci-payments-db-03')"><i></i>CI · payments-db-03</div>
+            <div class="node healthy" style="top:400px;left:690px"><i></i>CI · payments-cache-02</div>
+            <div class="node healthy" style="top:150px;left:180px"><i></i>BU · Support</div>
+            <div class="node healthy" style="top:250px;left:380px"><i></i>Process · Returns</div>
+          </div>
+          <div class="graph-inspector">
+            <div class="breadcrumb">Retail › Commerce › Checkout › checkout-api</div>
+            <h3>checkout-api</h3>
+            <p style="font-size:11px;color:var(--fg-muted);margin:0 0 12px">Application · Impacted</p>
+            <div class="prop"><span class="k">Status</span><span class="v"><span class="sev-pill" style="background:#FFEDD5;color:#C2410C;border:1px solid #FED7AA">Impacted</span></span></div>
+            <div class="prop"><span class="k">Owner</span><span class="v">payments-platform@kyndryl</span></div>
+            <div class="prop"><span class="k">Last verified</span><span class="v">14-04-2026 14:02</span></div>
+            <div class="prop"><span class="k">Downstream CIs</span><span class="v">6 · 1 impacted</span></div>
+            <div class="drawer-section">
+              <h4>Impact rollup</h4>
+              <div class="rollup">
+                <div class="rollup-tile"><div class="k">CIs</div><div class="v">6</div></div>
+                <div class="rollup-tile"><div class="k">Apps</div><div class="v">1</div></div>
+                <div class="rollup-tile"><div class="k">Processes</div><div class="v">1</div></div>
+                <div class="rollup-tile"><div class="k">BUs</div><div class="v">1</div></div>
+              </div>
+            </div>
+            <div class="drawer-section">
+              <h4>Actions</h4>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <button class="btn-sm primary" style="justify-content:center">Investigate with AI</button>
+                <button class="btn-sm secondary" style="justify-content:center">Open in chat</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Changes / review queue -->
+      <div class="view" data-view="changes">
+        <div class="card">
+          <div class="triage-header">
+            <h3>Correction requests · 12 pending review</h3>
+            <div class="filters">
+              <button class="filter">All states</button>
+              <button class="filter">All owners</button>
+            </div>
+          </div>
+          <div class="queue-row"><span class="queue-state pending">Pending</span><div><p class="queue-title">Retire 47 stale CIs in payments-svc cluster</p><p class="queue-meta">Submitted by agentic-remediation · bCRQ-3102 · 12m ago · reason "No discovery heartbeat 90d+"</p></div><div class="queue-actions"><button class="btn-sm primary" onclick="approve(this)">Approve</button><button class="btn-sm secondary">Defer</button><button class="btn-sm ghost">Reject</button></div></div>
+          <div class="queue-row"><span class="queue-state pending">Pending</span><div><p class="queue-title">Re-assign owner · 8 logistics CIs</p><p class="queue-meta">Submitted by anna_access · bCRQ-3098 · 42m ago</p></div><div class="queue-actions"><button class="btn-sm primary">Approve</button><button class="btn-sm secondary">Defer</button><button class="btn-sm ghost">Reject</button></div></div>
+          <div class="queue-row"><span class="queue-state approved">Approved</span><div><p class="queue-title">Merge 14 duplicate CI records · hr-audit-svc</p><p class="queue-meta">Approved by raj_security · bCRQ-3085 · 2h ago · execution queued</p></div><div class="queue-actions"><button class="btn-sm secondary">View audit trail</button></div></div>
+          <div class="queue-row"><span class="queue-state executed">Executed</span><div><p class="queue-title">Retire 11 orphaned CIs · retail-session cluster</p><p class="queue-meta">Executed · bCRQ-3072 · 5h ago · +2.1 pts domain trust</p></div><div class="queue-actions"><button class="btn-sm secondary">View audit trail</button></div></div>
+        </div>
+      </div>
+
+      <!-- Generic stubs -->
+      <div class="view" data-view="chat"><div class="card" style="padding:32px;text-align:center;color:var(--fg-muted)">Assistant surface · see dashboard Signals panel for the primary agent entry point.</div></div>
+      <div class="view" data-view="incidents"><div class="card" style="padding:32px;text-align:center;color:var(--fg-muted)">Incidents queue (stub) · shares table + drawer pattern with Access review.</div></div>
+      <div class="view" data-view="reports"><div class="card" style="padding:32px;text-align:center;color:var(--fg-muted)">Reports (stub) · uses the Dashboard's chart components.</div></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Drawer -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <h2 id="drawer-title">payments-db-03</h2>
+      <p id="drawer-sub">CI · Database · Impacted</p>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()"><svg class="ki ki-16" viewBox="0 0 16 16"><path d="M 3.22 3.22 L 12.78 12.78 M 12.78 3.22 L 3.22 12.78" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <div class="prop"><span class="k">Status</span><span class="v"><span class="sev-pill" style="background:#FFEDD5;color:#C2410C;border:1px solid #FED7AA">Impacted</span></span></div>
+    <div class="prop"><span class="k">Last verified</span><span class="v">94 days ago · 20-01-2026 02:14</span></div>
+    <div class="prop"><span class="k">Owner</span><span class="v">payments-platform@kyndryl</span></div>
+    <div class="prop"><span class="k">Application</span><span class="v">checkout-api</span></div>
+    <div class="prop"><span class="k">Ticket</span><span class="v" style="font-family:var(--font-mono);font-size:11px">bINC4219003</span></div>
+    <div class="prop"><span class="k">Priority</span><span class="v"><span class="sev-pill critical">1- Immediate</span></span></div>
+
+    <div class="drawer-section">
+      <h4>Signals</h4>
+      <div class="rec-sigs">
+        <div class="rec-sig"><i style="background:#F59E0B"></i>No discovery heartbeat · 94d</div>
+        <div class="rec-sig"><i style="background:#E11D48"></i>Referenced by 3 open incidents</div>
+        <div class="rec-sig"><i style="background:#F59E0B"></i>Owner email bounced 2d ago</div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <h4>Impact rollup</h4>
+      <div class="rollup">
+        <div class="rollup-tile"><div class="k">CIs</div><div class="v">1</div></div>
+        <div class="rollup-tile"><div class="k">Apps</div><div class="v">3</div></div>
+        <div class="rollup-tile"><div class="k">Processes</div><div class="v">2</div></div>
+        <div class="rollup-tile"><div class="k">BUs</div><div class="v">1</div></div>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <h4>Provenance</h4>
+      <p style="font-size:11px;color:var(--fg-muted);line-height:1.55;margin:0">Source: ServiceNow CMDB · table cmdb_ci_db_mssql · last discovery sync 20-01-2026 02:14. Agent reviewed against incident feed and knowledge-graph on 23-04-2026.</p>
+    </div>
+  </div>
+  <div class="drawer-actions">
+    <button class="btn-sm primary" style="flex:1;justify-content:center">Investigate with AI</button>
+    <button class="btn-sm secondary">Retire</button>
+    <button class="btn-sm ghost">Defer</button>
+  </div>
+</div>
+
+<script>
+function doLogin(){
+  const u = document.getElementById('login-user').value || 'anna_access';
+  document.getElementById('user-display').textContent = u.split('_').map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(' ');
+  document.getElementById('avatar').textContent = u.slice(0,2).toUpperCase();
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  localStorage.setItem('kyn-logged-in','1');
+  localStorage.setItem('kyn-user',u);
+}
+function signout(){
+  localStorage.removeItem('kyn-logged-in');
+  document.getElementById('login').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
+}
+function navigate(name){
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.dataset.view===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+  const label = {dashboard:'Dashboard',triage:'Access review',recommendations:'Recommendations',investigation:'Investigation',changes:'Change requests',incidents:'Incidents',reports:'Reports',chat:'Assistant'}[name] || 'Dashboard';
+  document.getElementById('header-title').textContent = label;
+  localStorage.setItem('kyn-view',name);
+}
+document.querySelectorAll('.nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();navigate(a.dataset.view);});
+});
+function openDrawer(id){
+  document.getElementById('scrim').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  if(id==='app-checkout-api'){
+    document.getElementById('drawer-title').textContent='checkout-api';
+    document.getElementById('drawer-sub').textContent='Application · Impacted';
+  }else{
+    document.getElementById('drawer-title').textContent='payments-db-03';
+    document.getElementById('drawer-sub').textContent='CI · Database · Impacted';
+  }
+}
+function closeDrawer(){
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+function executeRec(btn){
+  btn.textContent='Executing…';btn.disabled=true;
+  setTimeout(()=>{btn.textContent='Executed ✓';btn.style.background='#047857';},900);
+}
+function approve(btn){
+  const row=btn.closest('.queue-row');
+  row.querySelector('.queue-state').className='queue-state approved';
+  row.querySelector('.queue-state').textContent='Approved';
+  btn.parentElement.innerHTML='<button class="btn-sm secondary">View audit trail</button>';
+}
+// restore
+if(localStorage.getItem('kyn-logged-in')){
+  const u = localStorage.getItem('kyn-user') || 'anna_access';
+  document.getElementById('user-display').textContent = u.split('_').map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(' ');
+  document.getElementById('avatar').textContent = u.slice(0,2).toUpperCase();
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  const v = localStorage.getItem('kyn-view');
+  if(v) navigate(v);
+}
+</script>
+</body></html>

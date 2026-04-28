@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:18px;background:#F2F4F5;font-family:var(--font-sans)}
+.card{max-width:680px;background:#fff;border:1px solid var(--border-1);border-radius:8px;padding:18px}
+h3{font-size:14px;margin:0 0 10px;font-weight:600;color:var(--fg-1)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.tile{padding:10px 12px;background:#F2F4F5;border:1px solid var(--border-1);border-radius:6px}
+.k{font-size:9px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.v{font-size:20px;font-weight:700;color:var(--fg-1);font-variant-numeric:tabular-nums;margin-top:2px}
+.vd{font-size:10px;color:#0D5C2E;font-weight:500;margin-top:2px}
+.chart{height:160px;border:1px solid var(--border-1);border-radius:6px;background:#fff;padding:10px;position:relative}
+.legend{display:flex;gap:14px;margin-top:10px;font-size:10px;color:var(--fg-2)}
+.legend i{width:10px;height:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+svg{display:block;width:100%;height:100%}
+.src{font-size:10px;color:var(--fg-muted);margin-top:10px}
+</style></head><body>
+<div class="card">
+  <h3>Projected outcome · retire 47 stale CIs</h3>
+  <div class="tiles">
+    <div class="tile"><div class="k">Trust</div><div class="v">67%</div><div class="vd">+5.1 pts</div></div>
+    <div class="tile"><div class="k">Stale CIs</div><div class="v">265</div><div class="vd">−47</div></div>
+    <div class="tile"><div class="k">Orphans</div><div class="v">0</div><div class="vd">−12</div></div>
+    <div class="tile"><div class="k">Graph nodes</div><div class="v">4,765</div><div class="vd">cleaner</div></div>
+  </div>
+  <div class="chart"><svg viewBox="0 0 600 140" preserveAspectRatio="none">
+    <defs><pattern id="g" width="60" height="28" patternUnits="userSpaceOnUse"><path d="M0 28H60M0 0H60" stroke="#F1F5F9" stroke-width="1"/></pattern></defs>
+    <rect width="600" height="140" fill="url(#g)"/>
+    <!-- baseline -->
+    <path d="M10 90 Q 120 85 220 92 T 420 95 T 590 98" fill="none" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="3 3"/>
+    <!-- actual -->
+    <path d="M10 88 Q 120 82 220 85 T 420 82" fill="none" stroke="#64748B" stroke-width="2"/>
+    <!-- scenario -->
+    <path d="M420 82 Q 480 60 530 45 T 590 25" fill="none" stroke="#29707A" stroke-width="2.5"/>
+    <circle cx="420" cy="82" r="3" fill="#141414"/>
+    <text x="430" y="76" font-size="9" fill="#141414" font-family="ui-monospace,monospace">now</text>
+    <text x="540" y="20" font-size="9" fill="#29707A" font-family="ui-monospace,monospace" font-weight="600">+30d · 67%</text>
+  </svg></div>
+  <div class="legend">
+    <span><i style="background:#64748B"></i>Actual</span>
+    <span><i style="background:#CBD5E1;border-top:1px dashed #CBD5E1;height:0"></i>Baseline (no action)</span>
+    <span><i style="background:#29707A"></i>Scenario (execute)</span>
+  </div>
+  <p class="src">Powered by agentic AI · trained on 12-week CMDB history · 92% confidence</p>
+</div>
+</body></html>
