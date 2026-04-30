@@ -8,10 +8,6 @@
     "build-storybook": "storybook build -o ../storybook-build",
     "build": "npm run build-storybook"
   },
-  "overrides": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

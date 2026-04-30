@@ -3,7 +3,7 @@
 
 [build]
   base    = "."
-  command = "cd storybook && npm install && npm run build-storybook"
+  command = "cd storybook && npm install --include=dev && npm run build-storybook"
   publish = "storybook-build"
 
 [build.environment]
