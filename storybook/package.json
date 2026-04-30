@@ -6,7 +6,8 @@
   "scripts": {
     "storybook": "NODE_ENV=development storybook dev -p 6006",
     "build-storybook": "storybook build -o ../storybook-build",
-    "build": "npm run build-storybook"
+    "build": "npm run build-storybook",
+    "check:parity-screenshots": "node scripts/parity-screenshots.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -25,6 +26,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "storybook": "^8.4.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.0"
+    "vite": "^5.4.0",
+    "playwright": "^1.51.1"
   }
 }
