@@ -5,6 +5,6 @@ const meta: Meta<typeof HtmlEmbed> = { title: "Foundations/Spacing & Radii", com
 export default meta;
 type Story = StoryObj<typeof HtmlEmbed>;
 
-export const Scale: Story     = { args: { src: "/spacing-scale.html",     height: 400 } };
-export const Radii: Story     = { args: { src: "/spacing-radii.html",     height: 320 } };
-export const Elevation: Story = { args: { src: "/spacing-elevation.html", height: 320 } };
+export const Scale: Story     = { args: { src: "/preview/spacing-scale.html",     height: 400 } };
+export const Radii: Story     = { args: { src: "/preview/spacing-radii.html",     height: 320 } };
+export const Elevation: Story = { args: { src: "/preview/spacing-elevation.html", height: 320 } };

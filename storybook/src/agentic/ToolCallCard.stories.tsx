@@ -6,22 +6,38 @@ const meta: Meta<typeof ToolCallCard> = {
   component: ToolCallCard,
   tags: ["autodocs"],
   argTypes: {
-    state: { control: "radio", options: ["requested", "executing", "completed", "failed"] },
-    destructive: { control: "boolean" }
+    state: { control: "radio", options: ["pending", "running", "ok", "err", "requested", "executing", "completed", "failed"] },
+    destructive: { control: "boolean" },
+    toolName: { control: "text" },
+    stepLabel: { control: "text" },
+    meta: { control: "text" },
+    resultSummary: { control: "text" },
+    gateLabel: { control: "text" },
+    editableKeys: { control: "object" },
+    args: { control: "object" }
   }
 };
 export default meta;
 type Story = StoryObj<typeof ToolCallCard>;
 
-export const Requested: Story = {
-  args: { toolName: "graph.read", args: { ci: "bINC4429181", depth: 2 }, state: "requested" }
+export const Pending: Story = {
+  args: {
+    toolName: "cmdb.query",
+    args: { filter: "status:orphaned AND domain:payments", window: "24h", limit: 50 },
+    editableKeys: ["filter", "window", "limit"],
+    state: "pending",
+    stepLabel: "step 2 of 6"
+  }
 };
 export const Destructive: Story = {
-  args: { toolName: "cmdb.write", args: { ci: "bINC4429181", action: "decommission" }, state: "requested", destructive: true }
+  args: { toolName: "cmdb.write", args: { ci: "bINC4429181", action: "decommission" }, state: "pending", destructive: true, gateLabel: "destructive write - approval required" }
 };
-export const Executing: Story = {
-  args: { toolName: "graph.read", args: { ci: "bINC4429181", depth: 2 }, state: "executing" }
+export const Running: Story = {
+  args: { toolName: "graph.expand", args: { ci: "bINC4429181", depth: 2 }, state: "running", meta: "step 3 of 6 - upstream-1 - 1.4s elapsed" }
 };
 export const Completed: Story = {
-  args: { toolName: "graph.read", args: { ci: "bINC4429181", depth: 2 }, state: "completed" }
+  args: { toolName: "cmdb.query", args: { ci: "bINC4429181", depth: 2 }, state: "ok", resultSummary: "22 rows" }
+};
+export const Failed: Story = {
+  args: { toolName: "graph.write", args: { operation: "mutate", target: "payments-svc" }, state: "err" }
 };

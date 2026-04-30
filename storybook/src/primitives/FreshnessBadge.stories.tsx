@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FreshnessBadge } from "./FreshnessBadge";
+import { HtmlEmbed } from "../_shared/HtmlEmbed";
 
-const meta: Meta<typeof FreshnessBadge> = {
+const meta: Meta<typeof HtmlEmbed> = {
   title: "Primitives/FreshnessBadge",
-  component: FreshnessBadge,
+  component: HtmlEmbed,
   tags: ["autodocs"],
   argTypes: {
     ageDays:   { control: { type: "range", min: 0, max: 60, step: 1 } },
@@ -21,8 +21,9 @@ const meta: Meta<typeof FreshnessBadge> = {
   }
 };
 export default meta;
-type Story = StoryObj<typeof FreshnessBadge>;
+type Story = StoryObj<typeof HtmlEmbed>;
 
-export const Today: Story = { args: { ageDays: 0, threshold: 7 } };
-export const Fresh: Story = { args: { ageDays: 3, threshold: 7 } };
-export const Stale: Story = { args: { ageDays: 14, threshold: 7 } };
+export const Today: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 0, threshold: 7 } };
+export const Fresh: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 3, threshold: 7 } };
+export const Stale: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 14, threshold: 7 } };
+export const FullSurface: Story = { args: { src: "/preview/primitives-freshness.html", height: 460 }, name: "Full static surface" };

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ConfidenceBadge } from "./ConfidenceBadge";
+import { HtmlEmbed } from "../_shared/HtmlEmbed";
 
-const meta: Meta<typeof ConfidenceBadge> = {
+const meta: Meta<typeof HtmlEmbed> = {
   title: "Primitives/ConfidenceBadge",
-  component: ConfidenceBadge,
+  component: HtmlEmbed,
   tags: ["autodocs"],
   argTypes: {
     value: { control: { type: "range", min: 0, max: 100, step: 1 } },
@@ -12,8 +12,9 @@ const meta: Meta<typeof ConfidenceBadge> = {
   parameters: { docs: { description: { component: "Confidence the agent has in a derived recommendation. Click to override, ask for evidence, snooze, or teach the agent." } } }
 };
 export default meta;
-type Story = StoryObj<typeof ConfidenceBadge>;
+type Story = StoryObj<typeof HtmlEmbed>;
 
-export const Default: Story  = { args: { value: 92, role: "full" } };
-export const Low: Story      = { args: { value: 58, role: "full" } };
-export const Readonly: Story = { args: { value: 92, role: "readonly" } };
+export const Default: Story  = { args: { src: "/storybook-static/stories/primitive-confidence-badge.html", height: 240, value: 92, role: "full" } };
+export const Low: Story      = { args: { src: "/storybook-static/stories/primitive-confidence-badge.html", height: 240, value: 58, role: "full" } };
+export const Readonly: Story = { args: { src: "/storybook-static/stories/primitive-confidence-badge.html", height: 240, value: 92, role: "readonly" } };
+export const FullSurface: Story = { args: { src: "/preview/primitives-confidence.html", height: 520 }, name: "Full static surface" };

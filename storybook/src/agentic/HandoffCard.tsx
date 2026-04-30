@@ -1,30 +1,75 @@
 import React from "react";
+import "./agentic.css";
+
+type PartyKind = "agent" | "specialist" | "human";
 
 export interface HandoffCardProps {
   from: string;
   to: string;
-  /** "agent" → another agent, "human" → a person. */
   kind?: "agent" | "human";
+  fromRole?: string;
+  toRole?: string;
+  fromKind?: PartyKind;
+  toKind?: PartyKind;
+  fromInitials?: string;
+  toInitials?: string;
   reason?: string;
+  context?: string;
+  showActions?: boolean;
+  onTrace?: () => void;
   onAck?: () => void;
 }
 
-export const HandoffCard: React.FC<HandoffCardProps> = ({ from, to, kind = "agent", reason, onAck }) => (
-  <div style={{
-    border: "1px solid rgba(41,112,122,0.25)",
-    background: "linear-gradient(90deg, var(--k-ai-spruce-06), var(--k-ai-warm-red-06))",
-    borderRadius: 8, padding: "10px 14px", maxWidth: 480,
-    fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--fg-1)"
-  }}>
-    <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "var(--k-spruce-70)", marginBottom: 6 }}>HANDOFF · {kind === "human" ? "TO HUMAN" : "AGENT → AGENT"}</div>
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: reason ? 8 : 0 }}>
-      <span style={{ fontWeight: 500 }}>{from}</span>
-      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" strokeWidth={1.5} style={{ color: "var(--fg-muted)" }} aria-hidden="true">
-        <path d="M1 6h13M10 2l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <span style={{ fontWeight: 500, color: kind === "human" ? "var(--k-warm-red-50)" : "var(--k-spruce-70)" }}>{to}</span>
-      {onAck && <button onClick={onAck} style={{ marginLeft: "auto", font: "inherit", fontSize: 11, padding: "3px 9px", border: "1px solid var(--border-1)", borderRadius: 4, background: "#fff", cursor: "pointer" }}>Acknowledge</button>}
+const initials = (name: string) => name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+
+export const HandoffCard: React.FC<HandoffCardProps> = ({
+  from,
+  to,
+  kind = "agent",
+  fromRole = "general agent",
+  toRole,
+  fromKind = "agent",
+  toKind,
+  fromInitials,
+  toInitials,
+  reason = "Handing off - needs specialist skill",
+  context = "Carrying: 22 orphan CI list - payments-svc context - user threshold <= 25",
+  showActions,
+  onTrace,
+  onAck
+}) => {
+  const resolvedToKind = toKind ?? (kind === "human" ? "human" : "specialist");
+
+  return (
+    <div>
+      <div className="ka-handoff ka-edge">
+        <Party name={from} role={fromRole} kind={fromKind} initials={fromInitials} />
+        <div className="ka-handoff-arrow">
+          <span className="ka-handoff-reason">{reason}</span>
+          <svg className="ka-handoff-line" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="0" y1="5" x2="194" y2="5" stroke="#475569" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+            <polyline points="189,1 194,5 189,9" fill="none" stroke="#475569" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          </svg>
+          <span className="ka-handoff-context">{context}</span>
+        </div>
+        <Party name={to} role={toRole ?? (resolvedToKind === "human" ? "CMDB owner" : "specialist agent")} kind={resolvedToKind} initials={toInitials} />
+      </div>
+      {(showActions || onTrace || onAck) && (
+        <div className="ka-handoff-actions">
+          <button className="ka-button" type="button" onClick={onTrace}>View handoff trace</button>
+          <button className="ka-button ka-button-primary" type="button" onClick={onAck}>Accept and continue</button>
+        </div>
+      )}
     </div>
-    {reason && <div style={{ fontSize: 11.5, color: "var(--fg-2)", lineHeight: 1.5 }}>{reason}</div>}
+  );
+};
+
+const Party: React.FC<{ name: string; role: string; kind: PartyKind; initials?: string }> = ({ name, role, kind, initials: providedInitials }) => (
+  <div className="ka-handoff-party">
+    <div className={`ka-handoff-avatar ka-handoff-avatar--${kind}`}>
+      {kind === "agent" ? <span className="ka-glyph" /> : providedInitials ?? initials(name)}
+    </div>
+    <div className="ka-handoff-name">{name}</div>
+    <div className="ka-handoff-role">{role}</div>
   </div>
 );

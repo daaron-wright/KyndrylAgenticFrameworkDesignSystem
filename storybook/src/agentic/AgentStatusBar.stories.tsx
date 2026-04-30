@@ -6,17 +6,22 @@ const meta: Meta<typeof AgentStatusBar> = {
   component: AgentStatusBar,
   tags: ["autodocs"],
   argTypes: {
-    state: { control: "radio", options: ["started", "thinking", "streaming", "paused", "done"] },
+    state: { control: "radio", options: ["started", "thinking", "streaming", "waiting", "paused", "done"] },
     agent: { control: "text" },
-    step:  { control: "text" },
-    stepThrough: { control: "boolean" }
+    label: { control: "text" },
+    meta: { control: "text" },
+    stepThrough: { control: "boolean" },
+    showStepThrough: { control: "boolean" },
+    primaryAction: { control: "text" },
+    secondaryAction: { control: "text" }
   },
   parameters: { docs: { description: { component: "Sticky bar above any agentic surface. Surfaces run state, the active step, and per-session controls (pause/resume, branch, step-through)." } } }
 };
 export default meta;
 type Story = StoryObj<typeof AgentStatusBar>;
 
-export const Thinking: Story  = { args: { state: "thinking",  agent: "Reconciliation Agent", step: "Step 2/5 · Resolving stale CIs" } };
-export const Streaming: Story = { args: { state: "streaming", agent: "Reconciliation Agent", step: "Step 3/5 · Drafting recommendation" } };
-export const Paused: Story    = { args: { state: "paused",    agent: "Reconciliation Agent", step: "Step 3/5 · Awaiting input" } };
-export const Done: Story      = { args: { state: "done",      agent: "Reconciliation Agent", step: "5/5 complete" } };
+export const Thinking: Story  = { args: { state: "thinking", agent: "Reconciliation Agent", meta: "step 2 of 6 - 4.2s", showStepThrough: true, stepThrough: true } };
+export const Streaming: Story = { args: { state: "streaming", agent: "Reconciliation Agent", meta: "142 tokens - 18 t/s", secondaryAction: "Inject correction", primaryAction: "Stop" } };
+export const Waiting: Story   = { args: { state: "waiting", agent: "Reconciliation Agent", meta: "on step 3 - drop-table impact", secondaryAction: "Skip step", primaryAction: "Review" } };
+export const Paused: Story    = { args: { state: "paused", agent: "Reconciliation Agent", meta: "at 14:08:22 - 3 steps remaining", secondaryAction: "Discard", primaryAction: "Resume" } };
+export const Done: Story      = { args: { state: "done", agent: "Reconciliation Agent", meta: "2 tools - 1 handoff - 0 errors", secondaryAction: "Branch from end", primaryAction: "View trace" } };

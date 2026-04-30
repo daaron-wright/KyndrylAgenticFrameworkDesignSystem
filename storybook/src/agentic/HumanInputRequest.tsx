@@ -1,28 +1,55 @@
 import React from "react";
+import "./agentic.css";
 
 export interface HumanInputRequestProps {
   question: string;
   options: string[];
+  agent?: string;
+  timestamp?: string;
+  context?: string;
+  blockingLabel?: string;
+  primaryOption?: string;
   onChoose?: (option: string) => void;
 }
 
-export const HumanInputRequest: React.FC<HumanInputRequestProps> = ({ question, options, onChoose }) => (
-  <div style={{
-    background: "var(--k-status-warning-10)",
-    border: "1px solid var(--k-status-warning-20)",
-    borderRadius: 8, padding: "12px 14px", maxWidth: 480,
-    fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--k-status-warning-110)"
-  }}>
-    <div style={{ fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>HUMAN INPUT REQUIRED</div>
-    <p style={{ margin: "0 0 10px", color: "var(--fg-1)", fontSize: 13.5, lineHeight: 1.5 }}>{question}</p>
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-      {options.map(o => (
-        <button key={o} onClick={() => onChoose?.(o)} style={{
-          font: "inherit", fontSize: 12, padding: "5px 12px",
-          background: "#fff", border: "1px solid var(--k-status-warning-20)",
-          borderRadius: 4, color: "var(--fg-1)", cursor: "pointer"
-        }}>{o}</button>
+export const HumanInputRequest: React.FC<HumanInputRequestProps> = ({
+  question,
+  options,
+  agent = "Reconciliation Agent - needs your call",
+  timestamp = "14:08:22",
+  context = "CI web-gateway-02 has two plausible owners. The deploy edit is structural, the config edit is cosmetic, but the recency rule would pick the later config owner.",
+  blockingLabel = "blocking - agent paused",
+  primaryOption,
+  onChoose
+}) => (
+  <div className="ka-hir" role="group" aria-label="Human input required">
+    <div className="ka-hir-head">
+      <span className="ka-hir-glyph" aria-hidden="true"><QuestionIcon /></span>
+      <span className="ka-hir-agent">{agent}</span>
+      <span className="ka-hir-time">{timestamp}</span>
+    </div>
+    <p className="ka-hir-question">{question}</p>
+    {context && <div className="ka-hir-context">{context}</div>}
+    <div className="ka-hir-actions">
+      {options.map((option) => (
+        <button
+          key={option}
+          className={`ka-button ${option === primaryOption ? "ka-button-primary" : ""}`}
+          type="button"
+          onClick={() => onChoose?.(option)}
+        >
+          {option}
+        </button>
       ))}
+      <span className="ka-hir-blocking">{blockingLabel}</span>
     </div>
   </div>
+);
+
+const QuestionIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
 );

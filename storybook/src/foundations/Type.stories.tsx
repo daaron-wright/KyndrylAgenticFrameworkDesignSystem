@@ -5,5 +5,5 @@ const meta: Meta<typeof HtmlEmbed> = { title: "Foundations/Type", component: Htm
 export default meta;
 type Story = StoryObj<typeof HtmlEmbed>;
 
-export const Display: Story = { args: { src: "/type-display.html", height: 500 } };
-export const Body: Story    = { args: { src: "/type-body.html",    height: 500 } };
+export const Display: Story = { args: { src: "/preview/type-display.html", height: 500 } };
+export const Body: Story    = { args: { src: "/preview/type-body.html",    height: 500 } };

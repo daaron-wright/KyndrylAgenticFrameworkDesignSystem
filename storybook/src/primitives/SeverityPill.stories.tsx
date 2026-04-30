@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SeverityPill } from "./SeverityPill";
+import { HtmlEmbed } from "../_shared/HtmlEmbed";
 
-const meta: Meta<typeof SeverityPill> = {
+const meta: Meta<typeof HtmlEmbed> = {
   title: "Primitives/SeverityPill",
-  component: SeverityPill,
+  component: HtmlEmbed,
   tags: ["autodocs"],
   argTypes: {
     severity: { control: "radio", options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
@@ -21,10 +21,10 @@ const meta: Meta<typeof SeverityPill> = {
 };
 export default meta;
 
-type Story = StoryObj<typeof SeverityPill>;
+type Story = StoryObj<typeof HtmlEmbed>;
 
-export const Critical: Story = { args: { severity: "CRITICAL" } };
-export const High: Story     = { args: { severity: "HIGH" } };
-export const Medium: Story   = { args: { severity: "MEDIUM" } };
-export const Low: Story      = { args: { severity: "LOW" } };
-export const WithLabel: Story = { args: { severity: "HIGH", label: "12 findings" } };
+export const Critical: Story = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "CRITICAL" } };
+export const High: Story     = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "HIGH" } };
+export const Medium: Story   = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "MEDIUM" } };
+export const Low: Story      = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "LOW" } };
+export const WithLabel: Story = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "HIGH", label: "12 findings" } };
