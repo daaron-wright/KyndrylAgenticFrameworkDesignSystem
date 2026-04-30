@@ -1,35 +1,74 @@
 import React from "react";
+import { AgenticMenu, type AgenticMenuAction } from "../_shared/AgenticMenu";
+import "../_shared/dynamic.css";
 
 export interface ConfidenceBadgeProps {
-  /** 0–100 */
-  value: number;
+  /** 0-100, or null when the agent has not derived a score yet. */
+  value: number | null;
   /** Permission role — 'readonly' downgrades to a static badge with no popover. */
   role?: "full" | "review" | "readonly";
+  showCheck?: boolean;
+  actions?: AgenticMenuAction[];
   onOverride?: () => void;
   onTeach?: () => void;
 }
 
-export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ value, role = "full" }) => {
-  const low = value < 70;
-  return (
-    <span
-      tabIndex={role === "readonly" ? -1 : 0}
-      style={{
-        display: "inline-flex", alignItems: "baseline", gap: 6,
-        padding: "5px 10px 5px 12px", borderRadius: 999,
-        fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 500,
-        background: low ? "var(--k-status-warning-10)" : "var(--k-ai-spruce-12)",
-        color:      low ? "var(--k-status-warning-110)" : "var(--k-spruce-80)",
-        border: `1px solid ${low ? "var(--k-status-warning-20)" : "rgba(41,112,122,0.25)"}`,
-        cursor: role === "readonly" ? "default" : "pointer"
-      }}
-    >
-      <span style={{
-        fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 500,
-        borderBottom: role === "readonly" ? "0" : "1px dotted currentColor"
-      }}>{value}%</span>
-      <span style={{ fontSize: 11, opacity: 0.85 }}>confidence</span>
-      {role !== "readonly" && <span style={{ opacity: 0.6, fontSize: 10 }}>▾</span>}
+const confidenceTone = (value: number | null, role: ConfidenceBadgeProps["role"]) => {
+  if (role === "readonly") return "readonly";
+  if (value === null) return "none";
+  if (value < 50) return "advisory";
+  if (value < 70) return "caution";
+  return "high";
+};
+
+const defaultActions = (value: number | null, onOverride?: () => void, onTeach?: () => void): AgenticMenuAction[] => value === null
+  ? [
+      { id: "run", label: "Run agent scoring", description: "Derive a confidence value now", toast: "Agent triggered - scoring now", onSelect: onOverride },
+      { id: "manual", label: "Mark as manually tracked", toast: "Set to manual tracking" }
+    ]
+  : [
+      { id: "override", label: "Override confidence", description: "Set your own value for this item", toast: "Override queued - agent re-scoring now", onSelect: onOverride },
+      { id: "evidence", label: "Ask for more evidence", description: "Agent will re-derive with extra sources", toast: "Asked agent for additional evidence" },
+      { id: "snooze", label: "Snooze for 24h", description: "Hide from triage, keep score", toast: "Snoozed for 24h" },
+      {
+        id: "teach",
+        label: "Teach the agent",
+        description: "Adjusts future scoring for similar items",
+        toast: "Taught the agent - added to inbox",
+        destructive: true,
+        confirmText: "Teaching the agent will affect how similar items are scored going forward. Continue?",
+        confirmLabel: "Yes, teach",
+        onSelect: onTeach
+      }
+    ];
+
+export const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({
+  value,
+  role = "full",
+  showCheck = value !== null && value >= 90,
+  actions,
+  onOverride,
+  onTeach
+}) => {
+  const tone = confidenceTone(value, role);
+  const display = value === null ? "no confidence" : `${value}% confidence`;
+  const badge = (
+    <span className={`kds-confidence kds-confidence--${tone}`}>
+      {showCheck && <span aria-hidden="true">✓</span>}
+      <span className="agentic-label">{value === null ? `- ${display}` : display}</span>
+      {role !== "readonly" && <span className="agentic-chev kds-agentic-chev" aria-hidden="true">•••</span>}
     </span>
+  );
+
+  return (
+    <AgenticMenu
+      title={value === null ? "No score yet" : "Agent decision"}
+      meta={value === null ? "value null" : `score ${(value / 100).toFixed(2)}`}
+      actions={actions ?? defaultActions(value, onOverride, onTeach)}
+      disabled={role === "readonly"}
+      accent={tone === "caution" ? "#B45309" : undefined}
+    >
+      {badge}
+    </AgenticMenu>
   );
 };

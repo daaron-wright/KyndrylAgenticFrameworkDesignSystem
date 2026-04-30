@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { HtmlEmbed } from "../_shared/HtmlEmbed";
+import {
+  CMDBWorkspaceKit,
+  ShidokaChartsKit,
+  ShidokaComponentsKit,
+  ShidokaShellKit
+} from "../_shared/DynamicSurfaces";
 
-const meta: Meta<typeof HtmlEmbed> = { title: "Kits", component: HtmlEmbed, tags: ["autodocs"], parameters: { layout: "fullscreen" } };
+const meta: Meta = { title: "Kits", tags: ["autodocs"], parameters: { layout: "fullscreen" } };
 export default meta;
-type Story = StoryObj<typeof HtmlEmbed>;
 
-export const CMDB_Workspace: Story  = { args: { src: "/ui_kits/cmdb/index.html",              height: 1200 }, name: "CMDB · Workspace" };
-export const Shidoka_Components: Story = { args: { src: "/ui_kits/shidoka-components/index.html", height: 1200 }, name: "Shidoka · Components" };
-export const Shidoka_Shell: Story   = { args: { src: "/ui_kits/shidoka-shell/index.html",     height: 1200 }, name: "Shidoka · Shell" };
-export const Shidoka_Charts: Story  = { args: { src: "/ui_kits/shidoka-charts/index.html",    height: 1200 }, name: "Shidoka · Charts" };
+export const CMDB_Workspace: StoryObj = { name: "CMDB - Workspace", render: () => <CMDBWorkspaceKit /> };
+export const Shidoka_Components: StoryObj = { name: "Shidoka - Components", render: () => <ShidokaComponentsKit /> };
+export const Shidoka_Shell: StoryObj = { name: "Shidoka - Shell", render: () => <ShidokaShellKit /> };
+export const Shidoka_Charts: StoryObj = { name: "Shidoka - Charts", render: () => <ShidokaChartsKit /> };

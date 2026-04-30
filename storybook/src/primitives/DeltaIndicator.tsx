@@ -1,4 +1,6 @@
 import React from "react";
+import { AgenticMenu, type AgenticMenuAction } from "../_shared/AgenticMenu";
+import "../_shared/dynamic.css";
 
 export interface DeltaIndicatorProps {
   /** Signed numeric delta vs the reference period. */
@@ -11,20 +13,23 @@ export interface DeltaIndicatorProps {
   invertSemantics?: boolean;
   /** Reference label (e.g. "vs last week"). */
   referenceLabel?: string;
+  actions?: AgenticMenuAction[];
 }
 
 export const DeltaIndicator: React.FC<DeltaIndicatorProps> = ({
-  delta, unit = "%", direction, invertSemantics = false, referenceLabel = "vs last week"
+  delta, unit = "%", direction, invertSemantics = false, referenceLabel = "vs last week", actions
 }) => {
   const dir = direction ?? (delta >= 0 ? "up" : "down");
   const desirable = invertSemantics ? dir === "down" : dir === "up";
   const sign = delta >= 0 ? "+" : "";
-  return (
-    <span style={{
+  const badge = (
+    <span className="kds-badge-agentic" style={{
       display: "inline-flex", alignItems: "center", gap: 4,
       fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 500,
       fontVariantNumeric: "tabular-nums",
-      color: desirable ? "var(--k-status-success-110)" : "var(--k-status-error-110)"
+      color: desirable ? "var(--k-status-success-110)" : "var(--k-status-error-110)",
+      background: "#fff",
+      borderColor: "var(--border-1)"
     }}>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -38,6 +43,22 @@ export const DeltaIndicator: React.FC<DeltaIndicatorProps> = ({
           {referenceLabel}
         </span>
       )}
+      <span className="agentic-chev kds-agentic-chev" aria-hidden="true">•••</span>
     </span>
+  );
+
+  return (
+    <AgenticMenu
+      title="Metric change"
+      meta={`${sign}${delta}${unit}`}
+      actions={actions ?? [
+        { id: "explain", label: "Explain this change", toast: "Opened change explanation" },
+        { id: "alert", label: "Set alert threshold", toast: "Alert created" },
+        { id: "compare", label: "Compare periods", toast: "Compare sidebar opened" },
+        { id: "teach", label: "Teach the agent what caused this", destructive: true, toast: "Taught the agent - cause saved" }
+      ]}
+    >
+      {badge}
+    </AgenticMenu>
   );
 };

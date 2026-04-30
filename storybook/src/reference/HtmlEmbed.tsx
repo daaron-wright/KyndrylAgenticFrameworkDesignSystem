@@ -21,7 +21,7 @@ const withArgs = (src: string, args: Record<string, unknown>) => {
   return `${src}${src.includes("?") ? "&" : "?"}${suffix}`;
 };
 
-/** Wraps static HTML previews from /preview, /ui_kits, and /storybook-static/stories. */
+/** Reference-only iframe wrapper for static HTML source-of-truth pages. */
 export const HtmlEmbed: React.FC<HtmlEmbedProps> = ({ src, height = 600, title = "Embedded preview", ...args }) => (
   <iframe
     title={title}

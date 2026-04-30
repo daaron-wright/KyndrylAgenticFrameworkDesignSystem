@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { HtmlEmbed } from "../_shared/HtmlEmbed";
+import { StatesMatrix } from "../_shared/DynamicSurfaces";
 
-const meta: Meta<typeof HtmlEmbed> = { title: "States/Matrix", component: HtmlEmbed, tags: ["autodocs"], parameters: { layout: "fullscreen" } };
+const meta: Meta<typeof StatesMatrix> = {
+  title: "States/Matrix",
+  component: StatesMatrix,
+  tags: ["autodocs"],
+  parameters: { layout: "fullscreen" }
+};
 export default meta;
-export const AllStates: StoryObj<typeof HtmlEmbed> = { args: { src: "/preview/states-matrix.html", height: 1400 } };
+
+export const AllStates: StoryObj<typeof StatesMatrix> = {};

@@ -1,25 +1,46 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { HtmlEmbed } from "../_shared/HtmlEmbed";
+import {
+  AiChatHistory as AiChatHistorySurface,
+  AiFeedbackSources as AiFeedbackSourcesSurface,
+  AiLaunchButton as AiLaunchButtonSurface,
+  AiLoader as AiLoaderSurface,
+  AiModalChat as AiModalChatSurface,
+  BadgesSurface,
+  BarChart,
+  ButtonsSurface,
+  ChatSurface,
+  DataTable,
+  DagGraph,
+  DonutChart,
+  ExecutionTimelineCard,
+  ExecutiveSummary as ExecutiveSummarySurface,
+  ImpactRollup as ImpactRollupSurface,
+  KpiGrid as KpiGridSurface,
+  RecommendationCard,
+  ScenarioPanel,
+  StatusBannerCard,
+  TrustGauge as TrustGaugeSurface
+} from "../_shared/DynamicSurfaces";
 
-const meta: Meta<typeof HtmlEmbed> = { title: "Composites", component: HtmlEmbed, tags: ["autodocs"] };
+const meta: Meta = { title: "Composites", tags: ["autodocs"] };
 export default meta;
-type Story = StoryObj<typeof HtmlEmbed>;
 
-export const KpiGrid: Story          = { args: { src: "/preview/components-kpi.html",            height: 380 } };
-export const TrustGauge: Story       = { args: { src: "/preview/components-gauge.html",          height: 360 } };
-export const StatusBanner: Story     = { args: { src: "/preview/components-status-banner.html",  height: 320 } };
-export const Recommendation: Story   = { args: { src: "/preview/components-recommendation.html", height: 600 } };
-export const ExecutionTimeline: Story= { args: { src: "/preview/components-execution.html",      height: 700 } };
-export const ExecutiveSummary: Story = { args: { src: "/preview/composite-exec-summary.html",    height: 600 } };
-export const ImpactRollup: Story     = { args: { src: "/preview/composite-impact-rollup.html",   height: 600 } };
-export const Scenario: Story         = { args: { src: "/preview/composite-scenario.html",        height: 600 } };
-export const Chat: Story             = { args: { src: "/preview/composite-chat.html",            height: 800 } };
-export const AiModalChat: Story      = { args: { src: "/preview/ai-modal-chat.html",             height: 800 }, name: "AI modal chat" };
-export const AiChatHistory: Story    = { args: { src: "/preview/ai-chat-history.html",           height: 600 }, name: "AI chat history" };
-export const AiFeedbackSources: Story= { args: { src: "/preview/ai-feedback-sources.html",       height: 600 }, name: "AI feedback / sources" };
-export const AiLaunchButton: Story   = { args: { src: "/preview/ai-launch-button.html",          height: 240 }, name: "AI launch button" };
-export const AiLoader: Story         = { args: { src: "/preview/ai-loader.html",                 height: 240 }, name: "AI loader" };
-export const DAGGraph: Story         = { args: { src: "/preview/dag-graph-kit.html",             height: 700 } };
-export const Table: Story            = { args: { src: "/preview/components-table.html",          height: 600 } };
-export const Buttons: Story          = { args: { src: "/preview/components-buttons.html",        height: 200 } };
-export const Badges: Story           = { args: { src: "/preview/components-badges.html",         height: 240 } };
+export const KpiGrid: StoryObj = { name: "Kpi Grid", render: () => <KpiGridSurface /> };
+export const TrustGauge: StoryObj = { name: "Trust Gauge", render: () => <TrustGaugeSurface /> };
+export const StatusBanner: StoryObj = { render: () => <StatusBannerCard /> };
+export const Recommendation: StoryObj = { render: () => <RecommendationCard /> };
+export const ExecutionTimeline: StoryObj = { render: () => <ExecutionTimelineCard /> };
+export const ExecutiveSummary: StoryObj = { name: "Executive Summary", render: () => <ExecutiveSummarySurface /> };
+export const ImpactRollup: StoryObj = { name: "Impact Rollup", render: () => <ImpactRollupSurface /> };
+export const Scenario: StoryObj = { render: () => <ScenarioPanel /> };
+export const Chat: StoryObj = { render: () => <ChatSurface /> };
+export const AiModalChat: StoryObj = { name: "AI modal chat", render: () => <AiModalChatSurface /> };
+export const AiChatHistory: StoryObj = { name: "AI chat history", render: () => <AiChatHistorySurface /> };
+export const AiFeedbackSources: StoryObj = { name: "AI feedback / sources", render: () => <AiFeedbackSourcesSurface /> };
+export const AiLaunchButton: StoryObj = { name: "AI launch button", render: () => <AiLaunchButtonSurface /> };
+export const AiLoader: StoryObj = { name: "AI loader", render: () => <AiLoaderSurface /> };
+export const DAGGraph: StoryObj = { name: "DAG Graph", render: () => <DagGraph /> };
+export const Table: StoryObj = { render: () => <DataTable /> };
+export const Buttons: StoryObj = { render: () => <ButtonsSurface /> };
+export const Badges: StoryObj = { render: () => <BadgesSurface /> };
+export const Charts: StoryObj = { render: () => <div className="kds-grid kds-grid-2"><BarChart /><DonutChart /></div> };

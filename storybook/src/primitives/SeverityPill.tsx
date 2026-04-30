@@ -1,4 +1,5 @@
 import React from "react";
+import "../_shared/dynamic.css";
 
 export type Severity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 

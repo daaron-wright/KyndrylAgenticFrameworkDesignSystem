@@ -1,29 +1,33 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { HtmlEmbed } from "../_shared/HtmlEmbed";
+import { FreshnessBadge } from "./FreshnessBadge";
+import "../_shared/dynamic.css";
 
-const meta: Meta<typeof HtmlEmbed> = {
+const meta: Meta<typeof FreshnessBadge> = {
   title: "Primitives/FreshnessBadge",
-  component: HtmlEmbed,
+  component: FreshnessBadge,
   tags: ["autodocs"],
   argTypes: {
-    ageDays:   { control: { type: "range", min: 0, max: 60, step: 1 } },
+    ageDays: { control: { type: "range", min: 0, max: 60, step: 1 } },
     threshold: { control: { type: "range", min: 1, max: 30, step: 1 } },
-    label:     { control: "text" }
-  },
-  parameters: {
-    docs: {
-      description: {
-        component:
-          "Data freshness indicator. Crosses to a warning state when `ageDays > threshold`. " +
-          "Pair with a `FreshnessBadge` on every card backed by data — never approximate (\"recent\")."
-      }
-    }
+    label: { control: "text" }
   }
 };
 export default meta;
-type Story = StoryObj<typeof HtmlEmbed>;
+type Story = StoryObj<typeof FreshnessBadge>;
 
-export const Today: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 0, threshold: 7 } };
-export const Fresh: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 3, threshold: 7 } };
-export const Stale: Story = { args: { src: "/storybook-static/stories/primitive-freshness-badge.html", height: 240, ageDays: 14, threshold: 7 } };
-export const FullSurface: Story = { args: { src: "/preview/primitives-freshness.html", height: 460 }, name: "Full static surface" };
+export const Today: Story = { args: { ageDays: 0, threshold: 7 } };
+export const Fresh: Story = { args: { ageDays: 3, threshold: 7 } };
+export const Stale: Story = { args: { ageDays: 34, threshold: 7 } };
+export const DynamicSurface: Story = {
+  render: () => (
+    <div className="kds-story-surface is-white">
+      <div className="kds-surface-card">
+        <div className="kds-row">
+          <div className="kds-primitive-cell"><FreshnessBadge ageDays={0} /><span className="kds-mono">fresh - updated 12 min ago</span></div>
+          <div className="kds-primitive-cell"><FreshnessBadge ageDays={3} /><span className="kds-mono">within threshold</span></div>
+          <div className="kds-primitive-cell"><FreshnessBadge ageDays={34} /><span className="kds-mono">stale - owner action available</span></div>
+        </div>
+      </div>
+    </div>
+  )
+};

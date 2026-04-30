@@ -1,30 +1,35 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { HtmlEmbed } from "../_shared/HtmlEmbed";
+import { SeverityPill } from "./SeverityPill";
+import "../_shared/dynamic.css";
 
-const meta: Meta<typeof HtmlEmbed> = {
+const meta: Meta<typeof SeverityPill> = {
   title: "Primitives/SeverityPill",
-  component: HtmlEmbed,
+  component: SeverityPill,
   tags: ["autodocs"],
   argTypes: {
     severity: { control: "radio", options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
-    label:    { control: "text" }
-  },
-  parameters: {
-    docs: {
-      description: {
-        component:
-          "Canonical triage taxonomy. The taxonomy is fixed: CRITICAL · HIGH · MEDIUM · LOW. " +
-          "Severity is never color-only — the value is always paired with the label."
-      }
-    }
+    label: { control: "text" }
   }
 };
 export default meta;
+type Story = StoryObj<typeof SeverityPill>;
 
-type Story = StoryObj<typeof HtmlEmbed>;
-
-export const Critical: Story = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "CRITICAL" } };
-export const High: Story     = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "HIGH" } };
-export const Medium: Story   = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "MEDIUM" } };
-export const Low: Story      = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "LOW" } };
-export const WithLabel: Story = { args: { src: "/storybook-static/stories/primitive-severity-pill.html", height: 220, severity: "HIGH", label: "12 findings" } };
+export const Critical: Story = { args: { severity: "CRITICAL" } };
+export const High: Story = { args: { severity: "HIGH" } };
+export const Medium: Story = { args: { severity: "MEDIUM" } };
+export const Low: Story = { args: { severity: "LOW" } };
+export const WithLabel: Story = { args: { severity: "HIGH", label: "12 findings" } };
+export const DynamicSurface: Story = {
+  render: () => (
+    <div className="kds-story-surface is-white">
+      <div className="kds-surface-card">
+        <div className="kds-row">
+          <SeverityPill severity="CRITICAL" label="4 findings" />
+          <SeverityPill severity="HIGH" label="12 findings" />
+          <SeverityPill severity="MEDIUM" />
+          <SeverityPill severity="LOW" />
+        </div>
+      </div>
+    </div>
+  )
+};
