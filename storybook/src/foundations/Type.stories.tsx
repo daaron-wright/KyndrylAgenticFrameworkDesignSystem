@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { TypeSurface } from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof TypeSurface> = {
+const meta: Meta = {
   title: "Foundations/Type",
-  component: TypeSurface,
   tags: ["autodocs"],
-  argTypes: { mode: { control: "radio", options: ["display", "body"] } }
+  parameters: { layout: "fullscreen" }
 };
 export default meta;
-type Story = StoryObj<typeof TypeSurface>;
+type Story = StoryObj;
 
-export const Display: Story = { args: { mode: "display" } };
-export const Body: Story = { args: { mode: "body" } };
+export const Display: Story = { render: () => <StaticHtmlSurface id="foundations-type--display" /> };
+export const Body: Story = { render: () => <StaticHtmlSurface id="foundations-type--body" /> };

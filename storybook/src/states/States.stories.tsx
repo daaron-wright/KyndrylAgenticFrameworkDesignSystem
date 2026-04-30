@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { StatesMatrix } from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof StatesMatrix> = {
+const meta: Meta = {
   title: "States/Matrix",
-  component: StatesMatrix,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" }
 };
 export default meta;
 
-export const AllStates: StoryObj<typeof StatesMatrix> = {};
+export const AllStates: StoryObj = { render: () => <StaticHtmlSurface id="states-matrix--all" /> };

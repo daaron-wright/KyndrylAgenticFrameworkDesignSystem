@@ -1,17 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ColorSurface } from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof ColorSurface> = {
+const meta: Meta = {
   title: "Foundations/Colors",
-  component: ColorSurface,
   tags: ["autodocs"],
-  argTypes: { palette: { control: "radio", options: ["brand", "neutrals", "severity", "status", "chart"] } }
+  parameters: { layout: "fullscreen" }
 };
 export default meta;
-type Story = StoryObj<typeof ColorSurface>;
+type Story = StoryObj;
 
-export const Brand: Story = { args: { palette: "brand" } };
-export const Neutrals: Story = { args: { palette: "neutrals" } };
-export const Severity: Story = { args: { palette: "severity" } };
-export const StatusRAG: Story = { args: { palette: "status" } };
-export const Chart: Story = { args: { palette: "chart" } };
+export const Brand: Story = { render: () => <StaticHtmlSurface id="foundations-colors--brand" /> };
+export const Neutrals: Story = { render: () => <StaticHtmlSurface id="foundations-colors--slate" /> };
+export const Severity: Story = { render: () => <StaticHtmlSurface id="foundations-colors--severity" /> };
+export const StatusRAG: Story = { render: () => <StaticHtmlSurface id="foundations-colors--status" /> };
+export const Chart: Story = { render: () => <StaticHtmlSurface id="foundations-colors--chart" /> };

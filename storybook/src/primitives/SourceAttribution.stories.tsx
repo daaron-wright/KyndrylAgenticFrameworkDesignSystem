@@ -1,38 +1,25 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SourceAttribution } from "./SourceAttribution";
-import "../_shared/dynamic.css";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof SourceAttribution> = {
+const meta: Meta = {
   title: "Primitives/SourceAttribution",
-  component: SourceAttribution,
   tags: ["autodocs"],
   parameters: {
+    layout: "fullscreen",
     docs: {
       description: {
-        component: "Dynamic provenance footer with agentic source actions."
+        component: "Source-derived React rendering of the correct static provenance and source attribution surface."
       }
     }
   }
 };
 export default meta;
-type Story = StoryObj<typeof SourceAttribution>;
+type Story = StoryObj;
 
 export const Default: Story = {
-  args: {
-    dataset: "servicenow.cmdb_ci",
-    timestamp: "derived 14:08:22",
-    confidence: 82,
-    rationale: "View rationale"
-  }
+  render: () => <StaticHtmlSurface id="primitives-sourceattribution--default" />
 };
 
 export const DynamicSurface: Story = {
-  render: () => (
-    <div className="kds-story-surface is-white">
-      <div className="kds-panel" style={{ maxWidth: 760 }}>
-        <p className="kds-copy" style={{ marginBottom: 16 }}>Recommendation card body content sits above the provenance footer.</p>
-        <SourceAttribution dataset="servicenow.cmdb_ci" timestamp="derived 14:08:22" confidence={82} rationale="View rationale" />
-      </div>
-    </div>
-  )
+  render: () => <StaticHtmlSurface id="primitives-sourceattribution--default" />
 };

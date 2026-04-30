@@ -9,7 +9,7 @@ const meta: Meta<typeof AgenticStateShowcase> = {
     layout: "fullscreen",
     docs: {
       description: {
-        component: "Dynamic React implementation of the static agentic states reference: status bar, tool calls, human input, timeline, handoff, and state delta toasts."
+        component: "Source-derived React rendering of the correct static agentic states HTML, preserving the exact static state matrix and interactions."
       }
     }
   }

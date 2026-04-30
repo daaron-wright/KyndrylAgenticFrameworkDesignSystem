@@ -1,17 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  AgenticFlowSurface,
-  AgenticInboxSurface,
-  AgenticStatesReference,
-  ChatSurface,
-  RecommendationCard,
-} from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta = { title: "Agentic/Reference flows", tags: ["autodocs"] };
+const meta: Meta = { title: "Agentic/Reference flows", tags: ["autodocs"], parameters: { layout: "fullscreen" } };
 export default meta;
 
-export const AllStates: StoryObj = { render: () => <AgenticStatesReference /> };
-export const FullRun: StoryObj = { render: () => <AgenticFlowSurface /> };
-export const Inbox: StoryObj = { render: () => <AgenticInboxSurface /> };
-export const RecommendationFlow: StoryObj = { render: () => <RecommendationCard /> };
-export const ConversationFlow: StoryObj = { render: () => <ChatSurface /> };
+export const AllStates: StoryObj = { render: () => <StaticHtmlSurface id="agentic-states--all" /> };
+export const FullRun: StoryObj = { render: () => <StaticHtmlSurface id="agentic-flow--full-run" /> };
+export const Inbox: StoryObj = { render: () => <StaticHtmlSurface id="agentic-inbox--learned" /> };
+export const ReferenceDeck: StoryObj = { render: () => <StaticHtmlSurface id="agentic-states-deck--reference" /> };

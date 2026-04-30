@@ -1,4 +1,4 @@
 import React from "react";
-import { AgenticStatesReference } from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-export const AgenticStateShowcase: React.FC = () => <AgenticStatesReference />;
+export const AgenticStateShowcase: React.FC = () => <StaticHtmlSurface id="agentic-states--all" />;

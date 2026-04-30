@@ -1,35 +1,30 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SeverityPill } from "./SeverityPill";
-import "../_shared/dynamic.css";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof SeverityPill> = {
+interface SeverityArgs {
+  severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  label?: string;
+}
+
+const meta: Meta<SeverityArgs> = {
   title: "Primitives/SeverityPill",
-  component: SeverityPill,
   tags: ["autodocs"],
   argTypes: {
     severity: { control: "radio", options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
     label: { control: "text" }
-  }
+  },
+  parameters: { layout: "fullscreen" }
 };
 export default meta;
-type Story = StoryObj<typeof SeverityPill>;
+type Story = StoryObj<SeverityArgs>;
 
-export const Critical: Story = { args: { severity: "CRITICAL" } };
-export const High: Story = { args: { severity: "HIGH" } };
-export const Medium: Story = { args: { severity: "MEDIUM" } };
-export const Low: Story = { args: { severity: "LOW" } };
-export const WithLabel: Story = { args: { severity: "HIGH", label: "12 findings" } };
+const renderSingle = (args: SeverityArgs) => <StaticHtmlSurface id="primitives-severitypill--default" args={args} />;
+
+export const Critical: Story = { args: { severity: "CRITICAL" }, render: renderSingle };
+export const High: Story = { args: { severity: "HIGH" }, render: renderSingle };
+export const Medium: Story = { args: { severity: "MEDIUM" }, render: renderSingle };
+export const Low: Story = { args: { severity: "LOW" }, render: renderSingle };
+export const WithLabel: Story = { args: { severity: "HIGH", label: "12 findings" }, render: renderSingle };
 export const DynamicSurface: Story = {
-  render: () => (
-    <div className="kds-story-surface is-white">
-      <div className="kds-surface-card">
-        <div className="kds-row">
-          <SeverityPill severity="CRITICAL" label="4 findings" />
-          <SeverityPill severity="HIGH" label="12 findings" />
-          <SeverityPill severity="MEDIUM" />
-          <SeverityPill severity="LOW" />
-        </div>
-      </div>
-    </div>
-  )
+  render: () => <StaticHtmlSurface id="primitives-severitypill--default" args={{ severity: "HIGH", label: "12 findings" }} />
 };

@@ -1,36 +1,29 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { StatusBadge } from "./StatusBadge";
-import "../_shared/dynamic.css";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof StatusBadge> = {
+type StatusValue = "Pending" | "Approved" | "Executed" | "Rejected" | "Healthy" | "Degraded" | "Impacted" | "Unknown";
+interface StatusArgs {
+  status: StatusValue;
+}
+
+const meta: Meta<StatusArgs> = {
   title: "Primitives/StatusBadge",
-  component: StatusBadge,
   tags: ["autodocs"],
   argTypes: {
     status: { control: "radio", options: ["Pending", "Approved", "Executed", "Rejected", "Healthy", "Degraded", "Impacted", "Unknown"] }
-  }
+  },
+  parameters: { layout: "fullscreen" }
 };
 export default meta;
-type Story = StoryObj<typeof StatusBadge>;
+type Story = StoryObj<StatusArgs>;
 
-export const Pending: Story = { args: { status: "Pending" } };
-export const Approved: Story = { args: { status: "Approved" } };
-export const Executed: Story = { args: { status: "Executed" } };
-export const Healthy: Story = { args: { status: "Healthy" } };
-export const Impacted: Story = { args: { status: "Impacted" } };
+const renderSingle = (args: StatusArgs) => <StaticHtmlSurface id="primitives-statusbadge--default" args={args} />;
+
+export const Pending: Story = { args: { status: "Pending" }, render: renderSingle };
+export const Approved: Story = { args: { status: "Approved" }, render: renderSingle };
+export const Executed: Story = { args: { status: "Executed" }, render: renderSingle };
+export const Healthy: Story = { args: { status: "Healthy" }, render: renderSingle };
+export const Impacted: Story = { args: { status: "Impacted" }, render: renderSingle };
 export const DynamicSurface: Story = {
-  render: () => (
-    <div className="kds-story-surface is-white">
-      <div className="kds-surface-card">
-        <div className="kds-row">
-          {["Pending", "Approved", "Executed", "Rejected", "Monitoring"].map((status) => (
-            <div className="kds-primitive-cell" key={status}>
-              <StatusBadge status={(status === "Monitoring" ? "Degraded" : status) as Parameters<typeof StatusBadge>[0]["status"]} />
-              <span className="kds-mono">{status}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
+  render: () => <StaticHtmlSurface id="primitives-status--matrix" />
 };

@@ -1,15 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SpacingSurface } from "../_shared/DynamicSurfaces";
+import { StaticHtmlSurface } from "../_shared/StaticHtmlSurface";
 
-const meta: Meta<typeof SpacingSurface> = {
-  title: "Foundations/Spacing & Radii",
-  component: SpacingSurface,
+const meta: Meta = {
+  title: "Foundations/Spacing",
   tags: ["autodocs"],
-  argTypes: { mode: { control: "radio", options: ["scale", "radii", "elevation"] } }
+  parameters: { layout: "fullscreen" }
 };
 export default meta;
-type Story = StoryObj<typeof SpacingSurface>;
+type Story = StoryObj;
 
-export const Scale: Story = { args: { mode: "scale" } };
-export const Radii: Story = { args: { mode: "radii" } };
-export const Elevation: Story = { args: { mode: "elevation" } };
+export const Scale: Story = { render: () => <StaticHtmlSurface id="foundations-spacing--scale" /> };
+export const Radii: Story = { render: () => <StaticHtmlSurface id="foundations-spacing--radii" /> };
+export const Elevation: Story = { render: () => <StaticHtmlSurface id="foundations-spacing--elevation" /> };
