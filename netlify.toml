@@ -1,12 +1,10 @@
 # Netlify deploy config — Kyndryl Agentic Framework Storybook
-#
-# DEFAULT: zero-build, publishes the static Storybook-style site.
-# To switch to the real Vite-built Storybook instead, see the block at the bottom.
+# Builds the real React/Vite Storybook and publishes the generated bundle.
 
 [build]
   base    = "."
-  command = "echo 'Static site — no build step required'"
-  publish = "storybook-static"
+  command = "cd storybook && npm install && npm run build-storybook"
+  publish = "storybook-build"
 
 [build.environment]
   NODE_VERSION = "20"
@@ -33,11 +31,3 @@
   from   = "/*"
   to     = "/index.html"
   status = 200
-
-# ───────────────────────────────────────────────────────────────────────────────
-# To deploy the REAL Storybook 8 build instead, replace [build] above with:
-#
-# [build]
-#   base    = "."
-#   command = "cd storybook && npm install --legacy-peer-deps && npm run build-storybook"
-#   publish = "storybook-build"
