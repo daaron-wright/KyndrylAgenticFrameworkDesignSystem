@@ -1,4 +1,5 @@
 import React from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 
 type Severity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 interface SeverityPillProps {
@@ -87,6 +88,16 @@ interface SourceAttributionProps {
     actions?: AgenticMenuAction[];
 }
 declare const SourceAttribution: React.FC<SourceAttributionProps>;
+
+declare function PrimitivesConfidence(): react_jsx_runtime.JSX.Element;
+
+declare function PrimitivesDelta(): react_jsx_runtime.JSX.Element;
+
+declare function PrimitivesFreshness(): react_jsx_runtime.JSX.Element;
+
+declare function PrimitivesSource(): react_jsx_runtime.JSX.Element;
+
+declare function PrimitivesStatus(): react_jsx_runtime.JSX.Element;
 
 interface AgentStatusBarProps {
     state: "started" | "thinking" | "streaming" | "waiting" | "paused" | "done";
@@ -184,4 +195,90 @@ interface StepTimelineProps {
 }
 declare const StepTimeline: React.FC<StepTimelineProps>;
 
-export { AgentStatusBar, type AgentStatusBarProps, AgenticMenu, type AgenticMenuAction, ConfidenceBadge, type ConfidenceBadgeProps, DeltaIndicator, type DeltaIndicatorProps, FreshnessBadge, type FreshnessBadgeProps, HandoffCard, type HandoffCardProps, HumanInputRequest, type HumanInputRequestProps, type Severity, SeverityPill, type SeverityPillProps, SourceAttribution, type SourceAttributionProps, StateDeltaToast, type StateDeltaToastProps, StatusBadge, type StatusValue, StepTimeline, type StepTimelineProps, ToolCallCard, type ToolCallCardProps };
+declare const AgenticStates: React.FC;
+
+declare const AgenticFlow: React.FC;
+
+declare const AgenticInbox: React.FC;
+
+declare const ColorsBrand: React.FC;
+
+declare const ColorsSlate: React.FC;
+
+declare const ColorsSeverity: React.FC;
+
+declare const ColorsStatus: React.FC;
+
+declare const ColorsChart: React.FC;
+
+declare const TypeDisplay: () => react_jsx_runtime.JSX.Element;
+
+declare const TypeBody: () => react_jsx_runtime.JSX.Element;
+
+declare const SpacingScale: () => react_jsx_runtime.JSX.Element;
+
+declare const SpacingRadii: () => react_jsx_runtime.JSX.Element;
+
+declare const SpacingElevation: () => react_jsx_runtime.JSX.Element;
+
+declare const BrandLogo: () => react_jsx_runtime.JSX.Element;
+
+declare const BrandIcons: () => react_jsx_runtime.JSX.Element;
+
+declare const AiChatHistory: React.FC;
+
+declare const AiFeedbackSources: React.FC;
+
+declare const AiLaunchButton: React.FC;
+
+declare const AiLoader: React.FC;
+
+declare const AiModalChat: React.FC;
+
+declare const Badges: React.FC;
+
+declare const Buttons: React.FC;
+
+declare const Chat: React.FC;
+
+declare const DagGraphKit: React.FC;
+
+declare const DataTable: React.FC;
+
+declare const ExecSummary: React.FC;
+
+declare const ExecutionTimeline: React.FC;
+
+declare const ImpactRollup: React.FC;
+
+declare const KpiGrid: React.FC;
+
+declare const Recommendation: React.FC;
+
+declare const ScenarioProjection: React.FC;
+
+declare const StatusBanner: React.FC;
+
+declare const TrustGauge: React.FC;
+
+declare const DashboardTemplate: React.FC;
+
+declare const TriageTemplate: React.FC;
+
+declare const InvestigationTemplate: React.FC;
+
+declare const ReviewTemplate: React.FC;
+
+declare const ConversationTemplate: React.FC;
+
+declare const StatesMatrix: React.FC;
+
+declare const CmdbWorkspace: React.FC;
+
+declare const ShidokaShell: React.FC;
+
+declare const ShidokaComponents: React.FC;
+
+declare const ShidokaCharts: React.FC;
+
+export { AgentStatusBar, type AgentStatusBarProps, AgenticFlow, AgenticInbox, AgenticMenu, type AgenticMenuAction, AgenticStates, AiChatHistory, AiFeedbackSources, AiLaunchButton, AiLoader, AiModalChat, Badges, BrandIcons, BrandLogo, Buttons, Chat, CmdbWorkspace, ColorsBrand, ColorsChart, ColorsSeverity, ColorsSlate, ColorsStatus, ConfidenceBadge, type ConfidenceBadgeProps, ConversationTemplate, DagGraphKit, DashboardTemplate, DataTable, DeltaIndicator, type DeltaIndicatorProps, ExecSummary, ExecutionTimeline, FreshnessBadge, type FreshnessBadgeProps, HandoffCard, type HandoffCardProps, HumanInputRequest, type HumanInputRequestProps, ImpactRollup, InvestigationTemplate, KpiGrid, PrimitivesConfidence, PrimitivesDelta, PrimitivesFreshness, PrimitivesSource, PrimitivesStatus, Recommendation, ReviewTemplate, ScenarioProjection, type Severity, SeverityPill, type SeverityPillProps, ShidokaCharts, ShidokaComponents, ShidokaShell, SourceAttribution, type SourceAttributionProps, SpacingElevation, SpacingRadii, SpacingScale, StateDeltaToast, type StateDeltaToastProps, StatesMatrix, StatusBadge, StatusBanner, type StatusValue, StepTimeline, type StepTimelineProps, ToolCallCard, type ToolCallCardProps, TriageTemplate, TrustGauge, TypeBody, TypeDisplay };

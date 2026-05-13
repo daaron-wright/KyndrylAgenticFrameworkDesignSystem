@@ -15,6 +15,6 @@
     "outDir": "./dist",
     "rootDir": "."
   },
-  "include": ["src", "storybook/src/primitives", "storybook/src/agentic", "storybook/src/_shared"],
+  "include": ["src", "storybook/src/primitives", "storybook/src/agentic", "storybook/src/_shared", "storybook/src/foundations", "storybook/src/composites", "storybook/src/templates", "storybook/src/states", "storybook/src/kits"],
   "exclude": ["node_modules", "dist", "storybook/node_modules"]
 }
