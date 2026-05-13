@@ -1,11 +1,18 @@
 {
-  "name": "@kyndryl/agentic-design-system",
+  "name": "@daaron-wright/kyndryl-agentic-design-system",
   "version": "1.0.0",
   "description": "Kyndryl Agentic Framework Design System — React components and CSS tokens",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daaron-wright/KyndrylAgenticFrameworkDesignSystem.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -22,6 +29,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "prepublishOnly": "npm run build",
     "storybook": "cd storybook && npm run storybook"
   },
   "peerDependencies": {
