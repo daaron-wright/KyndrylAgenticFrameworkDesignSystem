@@ -24,6 +24,13 @@
   },
   "files": [
     "dist",
+    "src",
+    "storybook/src/primitives",
+    "storybook/src/agentic",
+    "storybook/src/_shared",
+    "colors_and_type.css",
+    "tsconfig.json",
+    "tsup.config.ts",
     "README.md"
   ],
   "scripts": {
