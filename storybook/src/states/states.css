@@ -1,0 +1,147 @@
+@import "../tokens.css";
+
+/* States Matrix — prefixed stm- */
+.stm-wrapper {
+  margin: 0;
+  padding: 16px;
+  background: #F2F4F5;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+.stm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 920px;
+}
+
+.stm-card {
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stm-k {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--fg-muted);
+  font-weight: 700;
+}
+
+.stm-t {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+.stm-s {
+  font-size: 11px;
+  color: var(--fg-2);
+  line-height: 1.5;
+  margin: 0;
+}
+
+button.stm-btn {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid #E2E8F0;
+  background: #fff;
+  color: var(--fg-1);
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  align-self: flex-start;
+}
+
+button.stm-prim {
+  background: #171717;
+  color: #fff;
+  border: none;
+}
+
+.stm-skel {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: stm-sk 1.6s linear infinite;
+  border-radius: 4px;
+}
+
+@keyframes stm-sk {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.stm-sev {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+}
+
+.stm-amber {
+  background: #FEF3CF;
+  color: #7A4800;
+  border: 1px solid #FCE38F;
+}
+
+.stm-rose {
+  background: #FDE7E2;
+  color: #8A1E0D;
+  border: 1px solid #FBB8AB;
+}
+
+.stm-slate {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+
+.stm-emerald {
+  background: #E0F2E8;
+  color: #0D5C2E;
+  border: 1px solid #A8DDBF;
+}
+
+.stm-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #29707A;
+  display: inline-block;
+  margin-right: 3px;
+  animation: stm-ex 1s ease-in-out infinite;
+}
+
+.stm-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.stm-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes stm-ex {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.stm-card svg {
+  width: 12px;
+  height: 12px;
+}

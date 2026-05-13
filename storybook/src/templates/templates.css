@@ -1,0 +1,217 @@
+/* ===================================================================
+   templates.css
+   Styles from template-dashboard.html, template-investigation.html,
+   template-review.html, template-triage.html, template-conversation.html
+   All classes prefixed with tpl-
+   =================================================================== */
+
+/* ======================== SHARED ======================== */
+
+.tpl-template {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-sans);
+  color: var(--fg-1);
+  font-size: 13px;
+}
+
+.tpl-slot {
+  border: 1.5px dashed #CBD5E1;
+  border-radius: 6px;
+  padding: 10px;
+  background: #F8FAFC;
+  color: #64748B;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 36px;
+}
+
+.tpl-slot-filled {
+  background: #fff;
+  border: 1px solid var(--border-1);
+  color: var(--fg-1);
+}
+
+.tpl-slot-solid {
+  background: #fff;
+  border: 1px solid var(--border-1);
+  color: var(--fg-1);
+}
+
+.tpl-hd {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--fg-muted);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tpl-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.tpl-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tpl-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-1);
+  margin-bottom: 12px;
+}
+
+.tpl-header-row h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tpl-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.tpl-hdr h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tpl-hdr span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--fg-muted);
+  font-weight: 700;
+}
+
+.tpl-hdr-full {
+  grid-column: 1 / -1;
+}
+
+/* ======================== DASHBOARD TEMPLATE ======================== */
+
+.tpl-dashboard {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.tpl-kpi-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tpl-kpi-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tpl-row2 {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+/* ======================== INVESTIGATION TEMPLATE ======================== */
+
+.tpl-investigation {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 200px 1fr 280px;
+  gap: 10px;
+}
+
+.tpl-graph-canvas {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ======================== REVIEW TEMPLATE ======================== */
+
+.tpl-review {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.tpl-review-row {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 10px;
+}
+
+.tpl-review-queue-row {
+  min-height: 52px;
+}
+
+/* ======================== TRIAGE TEMPLATE ======================== */
+
+.tpl-triage {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 12px;
+}
+
+/* ======================== CONVERSATION TEMPLATE ======================== */
+
+.tpl-conversation {
+  max-width: 900px;
+  background: #fff;
+  border: 1px solid var(--border-1);
+  border-radius: 8px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 10px;
+}
+
+/* ======================== RESPONSIVE ======================== */
+
+@media (max-width: 760px) {
+  .tpl-investigation,
+  .tpl-triage,
+  .tpl-conversation {
+    grid-template-columns: 1fr;
+  }
+  .tpl-review-row {
+    grid-template-columns: 1fr;
+  }
+  .tpl-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .tpl-row2 {
+    grid-template-columns: 1fr;
+  }
+}

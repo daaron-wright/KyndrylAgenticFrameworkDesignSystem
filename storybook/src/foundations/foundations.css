@@ -1,0 +1,768 @@
+/* =============================================================
+   Foundations CSS — namespaced with fdn- prefix
+   Extracted from HTML preview files
+   ============================================================= */
+
+/* =============================================================
+   colors-brand.html
+   ============================================================= */
+.fdn-colors-brand {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-colors-brand .fdn-row {
+  margin-bottom: 14px;
+}
+.fdn-colors-brand .fdn-row h4 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 8px;
+}
+.fdn-colors-brand .fdn-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 6px;
+}
+.fdn-colors-brand .fdn-grid-spruce {
+  grid-template-columns: repeat(10, 1fr);
+}
+.fdn-colors-brand .fdn-sw {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+  min-width: 0;
+}
+.fdn-colors-brand .fdn-chip {
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  padding: 6px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+.fdn-colors-brand .fdn-chip.fdn-dark {
+  color: var(--fg-1);
+}
+.fdn-colors-brand .fdn-meta {
+  padding: 6px 8px;
+  background: #fff;
+}
+.fdn-colors-brand .fdn-name {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--fg-1);
+}
+.fdn-colors-brand .fdn-hex {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--fg-muted);
+  margin-top: 1px;
+}
+.fdn-colors-brand .fdn-brand {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.fdn-colors-brand .fdn-brand .fdn-big {
+  flex: 1;
+  border-radius: 8px;
+  padding: 18px;
+  color: #fff;
+  background: var(--k-warm-red-50);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 96px;
+}
+.fdn-colors-brand .fdn-brand .fdn-big.fdn-spruce {
+  background: var(--k-spruce-60);
+}
+.fdn-colors-brand .fdn-brand .fdn-big .fdn-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  font-family: var(--font-display);
+}
+.fdn-colors-brand .fdn-brand .fdn-big .fdn-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-top: 8px;
+}
+.fdn-colors-brand .fdn-brand .fdn-big .fdn-use {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+/* =============================================================
+   colors-slate.html
+   ============================================================= */
+.fdn-colors-slate {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-colors-slate .fdn-group {
+  margin-bottom: 14px;
+}
+.fdn-colors-slate .fdn-group h4 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 8px;
+}
+.fdn-colors-slate .fdn-group .fdn-desc {
+  font-size: 11px;
+  color: var(--fg-muted);
+  margin: 0 0 8px;
+}
+.fdn-colors-slate .fdn-row {
+  display: flex;
+  gap: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+}
+.fdn-colors-slate .fdn-sw {
+  flex: 1;
+  height: 52px;
+  display: flex;
+  align-items: flex-end;
+  padding: 5px 7px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+}
+.fdn-colors-slate .fdn-light {
+  color: var(--fg-1);
+}
+.fdn-colors-slate .fdn-dark {
+  color: #fff;
+}
+.fdn-colors-slate .fdn-labels {
+  display: grid;
+  gap: 0;
+  padding: 4px 0 0;
+}
+.fdn-colors-slate .fdn-labels div {
+  font-size: 9px;
+  color: var(--fg-muted);
+  text-align: center;
+  font-family: var(--font-mono);
+}
+.fdn-colors-slate .fdn-g10 {
+  grid-template-columns: repeat(10, 1fr);
+}
+.fdn-colors-slate .fdn-g9 {
+  grid-template-columns: repeat(9, 1fr);
+}
+.fdn-colors-slate .fdn-g5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* =============================================================
+   colors-severity.html
+   ============================================================= */
+.fdn-colors-severity {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-colors-severity h4 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 10px;
+}
+.fdn-colors-severity .fdn-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.fdn-colors-severity .fdn-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--border-1);
+  border-radius: 4px;
+  padding: 10px;
+}
+.fdn-colors-severity .fdn-pill {
+  border-radius: 9999px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid;
+  width: fit-content;
+  font-family: var(--font-display);
+}
+.fdn-colors-severity .fdn-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.fdn-colors-severity .fdn-stops {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 4px;
+}
+.fdn-colors-severity .fdn-stop {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 8px;
+}
+.fdn-colors-severity .fdn-stop.fdn-l {
+  color: var(--fg-1);
+}
+.fdn-colors-severity .fdn-stop.fdn-d {
+  color: #fff;
+}
+.fdn-colors-severity .fdn-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--fg-muted);
+}
+.fdn-colors-severity .fdn-hdr {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-1);
+}
+
+/* =============================================================
+   colors-status.html
+   ============================================================= */
+.fdn-colors-status {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  font-family: var(--font-sans);
+}
+.fdn-colors-status .fdn-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--fg-muted);
+  margin-bottom: 10px;
+}
+.fdn-colors-status .fdn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.fdn-colors-status .fdn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-1);
+  background: #fff;
+}
+.fdn-colors-status .fdn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* =============================================================
+   colors-chart.html
+   ============================================================= */
+.fdn-colors-chart {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-colors-chart h4 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 8px;
+}
+.fdn-colors-chart .fdn-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+}
+.fdn-colors-chart .fdn-sw {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+}
+.fdn-colors-chart .fdn-chip {
+  height: 56px;
+}
+.fdn-colors-chart .fdn-name {
+  font-size: 9px;
+  color: var(--fg-muted);
+  padding: 4px 6px;
+  font-family: var(--font-mono);
+  text-align: center;
+}
+.fdn-colors-chart .fdn-hex {
+  font-size: 8px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  text-align: center;
+  padding-bottom: 4px;
+}
+
+/* =============================================================
+   type-display.html
+   ============================================================= */
+.fdn-type-display {
+  margin: 0;
+  padding: 20px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-type-display .fdn-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.fdn-type-display .fdn-bigAg {
+  font-family: var(--font-display);
+  font-size: 92px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--fg-1);
+  line-height: .9;
+}
+.fdn-type-display .fdn-wtag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-top: 8px;
+  font-family: var(--font-mono);
+}
+.fdn-type-display .fdn-scale {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 18px;
+  align-items: baseline;
+}
+.fdn-type-display .fdn-scale .fdn-lbl {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+.fdn-type-display .fdn-weights {
+  display: flex;
+  gap: 18px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.fdn-type-display .fdn-w {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.fdn-type-display .fdn-w b {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--fg-1);
+  line-height: 1;
+}
+.fdn-type-display .fdn-w span {
+  font-size: 9px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+.fdn-type-display .fdn-disp {
+  font-family: var(--font-display);
+}
+.fdn-type-display .fdn-role {
+  color: var(--k-warm-red-50);
+  font-weight: 500;
+}
+
+/* =============================================================
+   type-body.html
+   ============================================================= */
+.fdn-type-body {
+  margin: 0;
+  padding: 20px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-type-body .fdn-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 160px;
+  gap: 16px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-1);
+}
+.fdn-type-body .fdn-row:last-child {
+  border: none;
+}
+.fdn-type-body .fdn-lbl {
+  font-size: 11px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+.fdn-type-body .fdn-note {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  text-align: right;
+}
+.fdn-type-body .fdn-hdr {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 10px;
+}
+
+/* =============================================================
+   spacing-scale.html
+   ============================================================= */
+.fdn-spacing-scale {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-spacing-scale .fdn-hdr {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 12px;
+}
+.fdn-spacing-scale .fdn-grid {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.fdn-spacing-scale .fdn-tok {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.fdn-spacing-scale .fdn-box {
+  background: var(--k-spruce-10);
+  border: 1px solid var(--k-spruce-30);
+  border-radius: 2px;
+}
+.fdn-spacing-scale .fdn-lbl {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  text-align: center;
+  line-height: 1.35;
+}
+.fdn-spacing-scale .fdn-lbl b {
+  color: var(--fg-1);
+  display: block;
+  font-weight: 500;
+}
+
+/* =============================================================
+   spacing-elevation.html
+   ============================================================= */
+.fdn-spacing-elevation {
+  margin: 0;
+  padding: 24px;
+  background: #F8FAFC;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fdn-spacing-elevation .fdn-s {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.fdn-spacing-elevation .fdn-box {
+  background: #fff;
+  width: 130px;
+  height: 70px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.fdn-spacing-elevation .fdn-lbl {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+/* =============================================================
+   spacing-radii.html
+   ============================================================= */
+.fdn-spacing-radii {
+  margin: 0;
+  padding: 20px;
+  background: #fff;
+  font-family: var(--font-sans);
+}
+.fdn-spacing-radii .fdn-hdr {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 12px;
+}
+.fdn-spacing-radii .fdn-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fdn-spacing-radii .fdn-s {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.fdn-spacing-radii .fdn-box {
+  background: var(--k-spruce-10);
+  border: 1px solid var(--k-spruce-30);
+  width: 110px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--k-spruce-70);
+}
+.fdn-spacing-radii .fdn-lbl {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  text-align: center;
+  line-height: 1.4;
+}
+.fdn-spacing-radii .fdn-lbl b {
+  color: var(--fg-1);
+  font-weight: 500;
+  display: block;
+}
+
+/* =============================================================
+   brand-logo.html
+   ============================================================= */
+.fdn-brand-logo {
+  margin: 0;
+  padding: 16px;
+  background: #fff;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.fdn-brand-logo .fdn-logo {
+  height: 40px;
+  width: auto;
+}
+.fdn-brand-logo .fdn-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  background: #fff;
+}
+.fdn-brand-logo .fdn-dark {
+  background: #29707A;
+}
+.fdn-brand-logo .fdn-dark .fdn-lbl {
+  color: rgba(255, 255, 255, .75);
+}
+.fdn-brand-logo .fdn-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--fg-muted);
+}
+.fdn-brand-logo .fdn-kyndryl-word {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #141414;
+}
+.fdn-brand-logo .fdn-dark .fdn-kyndryl-word {
+  color: #fff;
+}
+
+/* =============================================================
+   brand-icons.html
+   ============================================================= */
+.fdn-brand-icons {
+  margin: 0;
+  padding: 24px;
+  background: #fff;
+  font-family: var(--font-sans);
+  color: var(--fg-1);
+}
+.fdn-brand-icons .fdn-head {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 14px;
+}
+.fdn-brand-icons .fdn-head h1 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.fdn-brand-icons .fdn-head p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.55;
+  max-width: 640px;
+}
+.fdn-brand-icons .fdn-section {
+  margin-top: 24px;
+}
+.fdn-brand-icons .fdn-section h2 {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 12px;
+}
+.fdn-brand-icons .fdn-scale {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  padding: 16px 0;
+  border-top: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+}
+.fdn-brand-icons .fdn-scale-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.fdn-brand-icons .fdn-scale-item svg {
+  color: var(--fg-1);
+}
+.fdn-brand-icons .fdn-scale-item span {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+.fdn-brand-icons .fdn-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+.fdn-brand-icons .fdn-ic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  background: #fff;
+  aspect-ratio: 1 / 1;
+}
+.fdn-brand-icons .fdn-ic svg {
+  width: 22px;
+  height: 22px;
+  color: var(--fg-1);
+}
+.fdn-brand-icons .fdn-ic span {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+.fdn-brand-icons .fdn-chips {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+}
+.fdn-brand-icons .fdn-chip-label {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  margin-left: 4px;
+}
+.fdn-brand-icons .fdn-notes {
+  margin-top: 20px;
+  padding: 12px 14px;
+  background: #F8FAFC;
+  border-left: 3px solid var(--k-spruce-60);
+  font-size: 11px;
+  color: var(--fg-2);
+  line-height: 1.6;
+  border-radius: 4px;
+}
+.fdn-brand-icons .fdn-notes code {
+  font-family: var(--font-mono);
+  background: #E2E8F0;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10.5px;
+}

@@ -1,0 +1,9 @@
+node_modules
+dist
+.cache
+.netlify
+storybook-build
+storybook-static-build
+storybook/parity-screenshots
+*.log
+.DS_Store
